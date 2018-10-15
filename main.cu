@@ -19,7 +19,8 @@ struct egcdTuple {
 	int g;
 	int y;
 	int x;
-};
+};///gcd a/gcd b/gcd
+
 egcdTuple egcd(int a, int b, struct egcdTuple c);
 int modinv(int a, int m, struct egcdTuple c);
 mpz_t* ABC(mpz_t* R,mpz_t* N,mpz_t* N_,mpz_t* T, mpz_t* tmp, mpz_t* tmp2, mpz_t* d_t, mpz_t* d_m);
@@ -107,8 +108,8 @@ int main (int argc, char *argv[])
 	
 	
 	
-	mpz_init(myMes_h);
-	mpz_init(myMesEncrypted_h);
+	mpz_init(myMes_h);//redundant?
+	mpz_init(myMesEncrypted_h);//redundant?
 
 	cudaMalloc((mpz_t **) &myMes_d, mesSize);
 	cudaMalloc((mpz_t **) &myMesEncrypted_d, mesSize);
@@ -227,6 +228,7 @@ egcdTuple egcd(int a, int b, struct egcdTuple c){
 	}
 }
 
+
 int modinv(int a, int m, struct egcdTuple c){
     c = egcd(a, m, c);
     int temp_x, temp_y;
@@ -236,7 +238,7 @@ int modinv(int a, int m, struct egcdTuple c){
     c.y = temp_x;
 
     if (c.g != 1) {
-        //raise Exception('modular inverse does not exist');
+    	return 0;//raise Exception('modular inverse does not exist');
 	}
     else{
 

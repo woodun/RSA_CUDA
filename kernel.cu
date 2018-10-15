@@ -16,6 +16,7 @@ __device__ mpz_t* REDC(mpz_t* R,mpz_t* N,mpz_t* N_,mpz_t* T, mpz_t* tmp, mpz_t* 
 
 __global__ void reduction(mpz_t * mes, mpz_t* encryptMes, mpz_t* _a, mpz_t* _b, mpz_t* tmp, mpz_t* tmp2, mpz_t* r, mpz_t* n, mpz_t* n_, int* eBits, long long int* clockTable, mpz_t* t, mpz_t* m, int d_a) {
 
+
 	int j = blockIdx.x * blockDim.x + threadIdx.x;
 	long long int t1, t2;
 	mpz_init(&tmp[j]);
@@ -73,8 +74,9 @@ __global__ void reduction(mpz_t * mes, mpz_t* encryptMes, mpz_t* _a, mpz_t* _b, 
 	}
 }
 
-void Encrypt( mpz_t* mes, mpz_t* encrpytMes, int e, mpz_t* _a, mpz_t* _b, mpz_t* tmp, mpz_t* tmp2, mpz_t* r, mpz_t* n, mpz_t* n_, int* eBits, long long int* clockTable, mpz_t* t, mpz_t* m, int d_a)
-{
+void Encrypt( mpz_t* mes, mpz_t* encrpytMes, int e, mpz_t* _a, mpz_t* _b, mpz_t* tmp, mpz_t* tmp2, mpz_t* r, mpz_t* n, mpz_t* n_, int* eBits, long long int* clockTable, mpz_t* t, mpz_t* m, int d_a){
+//Encrypt (myMes_d, myMesEncrypted_d, e, _a_mpz, _b_mpz, tmp, tmp2, d_r, d_n, d_n_, eBits_d, clockTable_d, d_t, d_m, _a);
+//Encrypt (myMes_d, myMesEncrypted_d, _a_mpz, _b_mpz, tmp, tmp2, d_r, d_n, d_n_, eBits_d, clockTable_d, d_t, d_m, _a);
 	
 	reduction<<<1, 32, 0>>>( mes, encrpytMes, _a, _b, tmp, tmp2, r, n, n_, eBits, clockTable, t, m, d_a);
 	cudaDeviceSynchronize();
