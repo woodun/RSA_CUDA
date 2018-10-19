@@ -1,11 +1,6 @@
 #!/usr/bin/python
 
-p = 61
-q = 53
-n = p*q # = 3233
-phi = (p-1)*(q-1) # = 3120
-e = 17
-d = 5795
+
 
 def red(num,mod):
 	return num % mod
@@ -48,13 +43,30 @@ def findR(i):
 	return 2**len(i_b)
 
 def REDC(R,N,N_,T):
-	m = ((T % R) * N_) % R # k
+	m = ((T % R) * N_) % R
 	t = (T + m*N) / R
 	if t >= N:
-		#print "Woohoo! t=%d N=%d" %(t, N)
 		return t - N
 	else:
 		return t
+	
+# def MontExp(mes,e,n):
+# 	r = findR(n)
+# 	n_ = - modinv(n,r) % r
+# 	_a = toMont(1,r,n)
+# 	_b = toMont(mes,r,n)
+# 	for i in bits(e)[::-1]:
+# 		if i == '1':
+# 			_a = _a * _b
+# 			_a =  REDC(r,n,n_,_a)
+# 		_b = _b * _b
+# 		_b = REDC(r,n,n_,_b)
+# 		#print "_a %d _b %d" % (_a, _b)
+# 	#final reduction to convert from Montgomery into normal form
+# 	_a = REDC(r,n,n_,_a)
+# 	return _a
+
+
 def MontExp(mes,e,n):
 	r = findR(n)
 	n_ = - modinv(n,r) % r
@@ -63,11 +75,9 @@ def MontExp(mes,e,n):
 	for i in bits(e)[::-1]:
 		if i == '1':
 			_a = _a * _b
-			_a =  REDC(r,n,n_,_a)
+			_a = REDC(r,n,n_,_a)
 		_b = _b * _b
 		_b = REDC(r,n,n_,_b)
-		#print "_a %d _b %d" % (_a, _b)
-	#final reduction to convert from Montgomery into normal form
 	_a = REDC(r,n,n_,_a)
 	return _a
 
@@ -77,8 +87,27 @@ def MontExp(mes,e,n):
 
 #print "p: %d q: %d n: %d(%s) phi: %d e: %d(%s) d: %d(%s)" % (p,q,n,n_b,phi,e,e_b,d,d_b)
 
+
+# p = 61
+# q = 53
+
+p = 32416189867
+q = 32416189909
+
+p = 61
+q = 53
+
+n = p*q # = 3233
+phi = (p-1)*(q-1) # = 3120
+e = 19
+# d = 5795
+
+d = modinv(e, phi)
+
+
+
 #encrypt:
-mes = 123
+mes = 1234
 c = pow(mes, e, n)
 #decrypt:
 m1 = pow(c,d,n)
@@ -89,7 +118,7 @@ print (mes,c,m1)
 c = sqm(mes,e,n)
 m2 = sqm(c,d,n)
 #print "m: %d c: %d m_dec: %d" % (mes,c,m1)
-print (mes,c,m1)
+print (mes,c,m2)
 # 
 # Testing Montgomery multiplication:
 #  R = findR(n)
@@ -110,7 +139,7 @@ print (mes,c,m1)
 c = MontExp(mes,e,n)
 m2 = MontExp(c,d,n)
 # print "m: %d c: %d m_dec: %d" % (mes,c,m1)
-print (mes,c,m1)
+print (mes,c,m2)
 
 
 #print(bits(14)[::-1])
