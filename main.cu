@@ -182,9 +182,9 @@ int main (int argc, char *argv[])
 	cudaMemcpy(d_r, h_r, sizeof(mpz_t), cudaMemcpyHostToDevice);
 
 	
-
+//time
 	Encrypt (myMes_d, myMesEncrypted_d, e, _a_mpz, _b_mpz, tmp, tmp2, d_r, d_n, d_n_, eBits_d, clockTable_d, d_t, d_m, _a);
-	
+//time
 
 	cudaMemcpy(clockTable_h, clockTable_d, 10000*sizeof(long long int), cudaMemcpyDeviceToHost);
 

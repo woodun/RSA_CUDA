@@ -37,7 +37,7 @@ __global__ void reduction(mpz_t * mes, mpz_t* encryptMes, mpz_t* _a, mpz_t* _b, 
 
 			mpz_mult(&tmp[j], &mes[j], r);
 
-			mpz_div(&tmp2[j], &_b[j], &tmp[j], n);
+			mpz_div(&tmp2[j], &_b[j], &tmp[j], n); // optimize
 			//int _b = (mes[j]*r) % n;
 		
 		
@@ -62,8 +62,8 @@ __global__ void reduction(mpz_t * mes, mpz_t* encryptMes, mpz_t* _a, mpz_t* _b, 
 			}
 			mpz_set(&_b[j], REDC(r,n,n_,&_a[j],&tmp[j], &tmp2[j],&t[j],&m[j])); // final montgomery reduction, pass encrypted mes
 		
-			mpz_init(&encryptMes[j]);
-			mpz_set(&encryptMes[j], &_b[j]);
+			mpz_init(&encryptMes[j]); //redundant
+			mpz_set(&encryptMes[j], &_b[j]); //redundant
 
 			t2 = clock64();
 			
@@ -87,7 +87,7 @@ void Encrypt( mpz_t* mes, mpz_t* encrpytMes, int e, mpz_t* _a, mpz_t* _b, mpz_t*
 __device__ mpz_t* REDC(mpz_t* R,mpz_t* N,mpz_t* N_,mpz_t* T, mpz_t* tmp, mpz_t* tmp2, mpz_t* t, mpz_t* m){
 
 	mpz_div(tmp, m, T, R);
-	mpz_mult(tmp, m, N_);
+	mpz_mult(tmp, m, N_); // k
 	mpz_div(tmp2, m ,tmp, R);
 	//int m = ((T % R) * N_) % R;
 	
@@ -100,14 +100,14 @@ __device__ mpz_t* REDC(mpz_t* R,mpz_t* N,mpz_t* N_,mpz_t* T, mpz_t* tmp, mpz_t* 
 	
 	if (mpz_gte(t , N)){
 		mpz_sub(tmp, t, N);
-		mpz_set(t, tmp);
+		mpz_set(t, tmp); //redundant
 			
 		return t;
 		
     }
 	else{
-		mpz_sub(tmp, t, N);
-		mpz_set(tmp2, tmp);
+		mpz_sub(tmp, t, N); //redundant
+		mpz_set(tmp2, tmp); //redundant
 	    return t;
 	}
 }

@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
-p = 107
-q = 83
-n = p*q # = 8881
-phi = (p-1)*(q-1) # = 8692
-e = 3
+p = 61
+q = 53
+n = p*q # = 3233
+phi = (p-1)*(q-1) # = 3120
+e = 17
 d = 5795
 
 def red(num,mod):
@@ -48,7 +48,7 @@ def findR(i):
 	return 2**len(i_b)
 
 def REDC(R,N,N_,T):
-	m = ((T % R) * N_) % R
+	m = ((T % R) * N_) % R # k
 	t = (T + m*N) / R
 	if t >= N:
 		#print "Woohoo! t=%d N=%d" %(t, N)
@@ -71,40 +71,79 @@ def MontExp(mes,e,n):
 	_a = REDC(r,n,n_,_a)
 	return _a
 
-e_b = bits(e)
-d_b = bits(d)
-n_b = bits(n)
+# e_b = bits(e)
+# d_b = bits(d)
+# n_b = bits(n)
 
-print "p: %d q: %d n: %d(%s) phi: %d e: %d(%s) d: %d(%s)" % (p,q,n,n_b,phi,e,e_b,d,d_b)
+#print "p: %d q: %d n: %d(%s) phi: %d e: %d(%s) d: %d(%s)" % (p,q,n,n_b,phi,e,e_b,d,d_b)
 
 #encrypt:
 mes = 123
 c = pow(mes, e, n)
 #decrypt:
 m1 = pow(c,d,n)
-print "m: %d c: %d m_dec: %d" % (mes,c,m1)
-
+#print "m: %d c: %d m_dec: %d" % (mes,c,m1)
+print (mes,c,m1)
+ 
 #square-and-multiply
 c = sqm(mes,e,n)
 m2 = sqm(c,d,n)
-print "m: %d c: %d m_dec: %d" % (mes,c,m1)
-
-#Testing Montgomery multiplication:
-R = findR(n)
-a = 137
-b = 262
-c = a * b % n
-am = toMont(a,R,n)
-bm = toMont(b,R,n)
-cm = toMont(c,R,n)
-N_ = - modinv(n,R) % R
-tmp1 = am*bm
-tmp2 = REDC(R,n,N_,tmp1)
-tmp3 = REDC(R,n,N_,tmp2)
-print "R: %d (%s) N_: %d a: %d am: %d b: %d bm: %d c: %d cm:%d" % (R, bits(R), N_, a, am, b, bm, c, cm)
-print "am*bm=%d, reduced: %d, double-reduced: %d " % (tmp1, tmp2, tmp3)
-
-#Exponentation with Montgomery multiplication:
+#print "m: %d c: %d m_dec: %d" % (mes,c,m1)
+print (mes,c,m1)
+# 
+# Testing Montgomery multiplication:
+#  R = findR(n)
+#  a = 137
+#  b = 262
+#  c = a * b % n
+#  am = toMont(a,R,n)
+#  bm = toMont(b,R,n)
+#  cm = toMont(c,R,n)
+#  N_ = - modinv(n,R) % R
+#  tmp1 = am*bm
+#  tmp2 = REDC(R,n,N_,tmp1)
+#  tmp3 = REDC(R,n,N_,tmp2)
+# print "R: %d (%s) N_: %d a: %d am: %d b: %d bm: %d c: %d cm:%d" % (R, bits(R), N_, a, am, b, bm, c, cm)
+# print "am*bm=%d, reduced: %d, double-reduced: %d " % (tmp1, tmp2, tmp3)
+# 
+# Exponentation with Montgomery multiplication:
 c = MontExp(mes,e,n)
 m2 = MontExp(c,d,n)
-print "m: %d c: %d m_dec: %d" % (mes,c,m1)
+# print "m: %d c: %d m_dec: %d" % (mes,c,m1)
+print (mes,c,m1)
+
+
+#print(bits(14)[::-1])
+# print(findR(14))
+#           
+# g, x, y = egcd(17, 780)
+#           
+# print(g, x, y)
+#           
+# print(x % 780)
+#           
+# print(egcd(17, 780))
+#           
+# print(egcd(106, 82))#53 * 41 = 2173
+#           
+# print(modinv(3,2173))
+#           
+#n_ = - modinv(17,780) % 780
+#           
+#print(n_ * 17 % 780)
+#           
+# print((-17 * n_)%780)
+#     
+    
+
+
+
+
+
+
+
+
+
+
+
+
