@@ -14,7 +14,7 @@
 
 #define LOG2_DIGIT_BASE     32
 #define DIGIT_BASE          ((unsigned long long) 1 << (LOG2_DIGIT_BASE))
-#define DIGITS_CAPACITY     4
+#define DIGITS_CAPACITY     64 //changes: make enough space for large input
 
 typedef unsigned digit_t;
 

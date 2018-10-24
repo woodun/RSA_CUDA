@@ -11,6 +11,7 @@
 #include "compile.h"
 #include "cuda_string.h"
 #include "digit.h"
+#include <string.h> //changes
 
 #define MPZ_NEGATIVE      1
 #define MPZ_NONNEGATIVE  0
@@ -193,6 +194,61 @@ __device__ __host__ inline void mpz_set_str(mpz_t *mpz, const char *user_str) {
   CHECK_STRS(user_str, buf);
 #endif
 }
+
+/**
+ * @brief Set the mpz integer based on the provided (hex) string.
+ */
+__device__ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str, const int bufsize) {//changes
+  unsigned num_digits;
+  unsigned i;
+  int is_zero;
+
+  for (i = 0; i < mpz->capacity; i++) mpz->digits[i] = 0;
+
+  //const int bufsize = 1024;
+  char buf[bufsize];
+  memcpy(buf, user_str, bufsize);
+  buf[bufsize - 1] = (char) 0;
+  char *str = &buf[0];
+
+  /* Check if the provided number is negative */
+  if (str[0] == '-') {
+    mpz->sign = MPZ_NEGATIVE;
+    str ++; // the number starts at the next character
+  }
+  else {
+    mpz->sign = MPZ_NONNEGATIVE;
+  }
+  int len = strlen(str);
+  int char_per_digit = LOG2_DIGIT_BASE / 4;
+  num_digits = (len + char_per_digit - 1) / char_per_digit;
+  CHECK_MEM(mpz, num_digits);
+
+  digits_set_zero(mpz->digits);
+
+  is_zero = true;
+  for (i = 0; i < num_digits; i ++) {
+    str[len - i * char_per_digit] = (char) 0;
+    char *start = str + (int) max(len - (i + 1) * char_per_digit, 0);
+    digit_t d = strtol(start, NULL, 16);
+
+    /* keep track of whether or not every digit is zero */
+    is_zero = is_zero && (d == 0);
+
+    /* parse the string backwards (little endian order) */
+    mpz->digits[i] = d;
+  }
+
+  /* Just in case the user gives us -0 as input */
+  if (is_zero) mpz->sign = MPZ_NONNEGATIVE;
+
+#if 0
+  mpz_get_str(mpz, buf, bufsize);
+  CHECK_STRS(user_str, buf);
+#endif
+}
+
+
 
 __device__ __host__ inline void mpz_get_binary_str(mpz_t *mpz, char *str, unsigned s) {
   (void) mpz;

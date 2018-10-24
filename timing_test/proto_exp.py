@@ -44,7 +44,7 @@ def findR(i):
 
 def REDC(R,N,N_,T):
 	m = ((T % R) * N_) % R
-	t = (T + m*N) / R
+	t = (T + m*N) // R
 	if t >= N:
 		return t - N
 	else:
@@ -88,14 +88,11 @@ def MontExp(mes,e,n):
 #print "p: %d q: %d n: %d(%s) phi: %d e: %d(%s) d: %d(%s)" % (p,q,n,n_b,phi,e,e_b,d,d_b)
 
 
-# p = 61
-# q = 53
+p = 61
+q = 53
 
 p = 32416189867
 q = 32416189909
-
-p = 61
-q = 53
 
 n = p*q # = 3233
 phi = (p-1)*(q-1) # = 3120

@@ -61,78 +61,76 @@ def toMont(i, R, N):
 
 def findR(i):
 	i_b = "{0:b}".format(i)
-	return 2**len(i_b)
+	return len(i_b), 2**len(i_b) #changes: more efficient
 
-def REDC(R,N,N_,T):
-	m = ((T % R) * N_) % R
-	t = (T + m*N) / R
+def REDC(R,N,N_,T,L): #changes: more efficient
+	m = ((T & R) * N_) & R #changes: more efficient
+	t = (T + m*N) >> L #changes: python 3 compatible
 	if t >= N:
-		return t - N
+		t = t - N
+		return t
 	else:
+		N = t - N
 		return t
 
-def CheckREDC(R,N,N_,T):
-	m = ((T % R) * N_) % R
-	t = (T + m*N) / R
+def CheckREDC(R,N,N_,T,L): #changes: more efficient
+	m = ((T & R) * N_) & R #changes: more efficient
+	t = (T + m*N) >> L #changes: python 3 compatible
 	if t >= N:
 		return 1
 	else:
 		return 0
 
 def MontExp(mes,e,n):
-	r = findR(n)
-	
-	print("mes:", mes)
-	print("e:", e)
-	print("n:", n)
-	print("r:", r)
-	
-	n_ = - modinv(n,r) % r
-	
-	print("n_:", n_)
-	
-	_a = toMont(1,r,n)
-	_b = toMont(mes,r,n)
-	
-	print("_a:", _a)
-	print("_b:", _b)
-	
+	r = findR(n)[1] #changes: more efficient
+	rmod = r - 1  #changes: more efficient	
+	l = findR(n)[0] #changes: more efficient
+	n_ = - modinv(n,r) & rmod #changes: more efficient
+	r2 = (r << l) % n #changes: more efficient
+	_a = REDC(rmod,n,n_,1*r2,l) #changes: more efficient
+	_b = REDC(rmod,n,n_,mes*r2,l) #changes: more efficient
 	for i in bits(e)[::-1]:
 		if i == '1':
 			_a = _a * _b
-			_a = REDC(r,n,n_,_a)
+			_a = REDC(rmod,n,n_,_a,l) #changes: more efficient
 		_b = _b * _b
-		_b = REDC(r,n,n_,_b)
-	_a = REDC(r,n,n_,_a)
+		_b = REDC(rmod,n,n_,_b,l) #changes: more efficient
+	_a = REDC(rmod,n,n_,_a,l) #changes: more efficient
 	return _a
 
 def MontSQMLadder(mes, e, n):
-	r = findR(n)
-	n_ = - modinv(n,r) % r
-	_x1 = toMont(mes,r,n)
+	r = findR(n)[1] #changes: more efficient
+	rmod = r - 1  #changes: more efficient	
+	l = findR(n)[0] #changes: more efficient
+	n_ = - modinv(n,r) & rmod #changes: more efficient
+	r2 = (r << l) % n #changes: more efficient
+	_x1 = REDC(rmod,n,n_,mes*r2,l) #changes: more efficient
 	_x2 = _x1 * _x1
-	_x2 = REDC(r,n,n_,_x2)
+	_x2 = REDC(rmod,n,n_,_x2,l)
 	e_b = bits(e)
 	for i in e_b[1:]:
 		if i == '0':
 			_x2 = _x1 * _x2
-			_x2 = REDC(r,n,n_,_x2)
+			_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
 			_x1 = _x1 * _x1
-			_x1 = REDC(r,n,n_,_x1)
+			_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
 		else:
 			_x1 = _x1 * _x2
-			_x1 = REDC(r,n,n_,_x1)
+			_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
 			_x2 = _x2 * _x2
-			_x2 = REDC(r,n,n_,_x2)
-	_x1 = REDC(r,n,n_,_x1)
+			_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
+	_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
 	return _x1
 
 def CheckDivExp(mes,e,n,bit):
-	r = findR(n)
-	n_ = - modinv(n,r) % r
-	_x1 = toMont(mes,r,n)
+	r = findR(n)[1] #changes: more efficient
+	rmod = r - 1  #changes: more efficient	
+	l = findR(n)[0] #changes: more efficient
+	n_ = - modinv(n,r) & rmod #changes: more efficient
+	r2 = (r << l) % n #changes: more efficient
+	_x1 = REDC(rmod,n,n_,mes*r2,l) #changes: more efficient
 	_x2 = _x1 * _x1
-	_x2 = REDC(r,n,n_,_x2)
+	_x2 = REDC(rmod,n,n_,_x2,l)
 	e_b = bits(e)
 	if bit > len(e_b) - 2 :
 		print ("Wrong bit!")
@@ -146,37 +144,37 @@ def CheckDivExp(mes,e,n,bit):
 
 			#simulate exp bit 0
 			_x2 = _x1 * _x2
-			d1_1 = CheckREDC(r,n,n_,_x2)
+			d1_1 = CheckREDC(rmod,n,n_,_x2,l) #changes: more efficient
 			_x1 = _x1 * _x1
-			d1_2 = CheckREDC(r,n,n_,_x1)
+			d1_2 = CheckREDC(rmod,n,n_,_x1,l) #changes: more efficient
 
 			#simulate exp bit 1
 			_x1 = _x1_temp
 			_x2 = _x2_temp
 			_x1 = _x1 * _x2
-			d0_1 = CheckREDC(r,n,n_,_x1)
+			d0_1 = CheckREDC(rmod,n,n_,_x1,l) #changes: more efficient
 			_x2 = _x2 * _x2
-			d0_2 = CheckREDC(r,n,n_,_x2)
+			d0_2 = CheckREDC(rmod,n,n_,_x2,l) #changes: more efficient
 			return ((d0_1, d0_2), (d1_1, d1_2))
 		else:
 			#print "[%d]=%s cont ..." % (c, i)
 			if i == '0':
 				_x2 = _x1 * _x2
-				_x2 = REDC(r,n,n_,_x2)
+				_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
 				_x1 = _x1 * _x1
-				_x1 = REDC(r,n,n_,_x1)
+				_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
 			else:
 				_x1 = _x1 * _x2
-				_x1 = REDC(r,n,n_,_x1)
+				_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
 				_x2 = _x2 * _x2
-				_x2 = REDC(r,n,n_,_x2)
+				_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
 			c -= 1
 	
 def CalcDiv(bit0, bit1):
 	di = lambda p0, p1: abs(p0[0]-p1[0]) + abs(p0[1]-p1[1])
 	return list(map(di, bit0, bit1))
 
-#find pairs that cause divergence when given exponent bit is 0
+#find pairs that cause divergence when given exponent bit is 1
 def FindDiv (num, mod, e, bit): 
 	res = []
 	for i in range(num):
@@ -185,7 +183,7 @@ def FindDiv (num, mod, e, bit):
 			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
 			if CalcDiv(d1,d2)[0] == 1 and CalcDiv(d1,d2)[1] == 0:
 				res.append((r1,r2))
-				print (r1, r2, str(d1), str(d2))
+				print ("%d, %d, %s, %s" % (r1, r2, str(d1), str(d2)))
 				break
 			# else:
 			# 	print "%d, %d, %s, %s" % (r1,r2,str(d1), str(d2))
@@ -198,9 +196,9 @@ def FindNoDiv (num, mod, e, bit):
 		while(True):
 			r1, r2 = random.randint(2, mod), random.randint(2, mod)
 			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
-			if CalcDiv(d1,d2)[0] == CalcDiv(d1,d2)[1]:
+			if CalcDiv(d1,d2)[0] == CalcDiv(d1,d2)[1] == 0:
 				res.append((r1,r2))
-				print(r1, r2, str(d1), str(d2))
+				print ("%d, %d, %s, %s" % (r1, r2, str(d1), str(d2)))
 				break
 			# else:
 			# 	print "%d, %d, %s, %s" % (r1,r2,str(d1), str(d2))
@@ -209,16 +207,12 @@ def FindNoDiv (num, mod, e, bit):
 random.seed(time.time())
 p = 32416189867
 q = 32416189909
-# 
-p = 61
-q = 53
-
-
 n = p*q 
 phi = (p-1)*(q-1)
-# phi = 780
-e = 17
-d = modinv(e, phi)
+n_lambda = phi // egcd(p-1, q-1)[0] #changes: more efficient
+print(phi, n_lambda)
+e = 11
+d = modinv(e, n_lambda) #changes: more efficient
 
 e_b = bits(e)
 d_b = bits(d)
@@ -227,7 +221,7 @@ n_b = bits(n)
 print(p,q,n,n_b,phi,e,e_b,d,d_b)
 
 #encrypt:
-mes = 1234
+mes = 12345
 c = pow(mes, e, n)
 m1 = pow(c,d,n)
 print(mes,c,m1)
@@ -249,51 +243,53 @@ print(mes,c,m2)
 
 
 #Testing Montgomery multiplication:
-# R = findR(n)
-# a = 137
-# b = 262
-# c = a * b % n
-# am = toMont(a,R,n)
-# bm = toMont(b,R,n)
-# cm = toMont(c,R,n)
-# N_ = - modinv(n,R) % R
-# tmp1 = am * bm
-# tmp2 = REDC(R,n,N_,tmp1)
-# tmp3 = REDC(R,n,N_,tmp2)
+R = findR(n)[1] #changes: more efficient
+L = findR(n)[0] #changes: more efficient
+R2 = (R << L) % n #changes: more efficient
+a = 137
+b = 262
+c = a * b % n
+am = toMont(a,R,n)
+bm = toMont(b,R,n)
+cm = toMont(c,R,n)
+N_ = - modinv(n,R) % R
+tmp1 = am * bm
+tmp2 = REDC(R,n,N_,tmp1,L)
+tmp3 = REDC(R,n,N_,tmp2,L)
 # print(R, bits(R), N_, a, am, b, bm, c, cm)
 # print(tmp1, tmp2, tmp3)
 
 
 
-#Exponentation with Montgomery multiplication:
-c = MontExp(mes,e,n)
+print("Exponentation with Montgomery multiplication:")
+c = MontExp(mes,e,n)	
 m2 = MontExp(c,d,n)
 print(mes,c,m2)
 
-#Exponentation with Montgomery multiplication:
-print()
+print("Exponentation with Montgomery multiplication Ladder:")
 c = MontSQMLadder(mes,e,n)
 m2 = MontSQMLadder(c,d,n)
 print(mes,c,m2)
 
-print(len(bits(d)), bits(d))
-print(d)
-
-
-# d1 = CheckDivExp(1000,d,n,52)
-# d2 = CheckDivExp(1001,d,n,52)
-# print(d1,d2)
-
-# d1 = ((1, 1), (0, 0)) 
-# d2 = ((1, 1), (0, 0))
-
-# print(CalcDiv(d1,d2)[0], CalcDiv(d1,d2)[1])
+# print(len(bits(d)), bits(d))
 # print(d)
 
+a = -4095
+
+print(a & 4095)
+
+print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R):%s, hex(R2):%s, bits(e):%s, bits(d):%s, L:%d" % (hex(n), hex(N_), hex(R), hex(R2), bits(e), bits(d), L))
+
 exit()
+
+d1 = CheckDivExp(1000,d,n,52)
+d2 = CheckDivExp(1001,d,n,52)
+print(d1,d2)
+
 print(FindDiv (10, n, d, 52))
 print()
 print(FindNoDiv (10, n, d, 52))
+
 
 
 
