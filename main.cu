@@ -33,7 +33,7 @@ int main (int argc, char *argv[])
 	mpz_init(&h_r2);
 
 	///////get n
-	char n_input[] = "0038f6e8cfba55dd0e47";
+	char n_input[] = "00000038f6e8cfba55dd0e47";
 	mpz_set_str_host(&h_n, n_input);
 	
 	///////get n_
