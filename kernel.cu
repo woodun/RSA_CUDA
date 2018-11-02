@@ -33,7 +33,6 @@ __device__ mpz_t* REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t*
 		mpz_set(tmp, t);
 	    return t;
 	}
-
 }
 
 __global__ void MontSQMLadder(mpz_t * mes, unsigned mes_size, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t) {
@@ -50,8 +49,8 @@ __global__ void MontSQMLadder(mpz_t * mes, unsigned mes_size, mpz_t* _x1, mpz_t*
 
 		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 
-		t1 = clock64();
-		//beginning of necessary instructions within the kernel
+		t1 = clock64();//beginning of necessary instructions within the kernel
+
 		mpz_t* n = &vn;
 		mpz_t* n_ = &vn_;
 		int j = blockIdx.x * blockDim.x + threadIdx.x;
@@ -96,10 +95,9 @@ __global__ void MontSQMLadder(mpz_t * mes, unsigned mes_size, mpz_t* _x1, mpz_t*
 		mpz_set( &_x1[j], REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j]) );
 
 		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
-
-		//end of necessary kernel instructions
-		t2 = clock64();
 		
+		t2 = clock64();//end of necessary kernel instructions
+
 		if( j == 1){
 			clockTable[a] = t2-t1;
 		}

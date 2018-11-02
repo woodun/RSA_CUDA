@@ -54,7 +54,7 @@ int main (int argc, char *argv[])
 	mes1 = (mpz_t*) malloc (sizeof(mpz_t));
 	mpz_init(mes1);
 
-	char mes1_input[] = ""; //input from pair storage
+	char mes1_input[] = "12345"; //input from pair storage
 	mpz_set_str_host(mes1, mes1_input, 1024)
 	for (int i=0; i<1; i++){
 		mpz_init(&myMes_h[i]);
@@ -66,12 +66,14 @@ int main (int argc, char *argv[])
 	mes2 = (mpz_t*) malloc (sizeof(mpz_t));
 	mpz_init(mes2);
 
-	char mes2_input[] = ""; //input from pair storage
+	char mes2_input[] = "67890"; //input from pair storage
 	mpz_set_str_host(mes2, mes2_input, 1024)
 	for (int i=1; i<inputControl; i++){
 		mpz_init(&myMes_h[i]);
 		mpz_set(&myMes_h[i], &mes2);
 	}
+
+	//char* mpz_get_str(mpz_t *mpz, char *str, int bufsize)
 
 	mpz_t *myMes_d;
 	cudaMalloc((mpz_t **) &myMes_d, mesSize);
@@ -141,7 +143,7 @@ int main (int argc, char *argv[])
 	init<<<1, inputControl>>>(_x1_mpz, _x2_mpz, tmp, tmp2, d_t);
 	cudaDeviceSynchronize();
 
-	//MontSQMLadder<<<1, inputControl>>>(myMes_d, _x1_mpz, _x2_mpz, tmp, tmp2, d_rmod, d_n, d_n_, eBits_d, e_bitsLength, clockTable_d, d_t, d_m);/////////////////////////////////////////kernel
+	//MontSQMLadder<<<1, inputControl>>>(myMes_d, mes_size, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	//cudaDeviceSynchronize();
 
 	//MontSQMLadder(mpz_t * mes, unsigned mes_size, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t)
@@ -149,8 +151,6 @@ int main (int argc, char *argv[])
 	cudaDeviceSynchronize();
 
 	cudaMemcpy(clockTable_h, clockTable_d, 10000*sizeof(long long int), cudaMemcpyDeviceToHost);
-
-	//char* mpz_get_str(mpz_t *mpz, char *str, int bufsize)
 
 	FILE *fp= fopen("oneCurve_allDeviant.txt", "w");
 	for (int q = 0; q<10000; q++){
