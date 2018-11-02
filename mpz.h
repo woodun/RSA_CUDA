@@ -578,7 +578,7 @@ __device__ __host__ inline int mpz_gte(mpz_t *a, mpz_t *b) {
  * @warning If buf is NULL, the string is dynamically allocated and must
  * therefore be freed by the user.
  */
-__host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize) {
+__device__ __host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize) {
   int print_zeroes = 0; // don't print leading 0s
   int i;
   int str_index = 0;
