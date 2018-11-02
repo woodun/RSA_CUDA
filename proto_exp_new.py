@@ -301,6 +301,9 @@ for i in range(padding):
 
 print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R2):%s, bits(e):%s, bits(d):%s, L:%d" % (hex_n, hex_N_, hex_R2, bits(e), bits(d), L))
 
+mes1 = 0x12345
+mes2 = 0x67890
+
 exit()
 
 d1 = CheckDivExp(1000,d,n,52)
