@@ -283,6 +283,7 @@ a = -4095
 
 print(a & 4095)
 
+print(len(hex(n)));
 print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R):%s, hex(R2):%s, hex(RMOD):%s, bits(e):%s, bits(d):%s, L:%d" % (hex(n), hex(N_), hex(R), hex(R2), hex(R - 1), bits(e), bits(d), L))
 
 exit()
