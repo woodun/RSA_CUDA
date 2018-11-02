@@ -131,7 +131,8 @@ int main (int argc, char *argv[])
 	init<<<1, inputControl>>>(_x1_mpz, _x2_mpz, tmp, tmp2, d_t);
 	cudaDeviceSynchronize();
 
-	printf("%s\n", mpz_get_str(&myMes_h[0], test_str1, 1024));
+	char test_str[1024];
+	printf("%s\n", mpz_get_str(&myMes_h[0], test_str, 1024));
 
 	MontSQMLadder<<<1, inputControl>>>(myMes_d, mes_size, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
