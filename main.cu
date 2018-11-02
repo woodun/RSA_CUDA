@@ -106,16 +106,18 @@ int main (int argc, char *argv[])
 	while ( d_iterator > 0){
         if( d_input[e_bitsLength - 1 - d_iterator] == '1'){
             dBits[d_iterator] = 1;
+            printf("1");
         }
         else{
             dBits[d_iterator] = 0;
+            printf("0");
         }
         d_iterator--;
 	}
 	dBits[d_iterator] = 1;
 	cudaMemcpy(dBits_d, dBits, sizeof(int) * d_bitsLength, cudaMemcpyHostToDevice);
 
-	printf("%d\n", d_bitsLength);
+	printf("\n%d\n", d_bitsLength);
 	for (int i = 0; i < d_bitsLength; i++){
 		printf("%d", dBits[i]);
 	}
