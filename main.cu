@@ -105,7 +105,7 @@ int main (int argc, char *argv[])
 	int d_iterator = d_bitsLength - 1;
 	while ( d_iterator > 0){
 
-		printf("%c", dBits[d_input[e_bitsLength - 1 - d_iterator]]);
+		printf("%c", d_input[e_bitsLength - 1 - d_iterator]);
 
         if( d_input[e_bitsLength - 1 - d_iterator] == '1'){
             dBits[d_iterator] = 1;
