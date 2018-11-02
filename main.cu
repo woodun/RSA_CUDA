@@ -50,11 +50,11 @@ int main (int argc, char *argv[])
 	myMes_h = (mpz_t*) malloc (mesSize);
 
 	///////get Message1
-	char mes1_input[] = "000012345"; //input from pair storage
+	char mes1_input[] = "0000000000012345"; //input from pair storage
 	mpz_set_str_host(&myMes_h[0], mes1_input);
 
 	///////get Message2
-	char mes2_input[] = "000067890"; //input from pair storage
+	char mes2_input[] = "0000000000067890"; //input from pair storage
 	mpz_set_str_host(&myMes_h[1], mes2_input);
 
 	//for (int i=0; i<1; i++){
