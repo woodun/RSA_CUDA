@@ -64,6 +64,11 @@ int main (int argc, char *argv[])
 
 	//char* mpz_get_str(mpz_t *mpz, char *str, int bufsize)
 
+	char test_str[1024];
+	printf("%s\n", mpz_get_str(&h_n, test_str, 1024));
+
+	exit(0);
+
 	mpz_t *myMes_d;
 	cudaMalloc((mpz_t **) &myMes_d, mesSize);
 	cudaMemcpy(myMes_d, myMes_h, mesSize, cudaMemcpyHostToDevice);
