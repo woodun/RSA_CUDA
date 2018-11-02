@@ -120,7 +120,7 @@ __global__ void MontSQMLadder(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _x
 		t2 = clock64();//end of necessary kernel instructions
 
 		if(j == 0){
-			printf("%s\n", mpz_get_str( &_x1[j], test_str, 1024));
+			printf("debug: %s\n", mpz_get_str( &_x1[j], test_str, 1024));
 		}
 
 		if( j == 1){
