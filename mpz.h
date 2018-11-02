@@ -198,7 +198,7 @@ __device__ __host__ inline void mpz_set_str(mpz_t *mpz, const char *user_str) {
 /**
  * @brief Set the mpz integer based on the provided (hex) string.
  */
-__device__ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//changes
+__host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//changes
   unsigned num_digits;
   unsigned i;
   int is_zero;
@@ -247,8 +247,6 @@ __device__ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_st
   CHECK_STRS(user_str, buf);
 #endif
 }
-
-
 
 __device__ __host__ inline void mpz_get_binary_str(mpz_t *mpz, char *str, unsigned s) {
   (void) mpz;
@@ -343,7 +341,8 @@ __device__ __host__ inline void mpz_bitwise_and(mpz_t *dst, mpz_t *op1, mpz_t *o
 
   /* currently just do not accept negative numbers */
   if (mpz_is_negative(op1) || mpz_is_negative(op2)) {
-	  assert(0);
+	 assert(0);
+	 //return;
   }
   else {
 	  digits_bitwise_and(dst->digits, dst->capacity,
