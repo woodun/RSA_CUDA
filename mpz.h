@@ -339,16 +339,14 @@ __device__ __host__ inline void mpz_bitwise_and(mpz_t *dst, mpz_t *op1, mpz_t *o
 
   digits_set_zero(dst->digits);
 
-  /* currently just do not accept negative numbers */
-  if (mpz_is_negative(op1) || mpz_is_negative(op2)) {
-	 assert(0);
+  /*
+  if (mpz_is_negative(op1) || mpz_is_negative(op2)) {//do not accept negative numbers, will not happen in RSA.
+	 //assert(0);
 	 //return;
   }
-  else {
-	  digits_bitwise_and(dst->digits, dst->capacity,
-                           op1->digits, op1->capacity,
-                           op2->digits, op2->capacity);
-  }
+  */
+
+  digits_bitwise_and(dst->digits, dst->capacity, op1->digits, op1->capacity, op2->digits, op2->capacity);
 }
 
 __device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int n_bits) {//changes
