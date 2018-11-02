@@ -78,7 +78,7 @@ int main (int argc, char *argv[])
 
 	int e_iterator = e_bitsLength - 1;
 	while ( e_iterator > 0){
-        if( e_input == '1'){
+        if( e_input[e_bitsLength - 1 - e_iterator] == '1'){
             eBits[e_iterator] = 1;
         }
         else{
@@ -97,17 +97,17 @@ int main (int argc, char *argv[])
 	int* dBits_d;
 	cudaMalloc((void **) &dBits_d, sizeof(int) * d_bitsLength);
 
-	int e_iterator = d_bitsLength - 1;
-	while ( e_iterator > 0){
-        if( e_input == '1'){
-            dBits[e_iterator] = 1;
+	int d_iterator = d_bitsLength - 1;
+	while ( d_iterator > 0){
+        if( d_input[e_bitsLength - 1 - d_iterator] == '1'){
+            dBits[d_iterator] = 1;
         }
         else{
-            dBits[e_iterator] = 0;
+            dBits[d_iterator] = 0;
         }
-        e_iterator--;
+        d_iterator--;
 	}
-	dBits[e_iterator] = 1;
+	dBits[d_iterator] = 1;
 	cudaMemcpy(dBits_d, dBits, sizeof(int) * d_bitsLength, cudaMemcpyHostToDevice);
 
 	///////device memory
@@ -157,8 +157,6 @@ int main (int argc, char *argv[])
 	////////free host
 	free(clockTable_h);
 	free(myMes_h);
-	free(mes1);
-	free(mes2);
 	free(eBits);
 	free(dBits);
 

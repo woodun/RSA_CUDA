@@ -45,7 +45,7 @@ __global__ void MontSQMLadder(mpz_t * mes, unsigned mes_size, mpz_t* _x1, mpz_t*
 	for(unsigned iter = 0; iter < mes_size; iter++){
 
 		int k = blockIdx.x * blockDim.x + threadIdx.x;
-		mpz_set_i(&_x1[k], &mes[2 * iter + k]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
+		mpz_set(&_x1[k], &mes[2 * iter + k]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 
 		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 
@@ -64,7 +64,7 @@ __global__ void MontSQMLadder(mpz_t * mes, unsigned mes_size, mpz_t* _x1, mpz_t*
 		//_x2 = REDC(rmod,n,n_,_x2,l)
 		mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
-		for(int i = eLength; i >= 0; i--){
+		for(int i = eLength - 1; i >= 0; i--){
 
 			if(eBits[i] == 0){
 
