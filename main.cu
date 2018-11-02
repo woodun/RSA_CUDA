@@ -55,11 +55,11 @@ int main (int argc, char *argv[])
 	}
 
 	///////get Message1
-	char mes1_input[] = "0000000000012345"; //input from pair storage
+	char mes1_input[] = "00000000000123456789"; //input from pair storage
 	mpz_set_str_host(&myMes_h[0], mes1_input);
 
 	///////get Message2
-	char mes2_input[] = "0000000000067890"; //input from pair storage
+	char mes2_input[] = "00000000000987654321"; //input from pair storage
 	mpz_set_str_host(&myMes_h[1], mes2_input);
 
 	//debug

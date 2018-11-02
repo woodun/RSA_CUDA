@@ -301,8 +301,23 @@ for i in range(padding):
 
 print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R2):%s, bits(e):%s, bits(d):%s, L:%d" % (hex_n, hex_N_, hex_R2, bits(e), bits(d), L))
 
-mes1 = 0x12345
-mes2 = 0x67890
+mes1 = 0x123456789
+mes2 = 0x987654321
+
+print(hex(mes1), hex(mes2))
+print(bin(mes1), bin(mes2))
+
+mes1 = mes1 >> 15
+mes2 = mes2 >> 15
+
+print(hex(mes1), hex(mes2))
+print(bin(mes1), bin(mes2))
+
+mes1 = mes1 & 0b111111111
+mes2 = mes2 & 0b111111111
+
+print(hex(mes1), hex(mes2))
+print(bin(mes1), bin(mes2))
 
 exit()
 
