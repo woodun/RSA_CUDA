@@ -94,9 +94,6 @@ __global__ void MontSQMLadder(mpz_t * mes, unsigned mes_size, mpz_t* _x1, mpz_t*
 		//_x1 = REDC(rmod,n,n_,_x1,l)
 		mpz_set( &_x1[j], REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j]) );
 
-		char test_str[1024];
-		printf("%s\n", mpz_get_str(&_x1[j], test_str, 1024));
-
 		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 		
 		t2 = clock64();//end of necessary kernel instructions
