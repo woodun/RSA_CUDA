@@ -71,7 +71,7 @@ int main (int argc, char *argv[])
 	cudaMemcpy(myMes_d, myMes_h, mesSize, cudaMemcpyHostToDevice);
 
 	///////get e
-	char e_input[] = "1011";
+	char e_input[] = "101";
 	int e_bitsLength = (int)strlen(e_input);
 	int* eBits = (int *) malloc(sizeof(int) * e_bitsLength);
 
@@ -92,10 +92,9 @@ int main (int argc, char *argv[])
 	cudaMemcpy(eBits_d, eBits, sizeof(int) * e_bitsLength, cudaMemcpyHostToDevice);
 
 	///////get d
-	char d_input[] = "110111001111010000000011001001011000000011101110101111111100110011";
+	char d_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
 
 	int d_bitsLength = (int)strlen(d_input);
-
 
 	int* dBits = (int *) malloc(sizeof(int) * d_bitsLength);
 
@@ -104,27 +103,16 @@ int main (int argc, char *argv[])
 
 	int d_iterator = d_bitsLength - 1;
 	while ( d_iterator > 0){
-
-		printf("%c", d_input[d_bitsLength - 1 - d_iterator]);
-
         if( d_input[d_bitsLength - 1 - d_iterator] == '1'){
             dBits[d_iterator] = 1;
-            //printf("1");
         }
         else{
             dBits[d_iterator] = 0;
-           //printf("0");
         }
         d_iterator--;
 	}
 	dBits[d_iterator] = 1;
 	cudaMemcpy(dBits_d, dBits, sizeof(int) * d_bitsLength, cudaMemcpyHostToDevice);
-
-	printf("\n%d\n", d_bitsLength);
-	for (int i = 0; i < d_bitsLength; i++){
-		printf("%d", dBits[i]);
-	}
-	exit(0);
 
 	///////device memory
 	long long int *clockTable_d;
@@ -140,14 +128,14 @@ int main (int argc, char *argv[])
 	cudaMalloc((void **) &_x2_mpz, mesSize);
 	cudaMalloc((void **) &_x1_mpz, mesSize);
 
-	//init(mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, mpz_t* t){
 	init<<<1, inputControl>>>(_x1_mpz, _x2_mpz, tmp, tmp2, d_t);
 	cudaDeviceSynchronize();
 
-	//MontSQMLadder<<<1, inputControl>>>(myMes_d, mes_size, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
-	//cudaDeviceSynchronize();
+	MontSQMLadder<<<1, inputControl>>>(myMes_d, mes_size, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+	cudaDeviceSynchronize();
 
-	//MontSQMLadder(mpz_t * mes, unsigned mes_size, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t)
+	cudaMemcpy(myMes_d, _x1_mpz, mesSize, cudaMemcpyDeviceToDevice);
+
 	MontSQMLadder<<<1, inputControl>>>(myMes_d, mes_size, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 
