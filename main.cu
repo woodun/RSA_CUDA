@@ -34,15 +34,15 @@ int main (int argc, char *argv[])
 
 	///////get n
 	char n_input[] = "38f6e8cfba55dd0e47";
-	mpz_set_str_host(h_n, n_input, 1024)
+	mpz_set_str_host(h_n, n_input);
 	
 	///////get n_
 	char n__input[] = "2e8457440e0d93c489";
-	mpz_set_str_host(h_n_, n__input, 1024)
+	mpz_set_str_host(h_n_, n__input);
 
 	///////get r2
 	char r2_input[] = "3709d17d8f8686609f";
-	mpz_set_str_host(h_r2, r2_input, 1024)
+	mpz_set_str_host(h_r2, r2_input);
 
 	///////get Messages
 	int mesSize = sizeof(mpz_t) * inputControl;
@@ -55,7 +55,7 @@ int main (int argc, char *argv[])
 	mpz_init(mes1);
 
 	char mes1_input[] = "12345"; //input from pair storage
-	mpz_set_str_host(mes1, mes1_input, 1024)
+	mpz_set_str_host(mes1, mes1_input);
 	for (int i=0; i<1; i++){
 		mpz_init(&myMes_h[i]);
 		mpz_set(&myMes_h[i], &mes1);
@@ -67,7 +67,7 @@ int main (int argc, char *argv[])
 	mpz_init(mes2);
 
 	char mes2_input[] = "67890"; //input from pair storage
-	mpz_set_str_host(mes2, mes2_input, 1024)
+	mpz_set_str_host(mes2, mes2_input);
 	for (int i=1; i<inputControl; i++){
 		mpz_init(&myMes_h[i]);
 		mpz_set(&myMes_h[i], &mes2);

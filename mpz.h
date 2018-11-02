@@ -198,14 +198,14 @@ __device__ __host__ inline void mpz_set_str(mpz_t *mpz, const char *user_str) {
 /**
  * @brief Set the mpz integer based on the provided (hex) string.
  */
-__device__ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str, const int bufsize) {//changes
+__device__ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//changes
   unsigned num_digits;
   unsigned i;
   int is_zero;
 
   for (i = 0; i < mpz->capacity; i++) mpz->digits[i] = 0;
 
-  //const int bufsize = 1024;
+  const int bufsize = 1024;
   char buf[bufsize];
   memcpy(buf, user_str, bufsize);
   buf[bufsize - 1] = (char) 0;
