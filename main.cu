@@ -93,7 +93,10 @@ int main (int argc, char *argv[])
 
 	///////get d
 	char d_input[] = "110111001111010000000011001001011000000011101110101111111100110011";
+
 	int d_bitsLength = (int)strlen(d_input);
+
+
 	int* dBits = (int *) malloc(sizeof(int) * d_bitsLength);
 
 	int* dBits_d;
@@ -112,6 +115,7 @@ int main (int argc, char *argv[])
 	dBits[d_iterator] = 1;
 	cudaMemcpy(dBits_d, dBits, sizeof(int) * d_bitsLength, cudaMemcpyHostToDevice);
 
+	printf("%d\n", d_bitsLength);
 	for (int i = 0; i < d_bitsLength; i++){
 		printf("%d", dBits[i]);
 	}
