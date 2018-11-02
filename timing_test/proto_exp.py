@@ -220,7 +220,7 @@ n_b = bits(n)
 print ("p: %d q: %d n: %d(%s) phi: %d e: %d(%s) d: %d(%s)" % (p,q,n,n_b,phi,e,e_b,d,d_b))
 
 #encrypt:
-mes = 0x12345
+mes = 0x123456789
 c = pow(mes, e, n)
 #decrypt:
 m1 = pow(c,d,n)

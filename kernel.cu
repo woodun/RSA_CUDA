@@ -35,7 +35,7 @@ __device__ mpz_t* REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t*
 	}
 }
 
-
+/*
 __global__ void MontSQMLadder2(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t) {
 
 	int j = blockIdx.x * blockDim.x + threadIdx.x;
@@ -53,8 +53,9 @@ __global__ void MontSQMLadder1(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _
 
 	mpz_set( &_x1[j], &mes[j]);
 }
+*/
 
-/*
+
 __global__ void MontSQMLadder(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t) {
 
 	__shared__ digit_t s_index[32];
@@ -123,7 +124,7 @@ __global__ void MontSQMLadder(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _x
 		}
 	}
 }
-*/
+
 
 __global__ void init(mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, mpz_t* t){
 	int j = blockIdx.x * blockDim.x + threadIdx.x;
