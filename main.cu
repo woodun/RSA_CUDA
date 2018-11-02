@@ -24,7 +24,7 @@ int main (int argc, char *argv[])
 	mpz_t h_n;
 	mpz_t h_n_;
 	mpz_t h_r2;
-	int rl = 700;
+	int rl = 70;
 	unsigned mes_size = 1;
 	int inputControl = 32;
 
@@ -33,15 +33,15 @@ int main (int argc, char *argv[])
 	mpz_init(&h_r2);
 
 	///////get n
-	char n_input[] = "0x38f6e8cfba55dd0e47";
+	char n_input[] = "00000038f6e8cfba55dd0e47";
 	mpz_set_str_host(&h_n, n_input);
 	
 	///////get n_
-	char n__input[] = "2e8457440e0d93c489";
+	char n__input[] = "0000000038f6e8cfba55dd0e47";
 	mpz_set_str_host(&h_n_, n__input);
 
 	///////get r2
-	char r2_input[] = "3709d17d8f8686609f";
+	char r2_input[] = "0000000038f6e8cfba55dd0e47";
 	mpz_set_str_host(&h_r2, r2_input);
 
 	///////get Messages
@@ -50,11 +50,11 @@ int main (int argc, char *argv[])
 	myMes_h = (mpz_t*) malloc (mesSize);
 
 	///////get Message1
-	char mes1_input[] = "12345"; //input from pair storage
+	char mes1_input[] = "00012345"; //input from pair storage
 	mpz_set_str_host(&myMes_h[0], mes1_input);
 
 	///////get Message2
-	char mes2_input[] = "67890"; //input from pair storage
+	char mes2_input[] = "00067890"; //input from pair storage
 	mpz_set_str_host(&myMes_h[1], mes2_input);
 
 	//for (int i=0; i<1; i++){
@@ -62,12 +62,9 @@ int main (int argc, char *argv[])
 	//	mpz_set(&myMes_h[i], &mes1);
 	//}
 
-	//char* mpz_get_str(mpz_t *mpz, char *str, int bufsize)
-
-	char test_str[1024];
-	printf("%s\n", mpz_get_str(&h_n, test_str, 1024));
-
-	exit(0);
+	//char test_str[1024];
+	//printf("%s\n", mpz_get_str(&h_n, test_str, 1024));
+	//exit(0);
 
 	mpz_t *myMes_d;
 	cudaMalloc((mpz_t **) &myMes_d, mesSize);
@@ -114,6 +111,11 @@ int main (int argc, char *argv[])
 	}
 	dBits[d_iterator] = 1;
 	cudaMemcpy(dBits_d, dBits, sizeof(int) * d_bitsLength, cudaMemcpyHostToDevice);
+
+	for (int i = 0; i < d_bitsLength; i++){
+		printf("%d", dBits[i]);
+	}
+	exit(0);
 
 	///////device memory
 	long long int *clockTable_d;
