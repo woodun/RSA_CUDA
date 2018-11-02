@@ -35,14 +35,14 @@ __device__ mpz_t* REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t*
 	}
 }
 
-__global__ void MontSQMLadder(mpz_t * mes, unsigned mes_size, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t) {
+__global__ void MontSQMLadder(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t) {
 
 	__shared__ digit_t s_index[32];
 
 	long long int t1, t2;
 
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
-	for(unsigned iter = 0; iter < mes_size; iter++){
+	for(unsigned iter = 0; iter < pairs; iter++){
 
 		int k = blockIdx.x * blockDim.x + threadIdx.x;
 		mpz_set(&_x1[k], &mes[2 * iter + k]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.

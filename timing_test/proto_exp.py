@@ -220,7 +220,7 @@ n_b = bits(n)
 print ("p: %d q: %d n: %d(%s) phi: %d e: %d(%s) d: %d(%s)" % (p,q,n,n_b,phi,e,e_b,d,d_b))
 
 #encrypt:
-mes = 12345
+mes = 0x12345
 c = pow(mes, e, n)
 #decrypt:
 m1 = pow(c,d,n)
@@ -236,7 +236,7 @@ print ("SQM m: %d c: %d m_dec: %d" % (mes,c,m2))
 print ("")
 c = SQMLadder(mes,e,n)
 m2 = SQMLadder(c,d,n)
-print ("Ladder SQM m: %d c: %d m_dec: %d" % (mes,c,m2))
+print ("Ladder SQM m: %s c: %s m_dec: %s" % ( hex(mes), hex(c), hex(m2) ) )
 
 #Testing Montgomery multiplication:
 R = findR(n)[1] #changes: more efficient
@@ -259,7 +259,7 @@ print ("am*bm=%d, reduced: %d, double-reduced: %d " % (tmp1, tmp2, tmp3))
 print ("")
 c = MontExp(mes,e,n)
 m2 = MontExp(c,d,n)
-print ("MontSQM m: %d c: %d m_dec: %d" % (mes,c,m2))
+print ("MontSQM m: %s c: %s m_dec: %s" % ( hex(mes), hex(c), hex(m2) ) )
 
 #Exponentation with Montgomery multiplication:
 print ("")
@@ -283,20 +283,12 @@ print (FindNoDiv (10, n, d, 52))
 
 #print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R):%s, hex(R2):%s, hex(RMOD):%s, bits(e):%s, bits(d):%s, L:%d" % (hex(n), hex(N_), hex(R), hex(R2), hex(R - 1), bits(e), bits(d), L))
 
-hex_n = hex(n)[2:]
-padding = 8 - (len(hex_n) % 8);
-for i in range(padding):
-	hex_n = "0" + hex_n;
-	
-hex_N_ = hex(N_)[2:]
-padding = 8 - (len(hex_n) % 8);
-for i in range(padding):
-	hex_N_ = "0" + hex_N_;
-	
-hex_R2 = hex(R2)[2:]
-padding = 8 - (len(hex_n) % 8);
-for i in range(padding):
-	hex_R2 = "0" + hex_R2;
+def Padding8 (n): 
+	hex_n = hex(n)[2:]
+	padding = 8 - (len(hex_n) % 8);
+	for i in range(padding):
+		hex_n = "0" + hex_n;
+	return hex_n;
 
-print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R2):%s, bits(e):%s, bits(d):%s, L:%d" % (hex_n, hex_N_, hex_R2, bits(e), bits(d), L))
+print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R2):%s, bits(e):%s, bits(d):%s, L:%d" % (Padding8 (n), Padding8 (N_), Padding8 (R2), bits(e), bits(d), L))
 
