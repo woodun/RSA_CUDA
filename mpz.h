@@ -331,6 +331,83 @@ __device__ __host__ inline void mpz_add(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   CHECK_SIGN(dst);
 }
 
+__device__ __host__ inline void mpz_bitwise_and(mpz_t *dst, mpz_t *op1, mpz_t *op2) {//changes
+#ifdef __CUDACC__
+  unsigned op1_digit_count = digits_count(op1->digits);
+  unsigned op2_digit_count = digits_count(op2->digits);
+
+  unsigned capacity = min(op1_digit_count, op2_digit_count);
+#endif
+
+  digits_set_zero(dst->digits);
+
+  /* currently just do not accept negative numbers */
+  if (mpz_is_negative(op1) || mpz_is_negative(op2)) {
+	  assert(0);
+  }
+  else {
+	  digits_bitwise_and(dst->digits, dst->capacity,
+                           op1->digits, op1->capacity,
+                           op2->digits, op2->capacity);
+  }
+}
+
+__device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int n_bits) {//changes
+  digit_t *digits = src->digits;
+  unsigned capacity = src->capacity;
+
+  int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
+  //int ls_digits = capacity - rs_digits - 1;
+  int ls_remainder = LOG2_DIGIT_BASE - ( n_bits & MOD_LOG2_DIGIT_BASE );
+  //int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
+
+  /*
+  if(rs_digits >= capacity){//this will not happen in the rsa, but in the general case should be added.
+	  return;
+  }
+  if(n_bits <= 0){//this will not happen in the rsa, but in the general case should be added.
+	  digits_set_zero(digits);
+	  return;
+  }
+  */
+
+  for(int d_index = capacity - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
+	  dst->digits[d_index] = 0;
+  }
+
+  dst->digits[rs_digits] = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
+
+  for(int d_index = rs_digits - 1; d_index >= 0; d_index--) {//constant time for specific rl
+	  dst->digits[d_index] = digits[d_index];
+  }
+}
+
+__device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int n_bits) {//changes
+  digit_t *digits = mpz->digits;
+  unsigned capacity = mpz->capacity;
+
+  int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
+  //int ls_digits = capacity - rs_digits - 1;
+  int ls_remainder = LOG2_DIGIT_BASE - ( n_bits & MOD_LOG2_DIGIT_BASE );
+  //int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
+
+  /*
+  if(rs_digits >= capacity){//this will not happen in the rsa, but in the general case should be added.
+	  return;
+  }
+  if(n_bits <= 0){//this will not happen in the rsa, but in the general case should be added.
+	  digits_set_zero(digits);
+	  return;
+  }
+  */
+
+  for(int d_index = capacity - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
+	digits[d_index] = 0;
+  }
+
+  digits[rs_digits] = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
+}
+
 __device__ __host__ inline void mpz_addeq(mpz_t *op1, mpz_t *op2) {
 
   /* If both are negative, treate them as positive and negate the result */
@@ -567,6 +644,64 @@ __device__ __host__ inline void mpz_bit_lshift(mpz_t *mpz) {
 
 __device__ __host__ inline void mpz_bit_rshift(mpz_t *mpz, int n_bits) {
   for(int i=0;i<n_bits;i++) bits_rshift(mpz->digits, mpz->capacity);
+}
+
+__device__ __host__ inline void mpz_bitwise_rshift_eq(mpz_t *mpz, int n_bits) {//changes
+  digit_t *digits = mpz->digits;
+  unsigned capacity = mpz->capacity;
+
+  int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
+  int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
+
+  /*
+  if(rs_digits >= capacity - 1){//this will not happen in the rsa, but in the general case should be added.
+  	  digit_t first_digit = digits[capacity - 1];
+	  digits_set_zero(digits);
+	  digits[0] = first_digit >> (rs_digits - capacity + 1) * LOG2_DIGIT_BASE + rs_remainder;
+	  return;
+  }
+  */
+
+  for(int d_index = 0; d_index < capacity - 1 - rs_digits; d_index++) {//constant time for specific rl
+	digits[d_index] = ( digits[d_index + rs_digits] >> rs_remainder ) | ( digits[d_index + rs_digits + 1] << ( LOG2_DIGIT_BASE - rs_remainder ) );
+  }
+
+  digits[capacity - 1 - rs_digits] = digits[capacity - 1] >> rs_remainder;
+
+  for(int d_index = capacity - rs_digits; d_index <= capacity - 1; d_index++) {//constant time for specific rl
+  	digits[d_index] = 0;
+  }
+}
+
+__device__ __host__ inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int n_bits) {//changes
+  digit_t *digits = src->digits;
+  unsigned capacity = src->capacity;
+
+  int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
+  int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
+
+  /*
+  if(rs_digits >= capacity - 1){//this will not happen in the rsa, but in the general case should be added.
+  	  digit_t first_digit = digits[capacity - 1];
+	  digits_set_zero(digits);
+	  digits[0] = first_digit >> (rs_digits - capacity + 1) * LOG2_DIGIT_BASE + rs_remainder;
+	  return;
+  }
+  */
+
+  for(int d_index = 0; d_index < capacity - 1 - rs_digits; d_index++) {//constant time for specific rl
+	  dst->digits[d_index] = ( digits[d_index + rs_digits] >> rs_remainder ) | ( digits[d_index + rs_digits + 1] << ( LOG2_DIGIT_BASE - rs_remainder ) );
+  }
+
+  dst->digits[capacity - 1 - rs_digits] = digits[capacity - 1] >> rs_remainder;
+
+  for(int d_index = capacity - rs_digits; d_index <= capacity - 1; d_index++) {//constant time for specific rl
+	  dst->digits[d_index] = 0;
+  }
+}
+
+__device__ __host__ inline digit_t mpz_get_last_digit(mpz_t *mpz) {//changes
+	return mpz->digits[0];
 }
 
 __device__ __host__ inline int mpz_is_zero(mpz_t *mpz) {

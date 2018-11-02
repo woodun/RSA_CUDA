@@ -259,6 +259,11 @@ tmp3 = REDC(R,n,N_,tmp2,L)
 # print(R, bits(R), N_, a, am, b, bm, c, cm)
 # print(tmp1, tmp2, tmp3)
 
+amx = toMont(a,R%n,n)
+bmx = toMont(b,R%n,n)
+
+print(amx, am)
+print(bmx, bm)
 
 
 print("Exponentation with Montgomery multiplication:")
@@ -278,7 +283,7 @@ a = -4095
 
 print(a & 4095)
 
-print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R):%s, hex(R2):%s, bits(e):%s, bits(d):%s, L:%d" % (hex(n), hex(N_), hex(R), hex(R2), bits(e), bits(d), L))
+print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R):%s, hex(R2):%s, hex(RMOD):%s, bits(e):%s, bits(d):%s, L:%d" % (hex(n), hex(N_), hex(R), hex(R2), hex(R - 1), bits(e), bits(d), L))
 
 exit()
 
