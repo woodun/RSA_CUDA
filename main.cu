@@ -109,11 +109,11 @@ int main (int argc, char *argv[])
 
         if( d_input[e_bitsLength - 1 - d_iterator] == '1'){
             dBits[d_iterator] = 1;
-            printf("1");
+            //printf("1");
         }
         else{
             dBits[d_iterator] = 0;
-            printf("0");
+           //printf("0");
         }
         d_iterator--;
 	}
