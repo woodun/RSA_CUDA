@@ -62,8 +62,16 @@ int main (int argc, char *argv[])
 	//	mpz_set(&myMes_h[i], &mes1);
 	//}
 
-	//char test_str[1024];
-	//printf("%s\n", mpz_get_str(&h_n, test_str, 1024));
+	char test_str3[1024];
+	printf("%s\n", mpz_get_str(&h_n, test_str3, 1024));
+	char test_str4[1024];
+	printf("%s\n", mpz_get_str(&h_n_, test_str4, 1024));
+	char test_str5[1024];
+	printf("%s\n", mpz_get_str(&h_r2, test_str5, 1024));
+	char test_str6[1024];
+	printf("%s\n", mpz_get_str(&myMes_h[0], test_str6, 1024));
+	char test_str7[1024];
+	printf("%s\n", mpz_get_str(&myMes_h[1], test_str7, 1024));
 	//exit(0);
 
 	mpz_t *myMes_d;
