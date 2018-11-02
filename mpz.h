@@ -578,7 +578,7 @@ __device__ __host__ inline int mpz_gte(mpz_t *a, mpz_t *b) {
  * @warning If buf is NULL, the string is dynamically allocated and must
  * therefore be freed by the user.
  */
-__device__ __host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize) {
+__host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize) {
   int print_zeroes = 0; // don't print leading 0s
   int i;
   int str_index = 0;
@@ -613,6 +613,33 @@ __device__ __host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize)
   }
 
   return str;
+}
+
+__device__ inline void mpz_print_str_device(mpz_t *mpz) {//changes
+  int print_zeroes = 0; // don't print leading 0s
+
+  if (mpz_is_negative(mpz)) {
+	  printf("-");
+  }
+
+  for (int i = mpz->capacity - 1; i >= 0; i--) {
+    unsigned digit = mpz->digits[i];
+
+    if (digit != 0 || print_zeroes) {
+      if (!print_zeroes) {
+    	  printf("%08x", digit);
+      }
+      else {
+    	  printf("%08x", digit);
+      }
+      print_zeroes = 1;
+    }
+  }
+  /* the number is zero */
+  if (print_zeroes == 0) {
+	  printf("0");
+  }
+  printf("\n");
 }
 
 __host__ inline void mpz_print(mpz_t *mpz) {
