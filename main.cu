@@ -34,15 +34,15 @@ int main (int argc, char *argv[])
 
 	///////get n
 	char n_input[] = "38f6e8cfba55dd0e47";
-	mpz_set_str_host(h_n, n_input);
+	mpz_set_str_host(&h_n, n_input);
 	
 	///////get n_
 	char n__input[] = "2e8457440e0d93c489";
-	mpz_set_str_host(h_n_, n__input);
+	mpz_set_str_host(&h_n_, n__input);
 
 	///////get r2
 	char r2_input[] = "3709d17d8f8686609f";
-	mpz_set_str_host(h_r2, r2_input);
+	mpz_set_str_host(&h_r2, r2_input);
 
 	///////get Messages
 	int mesSize = sizeof(mpz_t) * inputControl;
@@ -50,28 +50,17 @@ int main (int argc, char *argv[])
 	myMes_h = (mpz_t*) malloc (mesSize);
 
 	///////get Message1
-	mpz_t *mes1;
-	mes1 = (mpz_t*) malloc (sizeof(mpz_t));
-	mpz_init(mes1);
-
 	char mes1_input[] = "12345"; //input from pair storage
-	mpz_set_str_host(mes1, mes1_input);
-	for (int i=0; i<1; i++){
-		mpz_init(&myMes_h[i]);
-		mpz_set(&myMes_h[i], &mes1);
-	}
+	mpz_set_str_host(&myMes_h[0], mes1_input);
 
 	///////get Message2
-	mpz_t *mes2;
-	mes2 = (mpz_t*) malloc (sizeof(mpz_t));
-	mpz_init(mes2);
-
 	char mes2_input[] = "67890"; //input from pair storage
-	mpz_set_str_host(mes2, mes2_input);
-	for (int i=1; i<inputControl; i++){
-		mpz_init(&myMes_h[i]);
-		mpz_set(&myMes_h[i], &mes2);
-	}
+	mpz_set_str_host(&myMes_h[1], mes2_input);
+
+	//for (int i=0; i<1; i++){
+	//	mpz_init(&myMes_h[i]);
+	//	mpz_set(&myMes_h[i], &mes1);
+	//}
 
 	//char* mpz_get_str(mpz_t *mpz, char *str, int bufsize)
 
@@ -134,10 +123,6 @@ int main (int argc, char *argv[])
 	cudaMalloc((void **) &d_t, mesSize);
 	cudaMalloc((void **) &_x2_mpz, mesSize);
 	cudaMalloc((void **) &_x1_mpz, mesSize);
-
-	cudaMemcpy(d_n, h_n, sizeof(mpz_t), cudaMemcpyHostToDevice);
-	cudaMemcpy(d_n_, h_n_, sizeof(mpz_t), cudaMemcpyHostToDevice);
-	cudaMemcpy(d_r2, h_r2, sizeof(mpz_t), cudaMemcpyHostToDevice);
 
 	//init(mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, mpz_t* t){
 	init<<<1, inputControl>>>(_x1_mpz, _x2_mpz, tmp, tmp2, d_t);

@@ -99,7 +99,7 @@ __global__ void MontSQMLadder(mpz_t * mes, unsigned mes_size, mpz_t* _x1, mpz_t*
 		t2 = clock64();//end of necessary kernel instructions
 
 		if( j == 1){
-			clockTable[a] = t2-t1;
+			clockTable[iter] = t2-t1;
 		}
 	}
 }

@@ -624,8 +624,8 @@ __host__ inline void mpz_print(mpz_t *mpz) {
   printf("%s\n", str);
 }
 
-__host__ inline void mpz_set_bit(mpz_t *mpz, unsigned bit_offset,
-                                            unsigned bit) {
+__host__ __device__ inline void mpz_set_bit(mpz_t *mpz, unsigned bit_offset,
+                                            unsigned bit) {//changes
   digits_set_bit(mpz->digits, bit_offset, bit);
 
   if (MPZ_NEGATIVE == mpz->sign && bit == 0 &&
