@@ -37,11 +37,11 @@ int main (int argc, char *argv[])
 	mpz_set_str_host(&h_n, n_input);
 	
 	///////get n_
-	char n__input[] = "0000000038f6e8cfba55dd0e47";
+	char n__input[] = "000000002e8457440e0d93c489";
 	mpz_set_str_host(&h_n_, n__input);
 
 	///////get r2
-	char r2_input[] = "0000000038f6e8cfba55dd0e47";
+	char r2_input[] = "000000003709d17d8f8686609f";
 	mpz_set_str_host(&h_r2, r2_input);
 
 	///////get Messages
@@ -50,11 +50,11 @@ int main (int argc, char *argv[])
 	myMes_h = (mpz_t*) malloc (mesSize);
 
 	///////get Message1
-	char mes1_input[] = "00012345"; //input from pair storage
+	char mes1_input[] = "000012345"; //input from pair storage
 	mpz_set_str_host(&myMes_h[0], mes1_input);
 
 	///////get Message2
-	char mes2_input[] = "00067890"; //input from pair storage
+	char mes2_input[] = "000067890"; //input from pair storage
 	mpz_set_str_host(&myMes_h[1], mes2_input);
 
 	//for (int i=0; i<1; i++){
@@ -62,6 +62,7 @@ int main (int argc, char *argv[])
 	//	mpz_set(&myMes_h[i], &mes1);
 	//}
 
+	//debug
 	char test_str3[1024];
 	printf("%s\n", mpz_get_str(&h_n, test_str3, 1024));
 	char test_str4[1024];

@@ -283,18 +283,17 @@ print (FindNoDiv (10, n, d, 52))
 
 #print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R):%s, hex(R2):%s, hex(RMOD):%s, bits(e):%s, bits(d):%s, L:%d" % (hex(n), hex(N_), hex(R), hex(R2), hex(R - 1), bits(e), bits(d), L))
 
-
 hex_n = hex(n)[2:]
 padding = 8 - (len(hex_n) % 8);
 for i in range(padding):
 	hex_n = "0" + hex_n;
 	
-hex_N_ = hex(n)[2:]
+hex_N_ = hex(N_)[2:]
 padding = 8 - (len(hex_n) % 8);
 for i in range(padding):
 	hex_N_ = "0" + hex_N_;
 	
-hex_R2 = hex(n)[2:]
+hex_R2 = hex(R2)[2:]
 padding = 8 - (len(hex_n) % 8);
 for i in range(padding):
 	hex_R2 = "0" + hex_R2;
