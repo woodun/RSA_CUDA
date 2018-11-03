@@ -62,11 +62,11 @@ int main (int argc, char *argv[])
 	char mes2_input[] = "00000000000987654321"; //input from pair storage
 	mpz_set_str_host(&myMes_h[1], mes2_input);
 
-	//debug
-	char test_str[1024];
-	printf("%s\n", mpz_get_str(&h_n, test_str, 1024));
-	printf("%s\n", mpz_get_str(&h_n_, test_str, 1024));
-	printf("%s\n", mpz_get_str(&h_r2, test_str, 1024));
+//	//debug
+//	char test_str[1024];
+//	printf("%s\n", mpz_get_str(&h_n, test_str, 1024));
+//	printf("%s\n", mpz_get_str(&h_n_, test_str, 1024));
+//	printf("%s\n", mpz_get_str(&h_r2, test_str, 1024));
 
 	mpz_t *myMes_d;
 	cudaMalloc((mpz_t **) &myMes_d, mesSize);
@@ -135,30 +135,30 @@ int main (int argc, char *argv[])
 	init<<<1, inputControl>>>(_x1_mpz, _x2_mpz, tmp, tmp2, d_t);
 	cudaDeviceSynchronize();
 
-	printf("x1: %s\n", mpz_get_str(&myMes_h[0], test_str, 1024));
-	printf("x2: %s\n", mpz_get_str(&myMes_h[1], test_str, 1024));
-
-	MontSQMLadder<<<1, inputControl>>>(myMes_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
-	cudaDeviceSynchronize();
-
-	cudaMemcpy(myMes_d, _x1_mpz, mesSize, cudaMemcpyDeviceToDevice);
-	cudaMemcpy(myMes_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
-
-	printf("x1: %s\n", mpz_get_str(&myMes_h[0], test_str, 1024));
-	printf("x2: %s\n", mpz_get_str(&myMes_h[1], test_str, 1024));
+//	printf("x1: %s\n", mpz_get_str(&myMes_h[0], test_str, 1024));
+//	printf("x2: %s\n", mpz_get_str(&myMes_h[1], test_str, 1024));
+//
+//	MontSQMLadder<<<1, inputControl>>>(myMes_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+//	cudaDeviceSynchronize();
+//
+//	cudaMemcpy(myMes_d, _x1_mpz, mesSize, cudaMemcpyDeviceToDevice);
+//	cudaMemcpy(myMes_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
+//
+//	printf("x1: %s\n", mpz_get_str(&myMes_h[0], test_str, 1024));
+//	printf("x2: %s\n", mpz_get_str(&myMes_h[1], test_str, 1024));
 
 	MontSQMLadder<<<1, inputControl>>>(myMes_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 
-	cudaMemcpy(myMes_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
-
-	printf("x1: %s\n", mpz_get_str(&myMes_h[0], test_str, 1024));
-	printf("x2: %s\n", mpz_get_str(&myMes_h[1], test_str, 1024));
+//	cudaMemcpy(myMes_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
+//
+//	printf("x1: %s\n", mpz_get_str(&myMes_h[0], test_str, 1024));
+//	printf("x2: %s\n", mpz_get_str(&myMes_h[1], test_str, 1024));
 
 	cudaMemcpy(clockTable_h, clockTable_d, 10000*sizeof(long long int), cudaMemcpyDeviceToHost);
 
 	FILE *fp= fopen("oneCurve_allDeviant.txt", "w");
-	for (int q = 0; q<10000; q++){
+	for (int q = 0; q < 10000; q++){
 		fprintf(fp, "%lld\n", clockTable_h[q]);
 	}
 	fclose(fp);
