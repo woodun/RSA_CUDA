@@ -106,31 +106,20 @@ def MontSQMLadder(mes, e, n):
 	r2 = (r << l) % n #changes: more efficient
 	_x1 = REDC(rmod,n,n_,mes*r2,l) #changes: more efficient
 	_x2 = _x1 * _x1
-	_x2 = REDC(rmod,n,n_,_x2,l)
-	print(hex(_x1), hex(_x2));
+	_x2 = REDC(rmod,n,n_,_x2,l)	
 	e_b = bits(e)
 	for i in e_b[1:]:
 		if i == '0':
-			_x2 = _x1 * _x2
-			print(hex(_x1), hex(_x2), i);
-			_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
-			print(hex(_x1), hex(_x2), i);
-			_x1 = _x1 * _x1
-			print(hex(_x1), hex(_x2), i);
-			_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
-			print(hex(_x1), hex(_x2), i);
+			_x2 = _x1 * _x2			
+			_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient			
+			_x1 = _x1 * _x1			
+			_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient			
 		else:
-			_x1 = _x1 * _x2
-			print(hex(_x1), hex(_x2), i);
-			_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
-			print(hex(_x1), hex(_x2), i);
-			_x2 = _x2 * _x2
-			print(hex(_x1), hex(_x2), i);
-			_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
-			print(hex(_x1), hex(_x2), i);
-		print(hex(_x1), hex(_x2), i);
-	_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
-	print("debug: ", hex(_x1), hex(_x2));
+			_x1 = _x1 * _x2			
+			_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient			
+			_x2 = _x2 * _x2			
+			_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient			
+	_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient	
 	return _x1
 
 def CheckDivExp(mes,e,n,bit):
@@ -284,8 +273,8 @@ bmx = toMont(b,R%n,n)
 
 print("Exponentation with Montgomery multiplication Ladder:")
 c = MontSQMLadder(mes,e,n)
-# m2 = MontSQMLadder(c,d,n)
-# print(mes,c,m2)
+m2 = MontSQMLadder(c,d,n)
+print(mes,c,m2)
 
 # print(len(bits(d)), bits(d))
 # print(d)
