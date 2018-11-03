@@ -222,7 +222,7 @@ n = p*q
 phi = (p-1)*(q-1)
 n_lambda = phi // egcd(p-1, q-1)[0] #changes: more efficient
 print(phi, n_lambda)
-e = 11
+e = 5
 d = modinv(e, n_lambda) #changes: more efficient
 
 e_b = bits(e)
@@ -295,22 +295,14 @@ a = -4095
 print(a & 4095)
 
 
-hex_n = hex(n)[2:]
-padding = 8 - (len(hex_n) % 8);
-for i in range(padding):
-	hex_n = "0" + hex_n;
-	
-hex_N_ = hex(n)[2:]
-padding = 8 - (len(hex_n) % 8);
-for i in range(padding):
-	hex_N_ = "0" + hex_N_;
-	
-hex_R2 = hex(n)[2:]
-padding = 8 - (len(hex_n) % 8);
-for i in range(padding):
-	hex_R2 = "0" + hex_R2;
+def Padding8 (n): 
+	hex_n = hex(n)[2:]
+	padding = 8 - (len(hex_n) % 8);
+	for i in range(padding):
+		hex_n = "0" + hex_n;
+	return hex_n;
 
-print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R2):%s, bits(e):%s, bits(d):%s, L:%d" % (hex_n, hex_N_, hex_R2, bits(e), bits(d), L))
+print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R2):%s, bits(e):%s, bits(d):%s, L:%d" % (Padding8 (n), Padding8 (N_), Padding8 (R2), bits(e), bits(d), L))
 
 mes1 = 0x123456789
 mes2 = 0x987654321
