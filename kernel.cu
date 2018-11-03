@@ -56,7 +56,6 @@ __global__ void MontSQMLadder1(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _
 */
 
 __global__ void MontSQMLadder(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t) {
-	char test_str[1024];//debug
 
 	__shared__ digit_t s_index[32];
 
@@ -85,6 +84,14 @@ __global__ void MontSQMLadder(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _x
 		//_x2 = REDC(rmod,n,n_,_x2,l)
 		mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
+		if(j == 0){
+			printf("debug: ");
+			mpz_print_str_device(&_x1[j]);
+			printf(" ");
+			mpz_print_str_device(&_x2[j]);
+			printf("\n");
+		}
+
 		for(int i = eLength - 1; i >= 0; i--){
 
 			if(eBits[i] == 0){
@@ -110,6 +117,14 @@ __global__ void MontSQMLadder(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _x
 				mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
 			}
+
+			if(j == 0){
+				printf("debug: ");
+				mpz_print_str_device(&_x1[j]);
+				printf(" ");
+				mpz_print_str_device(&_x2[j]);
+				printf("\n");
+			}
 		}
 
 		//_x1 = REDC(rmod,n,n_,_x1,l)
@@ -122,6 +137,9 @@ __global__ void MontSQMLadder(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _x
 		if(j == 0){
 			printf("debug: ");
 			mpz_print_str_device(&_x1[j]);
+			printf(" ");
+			mpz_print_str_device(&_x2[j]);
+			printf("\n");
 		}
 
 		if( j == 1){

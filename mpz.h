@@ -627,7 +627,7 @@ __device__ inline void mpz_print_str_device(mpz_t *mpz) {//changes
 
     if (digit != 0 || print_zeroes) {
       if (!print_zeroes) {
-    	  printf("%08x", digit);
+    	  printf("0x%x", digit);
       }
       else {
     	  printf("%08x", digit);
@@ -639,7 +639,6 @@ __device__ inline void mpz_print_str_device(mpz_t *mpz) {//changes
   if (print_zeroes == 0) {
 	  printf("0");
   }
-  printf("\n");
 }
 
 __host__ inline void mpz_print(mpz_t *mpz) {
