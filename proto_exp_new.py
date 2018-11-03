@@ -122,7 +122,7 @@ def MontSQMLadder(mes, e, n):
 			_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
 		print(hex(_x1), hex(_x2));
 	_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
-	print(hex(_x1), hex(_x2));
+	print("debug: ", hex(_x1), hex(_x2));
 	return _x1
 
 def CheckDivExp(mes,e,n,bit):
@@ -224,7 +224,7 @@ n_b = bits(n)
 print(p,q,n,n_b,phi,e,e_b,d,d_b)
 
 #encrypt:
-mes = 12345
+mes = 0x123456789
 c = pow(mes, e, n)
 m1 = pow(c,d,n)
 print(mes,c,m1)
