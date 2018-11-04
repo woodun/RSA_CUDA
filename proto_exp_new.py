@@ -292,6 +292,9 @@ def Padding8 (n):
 	return hex_n;
 
 print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R2):%s, bits(e):%s, bits(d):%s, L:%d" % (Padding8 (n), Padding8 (N_), Padding8 (R2), bits(e), bits(d), L))
+print(len(bits(d)));
+print(len(bits(R)));
+print(len(bits(n)));
 
 mes1 = 0x123456789
 mes2 = 0x987654321
