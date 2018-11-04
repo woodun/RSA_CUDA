@@ -13,10 +13,6 @@
 #include "kernel.cu"
 #include <time.h>
 #include "mpz.h"
-#include <iostream>
-#include <sstream>
-#include <string>
-
 
 
 int main (int argc, char *argv[])
@@ -24,22 +20,20 @@ int main (int argc, char *argv[])
 
 	FILE *fp3= fopen(argv[1], "w");
 	fprintf(fp3, "%lld\n", 123);
-
 	fclose(fp3);
 
-	std::string line;
-	FILE *fp2= fopen(argv[2], "w");
+	FILE* fp2 = fopen(argv[2], "r");
+	if (fp2 == NULL)
+	    exit(EXIT_FAILURE);
 
-	while (std::getline(fp2, line))
-	{
-	    std::istringstream iss(line);
-	    int a;
-	    if (!(iss >> a)) { break; } // error
-	    printf("%s\n", line.c_str());
-	    printf("%d\n", a);
-	    printf("%x\n", a);
+	char* line = NULL;
+	size_t len = 0;
+	while ((getline(&line, &len, fp2)) != -1) {
+	    printf("%s\n", line);
 	}
 	fclose(fp2);
+	if (line)
+	    free(line);
 
 	exit(0);//./main asd.txt 1branchcombo0000.txt
 
