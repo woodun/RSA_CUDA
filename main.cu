@@ -13,6 +13,7 @@
 #include "kernel.cu"
 #include <time.h>
 #include "mpz.h"
+#include <iostream>
 #include <sstream>
 #include <string>
 
