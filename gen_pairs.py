@@ -108,7 +108,7 @@ def GenBranchCombo (num, mod, e, bit, a, b, c, d, f):
 			d1 = CheckDivExp(r1, e, mod, bit)
 			if d1[0][0] == a and d1[0][1] == b and d1[1][0] == c and d1[1][1] == d:
 				#print("%s, %s" % ( Padding8(r1), str(d1) ) )				
-				f.write(Padding8(r1))
+				f.write("%s\n" % Padding8(r1))
 				break
 
 random.seed(time.time())
@@ -120,8 +120,16 @@ n_lambda = phi // egcd(p-1, q-1)[0]
 e = 5
 d = modinv(e, n_lambda) #67 bits
 
-f= open("guru99.txt","w+")
+f= open("1branchcombo0000.txt","w+")
 GenBranchCombo( 10, n, d, 65, 0, 0, 0, 0, f)
+f.close()
+
+f= open("2branchcombo0000.txt","w+")
+GenBranchCombo( 10, n, d, 65, 0, 0, 0, 0, f)
+f.close()
+
+f= open("3branchcombo0100.txt","w+")
+GenBranchCombo( 10, n, d, 65, 0, 1, 0, 0, f)
 f.close()
 
 

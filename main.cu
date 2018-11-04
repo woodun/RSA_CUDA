@@ -13,10 +13,34 @@
 #include "kernel.cu"
 #include <time.h>
 #include "mpz.h"
+#include <sstream>
+#include <string>
+
 
 
 int main (int argc, char *argv[])
 {
+
+	FILE *fp= fopen(argv[1], "w");
+	fprintf(fp, "%lld\n", 123);
+
+	fclose(fp);
+
+	std::string line;
+	FILE *fp2= fopen(argv[2], "w");
+
+	while (std::getline(infile, line))
+	{
+	    std::istringstream iss(line);
+	    int a;
+	    if (!(iss >> a)) { break; } // error
+	    printf("%s\n", line.c_str());
+	    printf("%d\n", a);
+	}
+	fclose(fp2);
+
+	exit(0);
+
 	///////host memory
 	long long int *clockTable_h;
 	clockTable_h = (long long int*) malloc(10000 * sizeof(long long int));
@@ -25,7 +49,7 @@ int main (int argc, char *argv[])
 	mpz_t h_n_;
 	mpz_t h_r2;
 	int rl = 70;
-	unsigned pairs = 1;
+	unsigned pairs = 1002001;
 	unsigned inputControl = 2;
 	unsigned mes_number = pairs * inputControl;
 
@@ -125,7 +149,7 @@ int main (int argc, char *argv[])
 	mpz_t *d_t;
 	mpz_t *_x1_mpz;
 	mpz_t *_x2_mpz;
-	cudaMalloc((void **) &clockTable_d, 10000 * sizeof(long long int));
+	cudaMalloc((void **) &clockTable_d, pairs * sizeof(long long int));
 	cudaMalloc((void **) &tmp, varSize);
 	cudaMalloc((void **) &tmp2, varSize);
 	cudaMalloc((void **) &d_t, varSize);
@@ -155,10 +179,10 @@ int main (int argc, char *argv[])
 //	printf("x1: %s\n", mpz_get_str(&myMes_h[0], test_str, 1024));
 //	printf("x2: %s\n", mpz_get_str(&myMes_h[1], test_str, 1024));
 
-	cudaMemcpy(clockTable_h, clockTable_d, 10000*sizeof(long long int), cudaMemcpyDeviceToHost);
+	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 
-	FILE *fp= fopen("oneCurve_allDeviant.txt", "w");
-	for (int q = 0; q < 10000; q++){
+	FILE *fp= fopen(argv[1], "w");
+	for (int q = 0; q < pairs; q++){
 		fprintf(fp, "%lld\n", clockTable_h[q]);
 	}
 	fclose(fp);
