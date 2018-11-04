@@ -29,7 +29,7 @@ int main (int argc, char *argv[])
 	std::string line;
 	FILE *fp2= fopen(argv[2], "w");
 
-	while (std::getline(infile, line))
+	while (std::getline(fp2, line))
 	{
 	    std::istringstream iss(line);
 	    int a;
