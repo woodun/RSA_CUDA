@@ -30,6 +30,7 @@ int main (int argc, char *argv[])
 	size_t len = 0;
 	mpz_t test;
 	while ((getline(&line, &len, fp2)) != -1) {
+		printf("%s\n", line);
 		mpz_set_str_host(&test, line);
 		char test_str[1024];
 		printf("%s\n", mpz_get_str(&test, test_str, 1024));
