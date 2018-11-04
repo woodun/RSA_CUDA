@@ -18,10 +18,6 @@
 int main (int argc, char *argv[])
 {
 
-	FILE *fp3= fopen(argv[1], "w");
-	fprintf(fp3, "%lld\n", 123);
-	fclose(fp3);
-
 	FILE* fp2 = fopen(argv[2], "r");
 	if (fp2 == NULL)
 	    exit(EXIT_FAILURE);
@@ -29,6 +25,7 @@ int main (int argc, char *argv[])
 	char* line = NULL;
 	size_t len = 0;
 	mpz_t test;
+	mpz_init(&test);
 	while ((getline(&line, &len, fp2)) != -1) {
 		printf("%s\n", line);
 		mpz_set_str_host(&test, line);
