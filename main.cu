@@ -36,6 +36,7 @@ int main (int argc, char *argv[])
 	    if (!(iss >> a)) { break; } // error
 	    printf("%s\n", line.c_str());
 	    printf("%d\n", a);
+	    printf("%x\n", a);
 	}
 	fclose(fp2);
 
