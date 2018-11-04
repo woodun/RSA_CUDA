@@ -21,10 +21,10 @@
 int main (int argc, char *argv[])
 {
 
-	FILE *fp= fopen(argv[1], "w");
-	fprintf(fp, "%lld\n", 123);
+	FILE *fp3= fopen(argv[1], "w");
+	fprintf(fp3, "%lld\n", 123);
 
-	fclose(fp);
+	fclose(fp3);
 
 	std::string line;
 	FILE *fp2= fopen(argv[2], "w");
@@ -40,7 +40,7 @@ int main (int argc, char *argv[])
 	}
 	fclose(fp2);
 
-	exit(0);
+	exit(0);//./main asd.txt 1branchcombo0000.txt
 
 	///////host memory
 	long long int *clockTable_h;
