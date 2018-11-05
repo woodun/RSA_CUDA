@@ -29,8 +29,6 @@ int main (int argc, char *argv[]) {
 	long long unsigned samples = pairs * pairs;
 	unsigned thread_num = 2;
 
-	printf("debug1\n");
-	fflush(stdout);
 	///////host memory
 	long long int *clockTable_h;
 	clockTable_h = (long long int*) malloc(samples * sizeof(long long int));
@@ -56,8 +54,6 @@ int main (int argc, char *argv[]) {
 	char r2_input[] = "0000003709d17d8f8686609f";
 	mpz_set_str_host(&h_r2, r2_input);
 
-	printf("debug2\n");
-	fflush(stdout);
 	///////get Messages
 	long long unsigned mesSize = sizeof(mpz_t) * pairs;
 	printf("%llu %llu", pairs, mesSize);
@@ -71,9 +67,6 @@ int main (int argc, char *argv[]) {
 		mpz_init(&myMes2_h[i]);
 	}
 
-	printf("debug4\n");
-	fflush(stdout);
-
 	///////get Message1
 	char* line = NULL;
 	size_t len = 0;
@@ -84,16 +77,9 @@ int main (int argc, char *argv[]) {
 	    exit(EXIT_FAILURE);
 	}
 
-	printf("debug6\n");
-	fflush(stdout);
-
 	long long unsigned line_num = 0;
 	while ((getline(&line, &len, fp2)) != -1) {
-		printf("debug7\n");
-		fflush(stdout);
 		line[strcspn(line, "\n")] = 0;
-		printf("debug8\n");
-		fflush(stdout);
 		printf("%s\n", line);
 		fflush(stdout);
 		mpz_set_str_host(&myMes1_h[line_num], line);
@@ -106,9 +92,6 @@ int main (int argc, char *argv[]) {
 		}
 	}
 	fclose(fp2);
-
-	printf("debug5\n");
-	fflush(stdout);
 
 	///////get Message2
 	FILE* fp3 = fopen(argv[3], "r");//input from pair storage
@@ -130,9 +113,6 @@ int main (int argc, char *argv[]) {
 
 	if (line)
 	    free(line);
-
-	printf("debug3\n");
-	fflush(stdout);
 
 	exit(0);
 
@@ -219,8 +199,6 @@ int main (int argc, char *argv[]) {
 	cudaMalloc((void **) &_x2_mpz, varSize);
 	cudaMalloc((void **) &_x1_mpz, varSize);
 
-	printf("debug4\n");
-
 	init<<<1, thread_num>>>(_x1_mpz, _x2_mpz, tmp, tmp2, d_t);
 	cudaDeviceSynchronize();
 
@@ -239,7 +217,6 @@ int main (int argc, char *argv[]) {
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, myMes2_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 
-	printf("debug5\n");
 //	cudaMemcpy(myMes1_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
 //
 //	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
