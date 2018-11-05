@@ -95,7 +95,7 @@ def CalcDiv(bit0, bit1):
 	return list(map(di, bit0, bit1))
 
 def Padding8 (n): 
-	hex_n = hex(n)[2:]
+	hex_n = hex(n).rstrip("L").lstrip("0x")
 	print("%s\n" % hex_n)
 	padding = 8 - (len(hex_n) % 8);
 	for i in range(padding):
