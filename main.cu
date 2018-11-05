@@ -15,11 +15,17 @@
 #include "mpz.h"
 
 //L1 disabled. (nvcc -Xptxas -dlcm=cg --optimize 0 main.cu -o main)
-int main (int argc, char *argv[]) {//./main nodiv.txt 1branchcombo0000.txt 2branchcombo0000.txt
-	//./main div.txt 1branchcombo0000.txt 3branchcombo0100.txt
+int main (int argc, char *argv[]) {
+	//./main nodiv.txt 1branchcombo0000.txt 2branchcombo0000.txt 100
+	//./main div.txt 1branchcombo0000.txt 3branchcombo0100.txt 100
 
 	///////input control
-	unsigned pairs = 10;
+	if (argc < 4){
+		exit(EXIT_FAILURE);
+	}
+
+	long x = strtol(argv[4], NULL, 10);
+	long long unsigned pairs = x;
 	long long unsigned samples = pairs * pairs;
 	unsigned thread_num = 2;
 
@@ -66,8 +72,9 @@ int main (int argc, char *argv[]) {//./main nodiv.txt 1branchcombo0000.txt 2bran
 	//char test_str[1024];
 
 	FILE* fp2 = fopen(argv[2], "r");//input from pair storage
-	if (fp2 == NULL)
+	if (fp2 == NULL){
 	    exit(EXIT_FAILURE);
+	}
 
 	int line_num = 0;
 	while ((getline(&line, &len, fp2)) != -1) {
@@ -83,8 +90,9 @@ int main (int argc, char *argv[]) {//./main nodiv.txt 1branchcombo0000.txt 2bran
 
 	///////get Message2
 	FILE* fp3 = fopen(argv[3], "r");//input from pair storage
-	if (fp3 == NULL)
+	if (fp3 == NULL){
 	    exit(EXIT_FAILURE);
+	}
 
 	line_num = 0;
 	while ((getline(&line, &len, fp3)) != -1) {
@@ -103,12 +111,12 @@ int main (int argc, char *argv[]) {//./main nodiv.txt 1branchcombo0000.txt 2bran
 
 	///////get Message1
 	//char mes1_input[] = "00000000000123456789";
-	char mes1_input[] = "0000002a6975d3419d6adaaa";
+	//char mes1_input[] = "0000002a6975d3419d6adaaa";
 	//mpz_set_str_host(&myMes1_h[0], mes1_input); //input from string
 
 	///////get Message2
 	//char mes2_input[] = "00000000000987654321";
-	char mes2_input[] = "00000008c6d8166335bef22e";
+	//char mes2_input[] = "00000008c6d8166335bef22e";
 	//mpz_set_str_host(&myMes2_h[0], mes2_input); //input from string
 
 //	//debug
