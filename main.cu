@@ -84,15 +84,20 @@ int main (int argc, char *argv[]) {
 	}
 
 	printf("debug6\n");
+	fflush(stdout);
 
 	long long unsigned line_num = 0;
 	while ((getline(&line, &len, fp2)) != -1) {
 		printf("debug7\n");
+		fflush(stdout);
 		line[strcspn(line, "\n")] = 0;
 		printf("debug8\n");
+		fflush(stdout);
 		printf("%s\n", line);
+		fflush(stdout);
 		mpz_set_str_host(&myMes1_h[line_num], line);
 		printf("debug9\n");
+		fflush(stdout);
 		//printf("%s\n", mpz_get_str(&test, test_str, 1024));
 		line_num++;
 		if(line_num == pairs){
