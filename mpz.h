@@ -203,9 +203,6 @@ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//chang
   unsigned i;
   int is_zero;
 
-	printf("debug1\n");
-	fflush(stdout);
-
   for (i = 0; i < mpz->capacity; i++) mpz->digits[i] = 0;
 
   const int bufsize = 1024;
@@ -214,21 +211,13 @@ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//chang
 	printf("debug4\n");
 	fflush(stdout);
 
-  memcpy(buf, user_str, bufsize);
+  memcpy(buf, user_str, strlen(user_str));
 
 	printf("debug3\n");
 	fflush(stdout);
 
-
   buf[bufsize - 1] = (char) 0;
-
-	printf("debug5\n");
-	fflush(stdout);
-
   char *str = &buf[0];
-
-	printf("debug2\n");
-	fflush(stdout);
 
   /* Check if the provided number is negative */
   if (str[0] == '-') {

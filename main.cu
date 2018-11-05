@@ -85,7 +85,8 @@ int main (int argc, char *argv[]) {
 		mpz_set_str_host(&myMes1_h[line_num], line);
 		printf("debug9\n");
 		fflush(stdout);
-		//printf("%s\n", mpz_get_str(&test, test_str, 1024));
+		char test_str[1024];
+		printf("%s\n", mpz_get_str(&myMes1_h[line_num], test_str, 1024));
 		line_num++;
 		if(line_num == pairs){
 			break;
