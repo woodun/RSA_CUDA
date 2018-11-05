@@ -45,30 +45,20 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, unsigned pairs, mpz_t*
 
 	int k = blockIdx.x * blockDim.x + threadIdx.x;
 
-	printf("debug1");
-
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
 	for(unsigned iter1 = 0; iter1 < pairs; iter1++){
-
-		printf("debug2");
 
 		if(k == 0){
 			mpz_set(&_x1[k], &mes1[iter1]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 			s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 		}
 
-		printf("debug3");
-
 		for(unsigned iter2 = 0; iter2 < pairs; iter2++){
-
-			printf("debug4");
 
 			if(k == 1){
 				mpz_set(&_x1[k], &mes1[iter1]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 				s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 			}
-
-			printf("debug5");
 
 			t1 = clock64();//beginning of necessary instructions within the kernel
 
@@ -85,18 +75,14 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, unsigned pairs, mpz_t*
 			//_x2 = REDC(rmod,n,n_,_x2,l)
 			mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
-//			if(j == 0){
-//				mpz_print_str_device(&_x1[j]);
-//				printf(" ");
-//				mpz_print_str_device(&_x2[j]);
-//				printf("\n");
-//			}
-
-			printf("debug6");
+			if(j == 0){
+				mpz_print_str_device(&_x1[j]);
+				printf(" ");
+				mpz_print_str_device(&_x2[j]);
+				printf("\n");
+			}
 
 			for(int i = eLength - 2; i >= 0; i--){
-
-				printf("debug9");
 
 				if(eBits[i] == 0){
 					//x2 = _x1 * _x2
@@ -118,6 +104,14 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, unsigned pairs, mpz_t*
 					mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
 					//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
 					mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				}
+
+				if(j == 0){
+					printf("i: %d, ebit: %d\n", i, eBits[i]);
+					mpz_print_str_device(&_x1[j]);
+					printf(" ");
+					mpz_print_str_device(&_x2[j]);
+					printf("\n");
 				}
 			}
 
