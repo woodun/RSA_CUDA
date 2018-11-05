@@ -80,13 +80,7 @@ int main (int argc, char *argv[]) {
 	long long unsigned line_num = 0;
 	while ((getline(&line, &len, fp2)) != -1) {
 		line[strcspn(line, "\n")] = 0;
-		printf("%s\n", line);
-		fflush(stdout);
 		mpz_set_str_host(&myMes1_h[line_num], line);
-		printf("debug9\n");
-		fflush(stdout);
-		char test_str[1024];
-		printf("%s\n", mpz_get_str(&myMes1_h[line_num], test_str, 1024));
 		line_num++;
 		if(line_num == pairs){
 			break;
@@ -114,8 +108,6 @@ int main (int argc, char *argv[]) {
 
 	if (line)
 	    free(line);
-
-	exit(0);
 
 	///////get Message1
 	//char mes1_input[] = "00000000000123456789";

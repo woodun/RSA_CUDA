@@ -207,15 +207,7 @@ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//chang
 
   const int bufsize = 1024;
   char buf[bufsize];
-
-	printf("debug4\n");
-	fflush(stdout);
-
   memcpy(buf, user_str, strlen(user_str) + 1);
-
-	printf("debug3\n");
-	fflush(stdout);
-
   buf[bufsize - 1] = (char) 0;
   char *str = &buf[0];
 
