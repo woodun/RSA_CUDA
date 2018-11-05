@@ -45,20 +45,30 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, unsigned pairs, mpz_t*
 
 	int k = blockIdx.x * blockDim.x + threadIdx.x;
 
+	printf("debug1");
+
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
 	for(unsigned iter1 = 0; iter1 < pairs; iter1++){
+
+		printf("debug2");
 
 		if(k == 0){
 			mpz_set(&_x1[k], &mes1[iter1]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 			s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 		}
 
+		printf("debug3");
+
 		for(unsigned iter2 = 0; iter2 < pairs; iter2++){
+
+			printf("debug4");
 
 			if(k == 1){
 				mpz_set(&_x1[k], &mes1[iter1]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 				s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 			}
+
+			printf("debug5");
 
 			t1 = clock64();//beginning of necessary instructions within the kernel
 
