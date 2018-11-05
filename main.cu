@@ -14,7 +14,7 @@
 #include <time.h>
 #include "mpz.h"
 
-
+//L1 disabled. (nvcc -Xptxas -dlcm=cg --optimize 0 main.cu -o main)
 int main (int argc, char *argv[]) {//./main nodiv.txt 1branchcombo0000.txt 2branchcombo0000.txt
 	//./main div.txt 1branchcombo0000.txt 3branchcombo0100.txt
 

@@ -61,7 +61,7 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, unsigned pairs, mpz_t*
 
 	long long int t1, t2;
 
-	int combo_num = 0;
+	long long int combo_num = 0;
 
 	int k = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -95,12 +95,12 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, unsigned pairs, mpz_t*
 			//_x2 = REDC(rmod,n,n_,_x2,l)
 			mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
-			if(j == 0){
-				mpz_print_str_device(&_x1[j]);
-				printf(" ");
-				mpz_print_str_device(&_x2[j]);
-				printf("\n");
-			}
+//			if(j == 0){
+//				mpz_print_str_device(&_x1[j]);
+//				printf(" ");
+//				mpz_print_str_device(&_x2[j]);
+//				printf("\n");
+//			}
 
 			for(int i = eLength - 2; i >= 0; i--){
 				if(eBits[i] == 0){
