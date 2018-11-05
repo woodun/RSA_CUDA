@@ -87,7 +87,7 @@ int main (int argc, char *argv[]) {//./main nodiv.txt 1branchcombo0000.txt 2bran
 
 	line_num = 0;
 	while ((getline(&line, &len, fp3)) != -1) {
-		mpz_set_str_host(&&myMes2_h[line_num], line);
+		mpz_set_str_host(&myMes2_h[line_num], line);
 		//printf("%s\n", mpz_get_str(&test, test_str, 1024));
 		line_num++;
 		if(line_num == pairs){
