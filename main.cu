@@ -134,6 +134,8 @@ int main (int argc, char *argv[]) {
 	printf("debug3\n");
 	fflush(stdout);
 
+	exit(0);
+
 	///////get Message1
 	//char mes1_input[] = "00000000000123456789";
 	//char mes1_input[] = "0000002a6975d3419d6adaaa";
