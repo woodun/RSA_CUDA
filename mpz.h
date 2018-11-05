@@ -210,8 +210,21 @@ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//chang
 
   const int bufsize = 1024;
   char buf[bufsize];
+
+	printf("debug4\n");
+	fflush(stdout);
+
   memcpy(buf, user_str, bufsize);
+
+	printf("debug3\n");
+	fflush(stdout);
+
+
   buf[bufsize - 1] = (char) 0;
+
+	printf("debug5\n");
+	fflush(stdout);
+
   char *str = &buf[0];
 
 	printf("debug2\n");
@@ -230,9 +243,6 @@ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//chang
   num_digits = (len + char_per_digit - 1) / char_per_digit;
   CHECK_MEM(mpz, num_digits);
 
-	printf("debug3\n");
-	fflush(stdout);
-
   digits_set_zero(mpz->digits);
 
   is_zero = true;
@@ -247,9 +257,6 @@ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//chang
     /* parse the string backwards (little endian order) */
     mpz->digits[i] = d;
   }
-
-	printf("debug4\n");
-	fflush(stdout);
 
   /* Just in case the user gives us -0 as input */
   if (is_zero) mpz->sign = MPZ_NONNEGATIVE;
