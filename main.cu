@@ -154,7 +154,8 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(eBits_d, eBits, sizeof(int) * e_bitsLength, cudaMemcpyHostToDevice);
 
 	///////get d
-	char d_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
+	//char d_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
+	char d_input[] = "101";
 
 	int d_bitsLength = (int)strlen(d_input);
 
