@@ -95,6 +95,9 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, unsigned pairs, mpz_t*
 			printf("debug6");
 
 			for(int i = eLength - 2; i >= 0; i--){
+
+				printf("debug9");
+
 				if(eBits[i] == 0){
 					//x2 = _x1 * _x2
 					mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
