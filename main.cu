@@ -30,6 +30,7 @@ int main (int argc, char *argv[]) {
 	unsigned thread_num = 2;
 
 	printf("debug1\n");
+	fflush(stdout);
 	///////host memory
 	long long int *clockTable_h;
 	clockTable_h = (long long int*) malloc(samples * sizeof(long long int));
@@ -56,6 +57,7 @@ int main (int argc, char *argv[]) {
 	mpz_set_str_host(&h_r2, r2_input);
 
 	printf("debug2\n");
+	fflush(stdout);
 	///////get Messages
 	unsigned mesSize = sizeof(mpz_t) * pairs;
 	mpz_t *myMes1_h;
@@ -67,6 +69,9 @@ int main (int argc, char *argv[]) {
 		mpz_init(&myMes1_h[i]);
 		mpz_init(&myMes2_h[i]);
 	}
+
+	printf("debug4\n");
+	fflush(stdout);
 
 	///////get Message1
 	char* line = NULL;
@@ -90,6 +95,9 @@ int main (int argc, char *argv[]) {
 	}
 	fclose(fp2);
 
+	printf("debug5\n");
+	fflush(stdout);
+
 	///////get Message2
 	FILE* fp3 = fopen(argv[3], "r");//input from pair storage
 	if (fp3 == NULL){
@@ -112,6 +120,7 @@ int main (int argc, char *argv[]) {
 	    free(line);
 
 	printf("debug3\n");
+	fflush(stdout);
 
 	///////get Message1
 	//char mes1_input[] = "00000000000123456789";
