@@ -19,7 +19,7 @@ int main (int argc, char *argv[]) {//./main nodiv.txt 1branchcombo0000.txt 2bran
 	//./main div.txt 1branchcombo0000.txt 3branchcombo0100.txt
 
 	///////input control
-	unsigned pairs = 1001;
+	unsigned pairs = 10;
 	long long unsigned samples = pairs * pairs;
 	unsigned thread_num = 2;
 
