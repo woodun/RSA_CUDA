@@ -5,6 +5,6 @@
 #PBS -m a
 #PBS -M hwang07@email.wm.edu
 PROG=sh
-ARGS=launch.sh
+ARGS="launch.sh"
 cd $PBS_O_WORKDIR
 $PROG $ARGS
