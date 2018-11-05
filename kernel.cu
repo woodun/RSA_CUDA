@@ -135,6 +135,7 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, unsigned pairs, mpz_t*
 
 			if( j == 1){
 				clockTable[combo_num] = t2 - t1;
+				printf("%lld %lld %lld %lld", t2 - t1, t2, t1, clockTable[combo_num]);
 			}
 
 			combo_num++;
