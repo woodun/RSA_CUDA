@@ -90,6 +90,7 @@ int main (int argc, char *argv[]) {
 		printf("debug7\n");
 		line[strcspn(line, "\n")] = 0;
 		printf("debug8\n");
+		printf("%s\n", line);
 		mpz_set_str_host(&myMes1_h[line_num], line);
 		printf("debug9\n");
 		//printf("%s\n", mpz_get_str(&test, test_str, 1024));
