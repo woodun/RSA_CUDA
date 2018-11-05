@@ -96,6 +96,7 @@ def CalcDiv(bit0, bit1):
 
 def Padding8 (n): 
 	hex_n = hex(n)[2:]
+	print("%s\n" % hex_n)
 	padding = 8 - (len(hex_n) % 8);
 	for i in range(padding):
 		hex_n = "0" + hex_n;
@@ -107,7 +108,8 @@ def GenBranchCombo (num, mod, e, bit, a, b, c, d, f):
 			r1 = random.randint(2, mod)
 			d1 = CheckDivExp(r1, e, mod, bit)
 			if d1[0][0] == a and d1[0][1] == b and d1[1][0] == c and d1[1][1] == d:
-				#print("%s, %s" % ( Padding8(r1), str(d1) ) )				
+				#print("%s, %s" % ( Padding8(r1), str(d1) ) )	
+				print("%d\n" % r1)			
 				f.write("%s\n" % Padding8(r1))
 				break
 
@@ -121,15 +123,15 @@ e = 5
 d = modinv(e, n_lambda) #67 bits
 
 f= open("1branchcombo0000.txt","w+")
-GenBranchCombo( 1001, n, d, 65, 0, 0, 0, 0, f)
+GenBranchCombo( 1, n, d, 65, 0, 0, 0, 0, f)
 f.close()
 
 f= open("2branchcombo0000.txt","w+")
-GenBranchCombo( 1001, n, d, 65, 0, 0, 0, 0, f)
+GenBranchCombo( 1, n, d, 65, 0, 0, 0, 0, f)
 f.close()
 
 f= open("3branchcombo0100.txt","w+")
-GenBranchCombo( 1001, n, d, 65, 0, 1, 0, 0, f)
+GenBranchCombo( 1, n, d, 65, 0, 1, 0, 0, f)
 f.close()
 
 
