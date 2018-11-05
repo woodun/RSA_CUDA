@@ -203,6 +203,9 @@ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//chang
   unsigned i;
   int is_zero;
 
+	printf("debug1\n");
+	fflush(stdout);
+
   for (i = 0; i < mpz->capacity; i++) mpz->digits[i] = 0;
 
   const int bufsize = 1024;
@@ -210,6 +213,9 @@ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//chang
   memcpy(buf, user_str, bufsize);
   buf[bufsize - 1] = (char) 0;
   char *str = &buf[0];
+
+	printf("debug2\n");
+	fflush(stdout);
 
   /* Check if the provided number is negative */
   if (str[0] == '-') {
@@ -223,6 +229,9 @@ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//chang
   int char_per_digit = LOG2_DIGIT_BASE / 4;
   num_digits = (len + char_per_digit - 1) / char_per_digit;
   CHECK_MEM(mpz, num_digits);
+
+	printf("debug3\n");
+	fflush(stdout);
 
   digits_set_zero(mpz->digits);
 
@@ -238,6 +247,9 @@ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//chang
     /* parse the string backwards (little endian order) */
     mpz->digits[i] = d;
   }
+
+	printf("debug4\n");
+	fflush(stdout);
 
   /* Just in case the user gives us -0 as input */
   if (is_zero) mpz->sign = MPZ_NONNEGATIVE;
