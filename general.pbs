@@ -4,7 +4,7 @@
 #PBS -N RSA
 #PBS -m a
 #PBS -M hwang07@email.wm.edu
-PROG=sh
-ARGS="launch.sh > output.txt"
+PROG=./main
+ARGS=
 cd $PBS_O_WORKDIR
 $PROG $ARGS
