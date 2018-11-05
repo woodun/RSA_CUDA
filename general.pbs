@@ -4,7 +4,7 @@
 #PBS -N RSA
 #PBS -m a
 #PBS -M hwang07@email.wm.edu
-PROG=/stor1/hwang07/RSA_CUDA/mainscript
-ARGS=""
+PROG=sh
+ARGS="launch.sh"
 cd $PBS_O_WORKDIR
 $PROG $ARGS
