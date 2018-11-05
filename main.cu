@@ -60,6 +60,7 @@ int main (int argc, char *argv[]) {
 	fflush(stdout);
 	///////get Messages
 	long long unsigned mesSize = sizeof(mpz_t) * pairs;
+	printf("%llu %llu", pairs, mesSize);
 	mpz_t *myMes1_h;
 	myMes1_h = (mpz_t*) malloc (mesSize);
 	mpz_t *myMes2_h;
