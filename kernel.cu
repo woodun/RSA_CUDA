@@ -92,6 +92,8 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, unsigned pairs, mpz_t*
 //				printf("\n");
 //			}
 
+			printf("debug6");
+
 			for(int i = eLength - 2; i >= 0; i--){
 				if(eBits[i] == 0){
 					//x2 = _x1 * _x2
@@ -116,6 +118,8 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, unsigned pairs, mpz_t*
 				}
 			}
 
+			printf("debug7");
+
 			//_x1 = REDC(rmod,n,n_,_x1,l)
 			mpz_set( &_x1[j], REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j]) );
 
@@ -124,6 +128,8 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, unsigned pairs, mpz_t*
 			t2 = clock64();//end of necessary kernel instructions
 
 			printf("%lld", t2 );
+
+			printf("debug8");
 
 			if( j == 1){
 				clockTable[combo_num] = t2 - t1;
