@@ -55,75 +55,89 @@ __global__ void MontSQMLadder1(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _
 }
 */
 
-__global__ void MontSQMLadder(mpz_t * mes, unsigned pairs, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t) {
+__global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, unsigned pairs, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t) {
 
 	__shared__ digit_t s_index[32];
 
 	long long int t1, t2;
 
+	int combo_num = 0;
+
+	int k = blockIdx.x * blockDim.x + threadIdx.x;
+
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
-	for(unsigned iter = 0; iter < pairs; iter++){
+	for(unsigned iter1 = 0; iter1 < pairs; iter1++){
 
-		int k = blockIdx.x * blockDim.x + threadIdx.x;
-		mpz_set(&_x1[k], &mes[2 * iter + k]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
-
-		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
-
-		t1 = clock64();//beginning of necessary instructions within the kernel
-
-		mpz_t* n = &vn;
-		mpz_t* n_ = &vn_;
-		int j = blockIdx.x * blockDim.x + threadIdx.x;
-
-		//_x1 = REDC(rmod,n,n_,mes*r2,l)
-		mpz_mult(&tmp2[j], &_x1[j], &r2);
-		mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
-
-		//x2 = _x1 * _x1
-		mpz_mult(&tmp2[j], &_x1[j], &t[j]);
-		//_x2 = REDC(rmod,n,n_,_x2,l)
-		mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
-
-		if(j == 0){
-			mpz_print_str_device(&_x1[j]);
-			printf(" ");
-			mpz_print_str_device(&_x2[j]);
-			printf("\n");
+		if(k == 0){
+			mpz_set(&_x1[k], &mes1[iter1]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
+			s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 		}
 
-		for(int i = eLength - 2; i >= 0; i--){
-			if(eBits[i] == 0){
-				//x2 = _x1 * _x2
-				mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
-				//_x2 = REDC(rmod,n,n_,_x2,l)
-				mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
-				//_x1 = _x1 * _x1
-				mpz_set( &tmp[j], &_x1[j]);
-				mpz_mult(&tmp2[j], &_x1[j], &tmp[j]);
-				//_x1 = REDC(rmod,n,n_,_x1,l)
-				mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
-			} else {
-				//_x1 = _x1 * _x2
-				mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
-				//_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
-				mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
-				//_x2 = _x2 * _x2
-				mpz_set( &tmp[j], &_x2[j]);
-				mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
-				//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
-				mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+		for(unsigned iter2 = 0; iter2 < pairs; iter2++){
+
+			if(k == 1){
+				mpz_set(&_x1[k], &mes1[iter1]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
+				s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 			}
-		}
 
-		//_x1 = REDC(rmod,n,n_,_x1,l)
-		mpz_set( &_x1[j], REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j]) );
+			t1 = clock64();//beginning of necessary instructions within the kernel
 
-		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
+			mpz_t* n = &vn;
+			mpz_t* n_ = &vn_;
+			int j = blockIdx.x * blockDim.x + threadIdx.x;
 
-		t2 = clock64();//end of necessary kernel instructions
+			//_x1 = REDC(rmod,n,n_,mes*r2,l)
+			mpz_mult(&tmp2[j], &_x1[j], &r2);
+			mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
-		if( j == 1){
-			clockTable[iter] = t2-t1;
+			//x2 = _x1 * _x1
+			mpz_mult(&tmp2[j], &_x1[j], &t[j]);
+			//_x2 = REDC(rmod,n,n_,_x2,l)
+			mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+
+			if(j == 0){
+				mpz_print_str_device(&_x1[j]);
+				printf(" ");
+				mpz_print_str_device(&_x2[j]);
+				printf("\n");
+			}
+
+			for(int i = eLength - 2; i >= 0; i--){
+				if(eBits[i] == 0){
+					//x2 = _x1 * _x2
+					mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
+					//_x2 = REDC(rmod,n,n_,_x2,l)
+					mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+					//_x1 = _x1 * _x1
+					mpz_set( &tmp[j], &_x1[j]);
+					mpz_mult(&tmp2[j], &_x1[j], &tmp[j]);
+					//_x1 = REDC(rmod,n,n_,_x1,l)
+					mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				} else {
+					//_x1 = _x1 * _x2
+					mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
+					//_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
+					mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+					//_x2 = _x2 * _x2
+					mpz_set( &tmp[j], &_x2[j]);
+					mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
+					//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
+					mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				}
+			}
+
+			//_x1 = REDC(rmod,n,n_,_x1,l)
+			mpz_set( &_x1[j], REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j]) );
+
+			s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
+
+			t2 = clock64();//end of necessary kernel instructions
+
+			if( j == 1){
+				clockTable[combo_num] = t2 - t1;
+			}
+
+			combo_num++;
 		}
 	}
 }
