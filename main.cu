@@ -59,13 +59,13 @@ int main (int argc, char *argv[]) {
 	printf("debug2\n");
 	fflush(stdout);
 	///////get Messages
-	unsigned mesSize = sizeof(mpz_t) * pairs;
+	long long unsigned mesSize = sizeof(mpz_t) * pairs;
 	mpz_t *myMes1_h;
 	myMes1_h = (mpz_t*) malloc (mesSize);
 	mpz_t *myMes2_h;
 	myMes2_h = (mpz_t*) malloc (mesSize);
 
-	for(int i = 0; i < pairs; i++){
+	for(long long unsigned i = 0; i < pairs; i++){
 		mpz_init(&myMes1_h[i]);
 		mpz_init(&myMes2_h[i]);
 	}
