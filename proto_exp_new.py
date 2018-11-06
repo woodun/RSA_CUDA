@@ -314,6 +314,12 @@ mes2 = mes2 & 0b111111111
 print(hex(mes1), hex(mes2))
 print(bin(mes1), bin(mes2))
 
+
+x = ((1 , 0) , (1 , 0))
+y = ((0 , 1) , (0 , 0))
+
+print(CalcDiv(x, y))
+
 exit()
 
 d1 = CheckDivExp(1000,d,n,52)
@@ -323,7 +329,5 @@ print(d1,d2)
 print(FindDiv (10, n, d, 52))
 print()
 print(FindNoDiv (10, n, d, 52))
-
-
 
 

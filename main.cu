@@ -19,6 +19,8 @@ int main (int argc, char *argv[]) {
 	//./main nodiv.txt 1branchcombo0000.txt 2branchcombo0000.txt 100
 	//./main div.txt 1branchcombo0000.txt 3branchcombo0100.txt 100
 
+	//add time measurement?
+
 	///////input control
 	if (argc < 4){
 		exit(EXIT_FAILURE);

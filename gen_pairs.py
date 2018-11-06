@@ -89,6 +89,18 @@ def CheckDivExp(mes,e,n,bit):
 				_x2 = _x2 * _x2
 				_x2 = REDC(rmod,n,n_,_x2,l) 
 			c -= 1
+			
+def CheckDivExp_firstbit(mes,e,n,bit):
+	r = findR(n)[1] 
+	rmod = r - 1  	
+	l = findR(n)[0] 
+	n_ = - modinv(n,r) & rmod 
+	r2 = (r << l) % n 
+	d1 = CheckREDC(rmod,n,n_,mes*r2,l) 
+	_x1 = REDC(rmod,n,n_,mes*r2,l) 
+	_x2 = _x1 * _x1
+	d2 = CheckREDC(rmod,n,n_,_x2,l)
+	return d1, d2
 	
 def CalcDiv(bit0, bit1):
 	di = lambda p0, p1: abs(p0[0]-p1[0]) + abs(p0[1]-p1[1])
@@ -101,6 +113,13 @@ def Padding8 (n):
 	for i in range(padding):
 		hex_n = "0" + hex_n;
 	return hex_n;
+		
+def IsNoDiv (num, mod, e, bit, r1, r2):					
+		d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
+		if CalcDiv(d1,d2)[0] == CalcDiv(d1,d2)[1] == 0:				
+			return 1
+		else:
+			return 0
 
 def GenBranchCombo (num, mod, e, bit, a, b, c, d, f): 	
 	for i in range(num):
@@ -113,6 +132,43 @@ def GenBranchCombo (num, mod, e, bit, a, b, c, d, f):
 				f.write("%s\n" % Padding8(r1))
 				break
 
+def FindDiv (num, mod, e, bit): 
+	for i in range(num):
+		while(True):
+			r1, r2 = random.randint(2, mod), random.randint(2, mod)
+			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
+			if CalcDiv(d1,d2)[0] >= 1 and CalcDiv(d1,d2)[1] == 0:				
+				print ("%d, %d, %s, %s" % (r1, r2, str(d1), str(d2)))
+				break
+
+def FindNoDiv (num, mod, e, bit): 
+	for i in range(num):
+		while(True):
+			r1, r2 = random.randint(2, mod), random.randint(2, mod)
+			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
+			if CalcDiv(d1,d2)[0] == CalcDiv(d1,d2)[1] == 0:				
+				print ("%d, %d, %s, %s" % (r1, r2, str(d1), str(d2)))
+				break
+
+def FindDiv_ex (num, mod, e, bit): 
+	for i in range(num):
+		while(True):
+			r1, r2 = random.randint(2, mod), random.randint(2, mod)
+			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
+			if CalcDiv(d1,d2)[0] >= 1 and CalcDiv(d1,d2)[1] == 0:				
+				print ("%d, %d, %s, %s" % (r1, r2, str(d1), str(d2)))
+				break
+
+def FindNoDiv_ex (num, mod, e, bit): 
+	for i in range(num):
+		while(True):
+			r1, r2 = random.randint(2, mod), random.randint(2, mod)
+			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
+			if CalcDiv(d1,d2)[0] == CalcDiv(d1,d2)[1] == 0:				
+				print ("%d, %d, %s, %s" % (r1, r2, str(d1), str(d2)))
+				break
+
+
 random.seed(time.time())
 p = 32416189867
 q = 32416189909
@@ -122,6 +178,24 @@ n_lambda = phi // egcd(p-1, q-1)[0]
 e = 5
 d = modinv(e, n_lambda) #67 bits
 
+############ first bit
+f= open("1branchcombo0000_1.txt","w+")
+GenBranchCombo( 1001, n, e, 1, 0, 0, 0, 0, f)
+f.close()
+
+f= open("2branchcombo0000_1.txt","w+")
+GenBranchCombo( 1001, n, e, 1, 0, 0, 0, 0, f)
+f.close()
+
+f= open("3branchcombo0000_1.txt","w+")
+GenBranchCombo( 1001, n, e, 1, 0, 0, 0, 0, f)
+f.close()
+
+f= open("4branchcombo0100_1.txt","w+")
+GenBranchCombo( 1001, n, e, 1, 0, 1, 0, 0, f)
+f.close()
+
+############ second bit
 f= open("1branchcombo0000_0.txt","w+")
 GenBranchCombo( 1001, n, e, 0, 0, 0, 0, 0, f)
 f.close()
@@ -137,6 +211,9 @@ f.close()
 f= open("4branchcombo0100_0.txt","w+")
 GenBranchCombo( 1001, n, e, 0, 0, 1, 0, 0, f)
 f.close()
+
+
+
 
 
 
