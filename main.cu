@@ -79,6 +79,8 @@ int main (int argc, char *argv[]) {
 	    exit(EXIT_FAILURE);
 	}
 
+	printf("debug1\n");
+
 	long long unsigned line_num = 0;
 	while ((getline(&line, &len, fp2)) != -1) {
 		line[strcspn(line, "\n")] = 0;
@@ -90,6 +92,7 @@ int main (int argc, char *argv[]) {
 	}
 	fclose(fp2);
 
+	printf("debug2\n");
 	///////get Message2
 	FILE* fp3 = fopen(argv[3], "r");//input from pair storage
 	if (fp3 == NULL){
@@ -111,6 +114,7 @@ int main (int argc, char *argv[]) {
 	if (line)
 	    free(line);
 
+	printf("debug3\n");
 	///////get Message1
 	//char mes1_input[] = "00000000000123456789";
 	//char mes1_input[] = "0000002a6975d3419d6adaaa";
@@ -155,6 +159,8 @@ int main (int argc, char *argv[]) {
 	eBits[e_iterator] = 1;
 	cudaMemcpy(eBits_d, eBits, sizeof(int) * e_bitsLength, cudaMemcpyHostToDevice);
 
+
+
 	///////get d
 	//char d_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
 	char d_input[] = "101";
@@ -179,6 +185,7 @@ int main (int argc, char *argv[]) {
 	dBits[d_iterator] = 1;
 	cudaMemcpy(dBits_d, dBits, sizeof(int) * d_bitsLength, cudaMemcpyHostToDevice);
 
+	printf("debug4\n");
 	///////device memory
 	unsigned varSize = sizeof(mpz_t) * thread_num;
 
@@ -210,6 +217,8 @@ int main (int argc, char *argv[]) {
 //	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
 //	printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
 
+	printf("debug5\n");
+
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, myMes2_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 
@@ -225,6 +234,8 @@ int main (int argc, char *argv[]) {
 		fprintf(fp1, "%lld\n", clockTable_h[q]);
 	}
 	fclose(fp1);
+
+	printf("debug6\n");
 
 	////////free device
 	cudaFree(clockTable_d);
