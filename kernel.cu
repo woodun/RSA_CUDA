@@ -48,16 +48,12 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, long long unsigned pai
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
 	for(long long unsigned iter1 = 0; iter1 < pairs; iter1++){
 
-		printf("debug3\n");
-
 		if(k == 0){
 			mpz_set(&_x1[k], &mes1[iter1]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 			s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 		}
 
 		for(long long unsigned iter2 = 0; iter2 < pairs; iter2++){
-
-			printf("debug4\n");
 
 			if(k == 1){
 				mpz_set(&_x1[k], &mes1[iter1]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
@@ -70,32 +66,21 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, long long unsigned pai
 			mpz_t* n_ = &vn_;
 			int j = blockIdx.x * blockDim.x + threadIdx.x;
 
-			printf("debug6\n");
-
 			//_x1 = REDC(rmod,n,n_,mes*r2,l)
 			mpz_mult(&tmp2[j], &_x1[j], &r2);
-
-			printf("debug7\n");
-
 			mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
-
-			printf("debug5\n");
 
 			//x2 = _x1 * _x1
 			mpz_mult(&tmp2[j], &_x1[j], &t[j]);
 			//_x2 = REDC(rmod,n,n_,_x2,l)
 			mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
-
-
-			if(j == 0){
-				mpz_print_str_device(&_x1[j]);
-				printf(" ");
-				mpz_print_str_device(&_x2[j]);
-				printf("\n");
-			}
-
-			printf("debug1\n");
+//			if(j == 0){
+//				mpz_print_str_device(&_x1[j]);
+//				printf(" ");
+//				mpz_print_str_device(&_x2[j]);
+//				printf("\n");
+//			}
 
 			for(int i = eLength - 2; i >= 0; i--){
 
@@ -120,16 +105,7 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, long long unsigned pai
 					//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
 					mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 				}
-
-				if(j == 0){
-					mpz_print_str_device(&_x1[j]);
-					printf(" ");
-					mpz_print_str_device(&_x2[j]);
-					printf("\n");
-				}
 			}
-
-			printf("debug2\n");
 
 			//_x1 = REDC(rmod,n,n_,_x1,l)
 			mpz_set( &_x1[j], REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j]) );
