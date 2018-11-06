@@ -178,42 +178,77 @@ n_lambda = phi // egcd(p-1, q-1)[0]
 e = 5
 d = modinv(e, n_lambda) #67 bits
 
+# ############ first bit
+# f= open("1branchcombo0000_1.txt","w+")
+# GenBranchCombo( 1001, n, e, 1, 0, 0, 0, 0, f)
+# f.close()
+# 
+# f= open("2branchcombo0000_1.txt","w+")
+# GenBranchCombo( 1001, n, e, 1, 0, 0, 0, 0, f)
+# f.close()
+# 
+# f= open("3branchcombo0000_1.txt","w+")
+# GenBranchCombo( 1001, n, e, 1, 0, 0, 0, 0, f)
+# f.close()
+# 
+# f= open("4branchcombo0100_1.txt","w+")
+# GenBranchCombo( 1001, n, e, 1, 0, 1, 0, 0, f)
+# f.close()
+# 
+# ############ second bit
+# f= open("1branchcombo0000_0.txt","w+")
+# GenBranchCombo( 1001, n, e, 0, 0, 0, 0, 0, f)
+# f.close()
+# 
+# f= open("2branchcombo0000_0.txt","w+")
+# GenBranchCombo( 1001, n, e, 0, 0, 0, 0, 0, f)
+# f.close()
+# 
+# f= open("3branchcombo0000_0.txt","w+")
+# GenBranchCombo( 1001, n, e, 0, 0, 0, 0, 0, f)
+# f.close()
+# 
+# f= open("4branchcombo0100_0.txt","w+")
+# GenBranchCombo( 1001, n, e, 0, 0, 1, 0, 0, f)
+# f.close()
+
+
+
 ############ first bit
-f= open("1branchcombo0000_1.txt","w+")
-GenBranchCombo( 1001, n, e, 1, 0, 0, 0, 0, f)
+f= open("1branchcombo0000_65.txt","w+")
+GenBranchCombo( 1001, n, d, 65, 0, 0, 0, 0, f)
 f.close()
 
-f= open("2branchcombo0000_1.txt","w+")
-GenBranchCombo( 1001, n, e, 1, 0, 0, 0, 0, f)
+f= open("2branchcombo0000_65.txt","w+")
+GenBranchCombo( 1001, n, d, 65, 0, 0, 0, 0, f)
 f.close()
 
-f= open("3branchcombo0000_1.txt","w+")
-GenBranchCombo( 1001, n, e, 1, 0, 0, 0, 0, f)
+f= open("3branchcombo0000_65.txt","w+")
+GenBranchCombo( 1001, n, d, 65, 0, 0, 0, 0, f)
 f.close()
 
-f= open("4branchcombo0100_1.txt","w+")
-GenBranchCombo( 1001, n, e, 1, 0, 1, 0, 0, f)
+f= open("4branchcombo0100_65.txt","w+")
+GenBranchCombo( 1001, n, d, 65, 0, 1, 0, 0, f)
 f.close()
 
 ############ second bit
-f= open("1branchcombo0000_0.txt","w+")
-GenBranchCombo( 1001, n, e, 0, 0, 0, 0, 0, f)
+f= open("1branchcombo0000_64.txt","w+")
+GenBranchCombo( 1001, n, d, 64, 0, 0, 0, 0, f)
 f.close()
 
-f= open("2branchcombo0000_0.txt","w+")
-GenBranchCombo( 1001, n, e, 0, 0, 0, 0, 0, f)
+f= open("2branchcombo0000_64.txt","w+")
+GenBranchCombo( 1001, n, d, 64, 0, 0, 0, 0, f)
 f.close()
 
-f= open("3branchcombo0000_0.txt","w+")
-GenBranchCombo( 1001, n, e, 0, 0, 0, 0, 0, f)
+f= open("3branchcombo0000_64.txt","w+")
+GenBranchCombo( 1001, n, d, 64, 0, 0, 0, 0, f)
 f.close()
 
-f= open("4branchcombo0100_0.txt","w+")
-GenBranchCombo( 1001, n, e, 0, 0, 1, 0, 0, f)
+f= open("4branchcombo0100_64.txt","w+")
+GenBranchCombo( 1001, n, d, 64, 0, 1, 0, 0, f)
 f.close()
 
-
-
+# PTX, more samples, don't use combo, stop at divergent bit (shorter bits), making preceding bits non divergent, cahces, 32 threads.
 
 
 
