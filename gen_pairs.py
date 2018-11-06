@@ -130,8 +130,14 @@ f= open("2branchcombo0000_0.txt","w+")
 GenBranchCombo( 1001, n, e, 0, 0, 0, 0, 0, f)
 f.close()
 
-f= open("3branchcombo0100_0.txt","w+")
+f= open("3branchcombo0000_0.txt","w+")
+GenBranchCombo( 1001, n, e, 0, 0, 0, 0, 0, f)
+f.close()
+
+f= open("4branchcombo0100_0.txt","w+")
 GenBranchCombo( 1001, n, e, 0, 0, 1, 0, 0, f)
 f.close()
+
+
 
 
