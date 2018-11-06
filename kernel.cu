@@ -70,8 +70,13 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, long long unsigned pai
 			mpz_t* n_ = &vn_;
 			int j = blockIdx.x * blockDim.x + threadIdx.x;
 
+			printf("debug6\n");
+
 			//_x1 = REDC(rmod,n,n_,mes*r2,l)
 			mpz_mult(&tmp2[j], &_x1[j], &r2);
+
+			printf("debug7\n");
+
 			mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
 			printf("debug5\n");
