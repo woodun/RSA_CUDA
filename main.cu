@@ -14,12 +14,31 @@
 #include <time.h>
 #include "mpz.h"
 
+long long unsigned time_diff(timespec start, timespec end){
+	struct timespec temp;
+	if ((end.tv_nsec - start.tv_nsec) < 0){
+		temp.tv_sec = end.tv_sec - start.tv_sec - 1;
+		temp.tv_nsec = 1000000000 + end.tv_nsec - start.tv_nsec;
+	}
+	else{
+		temp.tv_sec = end.tv_sec - start.tv_sec;
+		temp.tv_nsec = end.tv_nsec - start.tv_nsec;
+	}
+
+	long long unsigned time_interval_ns = temp.tv_nsec;
+	long long unsigned time_interval_s = temp.tv_sec;
+	time_interval_s = time_interval_s * 1000000000;
+
+	return time_interval_s + time_interval_ns;
+}
+
 //L1 disabled. (nvcc -Xptxas -dlcm=cg --optimize 0 main.cu -o main)
 int main (int argc, char *argv[]) {
 	//./main nodiv.txt 1branchcombo0000.txt 2branchcombo0000.txt 100
 	//./main div.txt 1branchcombo0000.txt 3branchcombo0100.txt 100
 
-	//add time measurement?
+	struct timespec ts1;
+	clock_gettime(CLOCK_REALTIME, &ts1);
 
 	///////input control
 	if (argc < 4){
@@ -244,6 +263,12 @@ int main (int argc, char *argv[]) {
 	free(myMes2_h);
 	free(eBits);
 	free(dBits);
+
+	/////////////////////////////////time
+	struct timespec ts2;
+	clock_gettime(CLOCK_REALTIME, &ts2);
+
+	printf("%llu ", time_diff(ts1, ts2));
 
     return 0;
 }
