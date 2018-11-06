@@ -75,12 +75,14 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, long long unsigned pai
 			//_x2 = REDC(rmod,n,n_,_x2,l)
 			mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
-//			if(j == 0){
-//				mpz_print_str_device(&_x1[j]);
-//				printf(" ");
-//				mpz_print_str_device(&_x2[j]);
-//				printf("\n");
-//			}
+			if(j == 0){
+				mpz_print_str_device(&_x1[j]);
+				printf(" ");
+				mpz_print_str_device(&_x2[j]);
+				printf("\n");
+			}
+
+			printf("debug1\n");
 
 			for(int i = eLength - 2; i >= 0; i--){
 
@@ -105,7 +107,16 @@ __global__ void MontSQMLadder(mpz_t * mes1, mpz_t * mes2, long long unsigned pai
 					//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
 					mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 				}
+
+				if(j == 0){
+					mpz_print_str_device(&_x1[j]);
+					printf(" ");
+					mpz_print_str_device(&_x2[j]);
+					printf("\n");
+				}
 			}
+
+			printf("debug2\n");
 
 			//_x1 = REDC(rmod,n,n_,_x1,l)
 			mpz_set( &_x1[j], REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j]) );
