@@ -32,22 +32,22 @@ long long unsigned time_diff(timespec start, timespec end){
 	return time_interval_s + time_interval_ns;
 }
 
-//L1 disabled. (nvcc -Xptxas -dlcm=cg --optimize 0 main.cu -o main)
+//L1 disabled. (-Xptxas -dlcm=cg --optimize 0)
+//L1 enabled. (-keep -Xptxas -dlcm=ca --optimize 0)
 int main (int argc, char *argv[]) {
-	//./main nodiv.txt 1branchcombo0000.txt 2branchcombo0000.txt 100
-	//./main div.txt 1branchcombo0000.txt 3branchcombo0100.txt 100
 
 	struct timespec ts1;
 	clock_gettime(CLOCK_REALTIME, &ts1);
 
 	///////input control
-	if (argc < 4){
+	if (argc < 3){
 		exit(EXIT_FAILURE);
 	}
 
-	long x = strtol(argv[4], NULL, 10);
+	long x = strtol(argv[3], NULL, 10);
 	long long unsigned pairs = x;
 	unsigned thread_num = 2;
+	long long unsigned data_num = pairs * thread_num;
 
 	///////host memory
 	long long int *clockTable_h;
@@ -75,12 +75,12 @@ int main (int argc, char *argv[]) {
 	mpz_set_str_host(&h_r2, r2_input);
 
 	///////get Messages
-	long long unsigned mesSize = sizeof(mpz_t) * pairs * 2;
-//	printf("%llu %llu", pairs, mesSize);
+	long long unsigned mesSize = sizeof(mpz_t) * data_num;
+//	printf("%llu %llu", data_num, mesSize);
 	mpz_t *myMes1_h;
 	myMes1_h = (mpz_t*) malloc (mesSize);
 
-	for(long long unsigned i = 0; i < pairs; i++){
+	for(long long unsigned i = 0; i < data_num; i++){
 		mpz_init(&myMes1_h[i]);
 	}
 
@@ -98,7 +98,7 @@ int main (int argc, char *argv[]) {
 		line[strcspn(line, "\n")] = 0;
 		mpz_set_str_host(&myMes1_h[line_num], line);
 		line_num++;
-		if(line_num == pairs){
+		if(line_num == data_num){
 			break;
 		}
 	}

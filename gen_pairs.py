@@ -144,22 +144,6 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre):
 				_x2_2 = REDC(rmod, n, n_, _x2_2, l)
 			c -= 1
 			
-def CheckDivExp_firstbit(mes, n):
-	r = findR(n)[1] 
-	rmod = r - 1  	
-	l = findR(n)[0] 
-	n_ = - modinv(n,r) & rmod 
-	r2 = (r << l) % n 
-	d1 = CheckREDC(rmod,n,n_,mes*r2,l) 
-	_x1 = REDC(rmod,n,n_,mes*r2,l) 
-	_x2 = _x1 * _x1
-	d2 = CheckREDC(rmod,n,n_,_x2,l)
-	return d1, d2
-	
-def CalcDiv(bit0, bit1):
-	di = lambda p0, p1: abs(p0[0]-p1[0]) + abs(p0[1]-p1[1])
-	return list(map(di, bit0, bit1))
-
 def Padding8 (n): 
 	hex_n = hex(n).rstrip("L").lstrip("0x")
 	# print("%s\n" % hex_n)
@@ -167,72 +151,20 @@ def Padding8 (n):
 	for i in range(padding):
 		hex_n = "0" + hex_n;
 	return hex_n;
-		
-def GenBranchCombo (num, mod, e, bit, a, b, c, d, f): 	
-	for i in range(num):
-		while(True):
-			r1 = random.randint(2, mod)
-			d1 = CheckDivExp(r1, e, mod, bit)
-			if d1[0][0] == a and d1[0][1] == b and d1[1][0] == c and d1[1][1] == d:
-				# print("%s, %s" % ( Padding8(r1), str(d1) ) )	
-				# print("%d\n" % r1)			
-				f.write("%s\n" % Padding8(r1))
-				break
 			
-def IsNoDiv (num, mod, e, bit, r1, r2):					
-	d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
-	if CalcDiv(d1,d2)[0] == CalcDiv(d1,d2)[1] == 0:				
-		return 1
-	else:
-		return 0
-
-def FindDiv (num, mod, e, bit, f): 
-	for i in range(num):
-		while(True):
-			r1, r2 = random.randint(2, mod), random.randint(2, mod)
-			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
-			if CalcDiv(d1,d2)[0] >= 1 and CalcDiv(d1,d2)[1] == 0:				
-				f.write("%s\n" % Padding8(r1))
-				f.write("%s\n" % Padding8(r2))
-				break
-
-def FindNoDiv (num, mod, e, bit, f): 
-	for i in range(num):
-		while(True):
-			r1, r2 = random.randint(2, mod), random.randint(2, mod)
-			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
-			if CalcDiv(d1,d2)[0] == CalcDiv(d1,d2)[1] == 0:				
-				f.write("%s\n" % Padding8(r1))
-				f.write("%s\n" % Padding8(r2))
-				break
-
-def FindDiv_ex (num, mod, e, bit, f): 
-	elength = len(bits(e))
-	for i in range(num):
-		while(True):
-			r1, r2 = random.randint(2, mod), random.randint(2, mod)			
-			s1, s2 = CheckDivExp_firstbit (r1, mod), CheckDivExp_firstbit (r2, mod)
-			if s1[0] == s2[0] and s1[1] == s2[1]:	
-				all_nondiv = 1
-				for j in range(elength, bit):
-					if IsNoDiv (num, mod, e, bit, r1, r2)
-					
-				d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
-				if CalcDiv(d1,d2)[0] >= 1 and CalcDiv(d1,d2)[1] == 0:				
-					f.write("%s\n" % Padding8(r1))
-					f.write("%s\n" % Padding8(r2))
-					break
-
-def FindNoDiv_ex (num, mod, e, bit, f): 
-	for i in range(num):
-		while(True):
-			r1, r2 = random.randint(2, mod), random.randint(2, mod)
-			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
-			if CalcDiv(d1,d2)[0] == CalcDiv(d1,d2)[1] == 0:				
-				f.write("%s\n" % Padding8(r1))
-				f.write("%s\n" % Padding8(r2))
-				break
-
+def FindPairs (num, mod, e, bit, f1, f2, check_pre): 
+	div_num = num
+	nondiv_num = num
+	while(True):
+		r1, r2 = random.randint(2, mod), random.randint(2, mod)			
+		if CheckDivExp(r1, r2, e, mod, bit, check_pre) == 1 and div_num > 0:				
+			f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
+			div_num-=1
+		if CheckDivExp(r1, r2, e, mod, bit, check_pre) == 2 and nondiv_num > 0:				
+			f2.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
+			nondiv_num-=1
+		if div_num == 0 and nondiv_num == 0:
+			break
 
 random.seed(time.time())
 p = 32416189867
@@ -245,10 +177,29 @@ d = modinv(e, n_lambda) #67 bits
 
 
 # PTX, more samples, don't use combo, stop at divergent bit (shorter bits), making preceding bits non divergent, cahces, 32 threads.
+f1 = open("divpairs_nopre1.txt","w+")
+f2 = open("nondivpairs_nopre1.txt","w+")
+FindPairs (10000, n, e, 1, f1, f2, 0)
+f1.close()
+f2.close()
+ 
+f1 = open("divpairs_nopre0.txt","w+")
+f2 = open("nondivpairs_nopre0.txt","w+")
+FindPairs (10000, n, e, 0, f1, f2, 0)
+f1.close()
+f2.close()
 
-CheckDivExp_firstbit(123, 12345)
-
-
+f1 = open("divpairs_pre1.txt","w+")
+f2 = open("nondivpairs_pre1.txt","w+")
+FindPairs (10000, n, e, 1, f1, f2, 1)
+f1.close()
+f2.close()
+ 
+f1 = open("divpairs_pre0.txt","w+")
+f2 = open("nondivpairs_pre0.txt","w+")
+FindPairs (10000, n, e, 0, f1, f2, 1)
+f1.close()
+f2.close()
 
 
 
