@@ -71,7 +71,7 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre):
 	
 	for i in e_b[1:]:
 		
-		if check_pre == 1 and ( s1_1 != s1_2 or s2_1 != s2_2 ):
+		if check_pre == 1 and ( s1_1 != s1_2 or s2_1 != s2_2 ): #previous bits are all convergent no matter it is 0 or 1
 			return 0
 		
 		if bit == c:			
@@ -107,12 +107,15 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre):
 			_x2_2 = _x2_2 * _x2_2
 			d1_s2_2 = CheckREDC(rmod, n, n_, _x2_2, l) 
 			
-			if d0_s1_1 != d0_s1_2 or d0_s2_1 != d0_s2_2:
-				return 0 # not acceptable
-			elif d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2:
-				return 1 # found div
-			else:
-				return 2 # found non div			
+			if d0_s1_1 != d0_s1_2 or d0_s2_1 != d0_s2_2: #diverge for bit 0
+				if d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2: #diverge for bit 0 and diverge for bit 1
+					return 0
+				else: #diverge for bit 0 and converge for bit 1
+					return 4
+			elif d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2: #converge for bit 0, diverge for bit 1
+				return 1
+			else: #converge for bit 0 and converge for bit 1
+				return 2			
 		else:
 			if i == '0':
 				_x2_1 = _x1_1 * _x2_1
@@ -152,25 +155,30 @@ def Padding8 (n):
 		hex_n = "0" + hex_n;
 	return hex_n;
 			
-def FindPairs (num, mod, e, bit, f1, f2, check_pre): 
-	div_num = num
+def FindPairs (num, mod, e, bit, f1, f2, f3, check_pre): 
+	bit1_div_num = num
 	nondiv_num = num
+	bit0_div_num = num
 	while(True):
-		r1, r2 = random.randint(2, mod), random.randint(2, mod)			
-		if CheckDivExp(r1, r2, e, mod, bit, check_pre) == 1 and div_num > 0:				
+		r1, r2 = random.randint(2, mod), random.randint(2, mod)
+		div_con = CheckDivExp(r1, r2, e, mod, bit, check_pre)	
+		if div_con == 1 and bit1_div_num > 0:				
 			f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
-			div_num-=1
-		if CheckDivExp(r1, r2, e, mod, bit, check_pre) == 2 and nondiv_num > 0:				
+			bit1_div_num-=1
+		if div_con == 2 and nondiv_num > 0:				
 			f2.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
 			nondiv_num-=1
-		if div_num == 0 and nondiv_num == 0:
+		if div_con == 4 and bit0_div_num > 0:				
+			f3.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
+			bit0_div_num-=1
+		if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0:
 			break
 
 random.seed(time.time())
 p = 32416189867
 q = 32416189909
-n = p*q 
-phi = (p-1)*(q-1)
+n = p * q
+phi = (p - 1) * (q - 1)
 n_lambda = phi // egcd(p-1, q-1)[0] 
 e = 5
 d = modinv(e, n_lambda) #67 bits
@@ -195,11 +203,11 @@ d = modinv(e, n_lambda) #67 bits
 # f1.close()
 # f2.close()
 #  
-f1 = open("divpairs_pre0.txt","w+")
-f2 = open("nondivpairs_pre0.txt","w+")
-FindPairs (10000, n, e, 0, f1, f2, 1)
-f1.close()
-f2.close()
+# f1 = open("divpairs_pre0.txt","w+")
+# f2 = open("nondivpairs_pre0.txt","w+")
+# FindPairs (10000, n, e, 0, f1, f2, 1)
+# f1.close()
+# f2.close()
 
 
 # f1 = open("divpairs_nopre65.txt","w+")
@@ -220,12 +228,13 @@ f2.close()
 # f1.close()
 # f2.close()
  
-f1 = open("divpairs_pre64.txt","w+")
+f1 = open("bit1divpairs_pre64.txt","w+")
 f2 = open("nondivpairs_pre64.txt","w+")
-FindPairs (10000, n, d, 64, f1, f2, 1)
+f3 = open("bit0divpairs_pre64.txt","w+")
+FindPairs (10000, n, d, 64, f1, f2, f3, 1)
 f1.close()
 f2.close()
-
+f3.close()
 
 
 # ############ first bit
