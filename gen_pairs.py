@@ -43,54 +43,108 @@ def CheckREDC(R,N,N_,T,L):
 		return 1
 	else:
 		return 0
-
-def CheckDivExp(mes,e,n,bit):
+			
+def CheckDivExp(mes1, mes2, e, n, bit, check_pre):
 	r = findR(n)[1] 
 	rmod = r - 1  	
 	l = findR(n)[0] 
 	n_ = - modinv(n,r) & rmod 
 	r2 = (r << l) % n 
-	_x1 = REDC(rmod,n,n_,mes*r2,l) 
-	_x2 = _x1 * _x1
-	_x2 = REDC(rmod,n,n_,_x2,l)
+	
+	s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
+	s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)	
+	_x1_1 = REDC(rmod, n, n_, mes1 * r2, l) 
+	_x1_2 = REDC(rmod, n, n_, mes2 * r2, l)
+	
+	_x2_1 = _x1_1 * _x1_1
+	_x2_2 = _x1_2 * _x1_2
+	s2_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
+	s2_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)	
+	_x2_1 = REDC(rmod, n, n_, _x2_1, l)
+	_x2_2 = REDC(rmod, n, n_, _x2_2, l)
+	
 	e_b = bits(e)
 	if bit > len(e_b) - 2 :
 		print ("Wrong bit!")
 		exit(1)
 	c = len(e_b) - 2
+	
 	for i in e_b[1:]:
+		
+		if check_pre == 1 and ( s1_1 != s1_2 or s2_1 != s2_2 ):
+			return 0
+		
 		if bit == c:			
-			_x1_temp = _x1
-			_x2_temp = _x2
+			_x1_1_temp = _x1_1
+			_x2_1_temp = _x2_1
+			_x1_2_temp = _x1_2
+			_x2_2_temp = _x2_2
 
 			#simulate exp bit 0
-			_x2 = _x1 * _x2
-			d1_1 = CheckREDC(rmod,n,n_,_x2,l) 
-			_x1 = _x1 * _x1
-			d1_2 = CheckREDC(rmod,n,n_,_x1,l) 
+			_x2_1 = _x1_1 * _x2_1
+			d0_s1_1 = CheckREDC(rmod, n, n_, _x2_1, l) 
+			_x1_1 = _x1_1 * _x1_1
+			d0_s2_1 = CheckREDC(rmod, n, n_, _x1_1 ,l)
+			
+			_x2_2 = _x1_2 * _x2_2
+			d0_s1_2 = CheckREDC(rmod, n, n_, _x2_2, l) 
+			_x1_2 = _x1_2 * _x1_2
+			d0_s2_2 = CheckREDC(rmod, n, n_, _x1_2 ,l) 
 
 			#simulate exp bit 1
-			_x1 = _x1_temp
-			_x2 = _x2_temp
-			_x1 = _x1 * _x2
-			d0_1 = CheckREDC(rmod,n,n_,_x1,l) 
-			_x2 = _x2 * _x2
-			d0_2 = CheckREDC(rmod,n,n_,_x2,l) 
-			return ((d0_1, d0_2), (d1_1, d1_2))
-		else:			
-			if i == '0':
-				_x2 = _x1 * _x2
-				_x2 = REDC(rmod,n,n_,_x2,l) 
-				_x1 = _x1 * _x1
-				_x1 = REDC(rmod,n,n_,_x1,l) 
+			_x1_1 = _x1_1_temp
+			_x2_1 = _x2_1_temp
+			_x1_2 = _x1_2_temp
+			_x2_2 = _x2_2_temp
+			
+			_x1_1 = _x1_1 * _x2_1
+			d1_s1_1 = CheckREDC(rmod, n, n_, _x1_1, l) 
+			_x2_1 = _x2_1 * _x2_1
+			d1_s2_1 = CheckREDC(rmod, n, n_, _x2_1, l) 
+			
+			_x1_2 = _x1_2 * _x2_2
+			d1_s1_2 = CheckREDC(rmod, n, n_, _x1_2, l) 
+			_x2_2 = _x2_2 * _x2_2
+			d1_s2_2 = CheckREDC(rmod, n, n_, _x2_2, l) 
+			
+			if d0_s1_1 != d0_s1_2 or d0_s2_1 != d0_s2_2:
+				return 0 # not acceptable
+			elif d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2:
+				return 1 # found div
 			else:
-				_x1 = _x1 * _x2
-				_x1 = REDC(rmod,n,n_,_x1,l) 
-				_x2 = _x2 * _x2
-				_x2 = REDC(rmod,n,n_,_x2,l) 
+				return 2 # found non div			
+		else:
+			if i == '0':
+				_x2_1 = _x1_1 * _x2_1
+				s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+				_x2_1 = REDC(rmod, n, n_, _x2_1, l) 
+				_x1_1 = _x1_1 * _x1_1
+				s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
+				_x1_1 = REDC(rmod, n, n_, _x1_1, l) 
+				
+				_x2_2 = _x1_2 * _x2_2
+				s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+				_x2_2 = REDC(rmod, n, n_, _x2_2, l) 
+				_x1_2 = _x1_2 * _x1_2
+				s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
+				_x1_2 = REDC(rmod, n, n_, _x1_2, l) 				
+			else:
+				_x1_1 = _x1_1 * _x2_1
+				s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
+				_x1_1 = REDC(rmod, n, n_, _x1_1, l) 
+				_x2_1 = _x2_1 * _x2_1
+				s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+				_x2_1 = REDC(rmod, n, n_, _x2_1, l)
+				
+				_x1_2 = _x1_2 * _x2_2
+				s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
+				_x1_2 = REDC(rmod, n, n_, _x1_2, l) 
+				_x2_2 = _x2_2 * _x2_2
+				s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+				_x2_2 = REDC(rmod, n, n_, _x2_2, l)
 			c -= 1
 			
-def CheckDivExp_firstbit(mes,e,n,bit):
+def CheckDivExp_firstbit(mes, n):
 	r = findR(n)[1] 
 	rmod = r - 1  	
 	l = findR(n)[0] 
@@ -114,13 +168,6 @@ def Padding8 (n):
 		hex_n = "0" + hex_n;
 	return hex_n;
 		
-def IsNoDiv (num, mod, e, bit, r1, r2):					
-		d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
-		if CalcDiv(d1,d2)[0] == CalcDiv(d1,d2)[1] == 0:				
-			return 1
-		else:
-			return 0
-
 def GenBranchCombo (num, mod, e, bit, a, b, c, d, f): 	
 	for i in range(num):
 		while(True):
@@ -131,41 +178,59 @@ def GenBranchCombo (num, mod, e, bit, a, b, c, d, f):
 				# print("%d\n" % r1)			
 				f.write("%s\n" % Padding8(r1))
 				break
+			
+def IsNoDiv (num, mod, e, bit, r1, r2):					
+	d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
+	if CalcDiv(d1,d2)[0] == CalcDiv(d1,d2)[1] == 0:				
+		return 1
+	else:
+		return 0
 
-def FindDiv (num, mod, e, bit): 
+def FindDiv (num, mod, e, bit, f): 
 	for i in range(num):
 		while(True):
 			r1, r2 = random.randint(2, mod), random.randint(2, mod)
 			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
 			if CalcDiv(d1,d2)[0] >= 1 and CalcDiv(d1,d2)[1] == 0:				
-				print ("%d, %d, %s, %s" % (r1, r2, str(d1), str(d2)))
+				f.write("%s\n" % Padding8(r1))
+				f.write("%s\n" % Padding8(r2))
 				break
 
-def FindNoDiv (num, mod, e, bit): 
+def FindNoDiv (num, mod, e, bit, f): 
 	for i in range(num):
 		while(True):
 			r1, r2 = random.randint(2, mod), random.randint(2, mod)
 			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
 			if CalcDiv(d1,d2)[0] == CalcDiv(d1,d2)[1] == 0:				
-				print ("%d, %d, %s, %s" % (r1, r2, str(d1), str(d2)))
+				f.write("%s\n" % Padding8(r1))
+				f.write("%s\n" % Padding8(r2))
 				break
 
-def FindDiv_ex (num, mod, e, bit): 
+def FindDiv_ex (num, mod, e, bit, f): 
+	elength = len(bits(e))
 	for i in range(num):
 		while(True):
-			r1, r2 = random.randint(2, mod), random.randint(2, mod)
-			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
-			if CalcDiv(d1,d2)[0] >= 1 and CalcDiv(d1,d2)[1] == 0:				
-				print ("%d, %d, %s, %s" % (r1, r2, str(d1), str(d2)))
-				break
+			r1, r2 = random.randint(2, mod), random.randint(2, mod)			
+			s1, s2 = CheckDivExp_firstbit (r1, mod), CheckDivExp_firstbit (r2, mod)
+			if s1[0] == s2[0] and s1[1] == s2[1]:	
+				all_nondiv = 1
+				for j in range(elength, bit):
+					if IsNoDiv (num, mod, e, bit, r1, r2)
+					
+				d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
+				if CalcDiv(d1,d2)[0] >= 1 and CalcDiv(d1,d2)[1] == 0:				
+					f.write("%s\n" % Padding8(r1))
+					f.write("%s\n" % Padding8(r2))
+					break
 
-def FindNoDiv_ex (num, mod, e, bit): 
+def FindNoDiv_ex (num, mod, e, bit, f): 
 	for i in range(num):
 		while(True):
 			r1, r2 = random.randint(2, mod), random.randint(2, mod)
 			d1, d2 = CheckDivExp(r1, e, mod, bit), CheckDivExp(r2, e, mod, bit)
 			if CalcDiv(d1,d2)[0] == CalcDiv(d1,d2)[1] == 0:				
-				print ("%d, %d, %s, %s" % (r1, r2, str(d1), str(d2)))
+				f.write("%s\n" % Padding8(r1))
+				f.write("%s\n" % Padding8(r2))
 				break
 
 
@@ -177,6 +242,17 @@ phi = (p-1)*(q-1)
 n_lambda = phi // egcd(p-1, q-1)[0] 
 e = 5
 d = modinv(e, n_lambda) #67 bits
+
+
+# PTX, more samples, don't use combo, stop at divergent bit (shorter bits), making preceding bits non divergent, cahces, 32 threads.
+
+CheckDivExp_firstbit(123, 12345)
+
+
+
+
+
+
 
 # ############ first bit
 # f= open("1branchcombo0000_1.txt","w+")
@@ -215,40 +291,40 @@ d = modinv(e, n_lambda) #67 bits
 
 
 ############ first bit
-f= open("1branchcombo0000_65.txt","w+")
-GenBranchCombo( 1001, n, d, 65, 0, 0, 0, 0, f)
-f.close()
+# f= open("1branchcombo0000_65.txt","w+")
+# GenBranchCombo( 1001, n, d, 65, 0, 0, 0, 0, f)
+# f.close()
+# 
+# f= open("2branchcombo0000_65.txt","w+")
+# GenBranchCombo( 1001, n, d, 65, 0, 0, 0, 0, f)
+# f.close()
+# 
+# f= open("3branchcombo0000_65.txt","w+")
+# GenBranchCombo( 1001, n, d, 65, 0, 0, 0, 0, f)
+# f.close()
+# 
+# f= open("4branchcombo0100_65.txt","w+")
+# GenBranchCombo( 1001, n, d, 65, 0, 1, 0, 0, f)
+# f.close()
+# 
+# ############ second bit
+# f= open("1branchcombo0000_64.txt","w+")
+# GenBranchCombo( 1001, n, d, 64, 0, 0, 0, 0, f)
+# f.close()
+# 
+# f= open("2branchcombo0000_64.txt","w+")
+# GenBranchCombo( 1001, n, d, 64, 0, 0, 0, 0, f)
+# f.close()
+# 
+# f= open("3branchcombo0000_64.txt","w+")
+# GenBranchCombo( 1001, n, d, 64, 0, 0, 0, 0, f)
+# f.close()
+# 
+# f= open("4branchcombo0100_64.txt","w+")
+# GenBranchCombo( 1001, n, d, 64, 0, 1, 0, 0, f)
+# f.close()
 
-f= open("2branchcombo0000_65.txt","w+")
-GenBranchCombo( 1001, n, d, 65, 0, 0, 0, 0, f)
-f.close()
 
-f= open("3branchcombo0000_65.txt","w+")
-GenBranchCombo( 1001, n, d, 65, 0, 0, 0, 0, f)
-f.close()
-
-f= open("4branchcombo0100_65.txt","w+")
-GenBranchCombo( 1001, n, d, 65, 0, 1, 0, 0, f)
-f.close()
-
-############ second bit
-f= open("1branchcombo0000_64.txt","w+")
-GenBranchCombo( 1001, n, d, 64, 0, 0, 0, 0, f)
-f.close()
-
-f= open("2branchcombo0000_64.txt","w+")
-GenBranchCombo( 1001, n, d, 64, 0, 0, 0, 0, f)
-f.close()
-
-f= open("3branchcombo0000_64.txt","w+")
-GenBranchCombo( 1001, n, d, 64, 0, 0, 0, 0, f)
-f.close()
-
-f= open("4branchcombo0100_64.txt","w+")
-GenBranchCombo( 1001, n, d, 64, 0, 1, 0, 0, f)
-f.close()
-
-# PTX, more samples, don't use combo, stop at divergent bit (shorter bits), making preceding bits non divergent, cahces, 32 threads.
 
 
 

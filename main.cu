@@ -47,12 +47,11 @@ int main (int argc, char *argv[]) {
 
 	long x = strtol(argv[4], NULL, 10);
 	long long unsigned pairs = x;
-	long long unsigned samples = pairs * pairs;
 	unsigned thread_num = 2;
 
 	///////host memory
 	long long int *clockTable_h;
-	clockTable_h = (long long int*) malloc(samples * sizeof(long long int));
+	clockTable_h = (long long int*) malloc( pairs * sizeof(long long int));
 
 	mpz_t h_n;
 	mpz_t h_n_;
@@ -76,22 +75,18 @@ int main (int argc, char *argv[]) {
 	mpz_set_str_host(&h_r2, r2_input);
 
 	///////get Messages
-	long long unsigned mesSize = sizeof(mpz_t) * pairs;
+	long long unsigned mesSize = sizeof(mpz_t) * pairs * 2;
 //	printf("%llu %llu", pairs, mesSize);
 	mpz_t *myMes1_h;
 	myMes1_h = (mpz_t*) malloc (mesSize);
-	mpz_t *myMes2_h;
-	myMes2_h = (mpz_t*) malloc (mesSize);
 
 	for(long long unsigned i = 0; i < pairs; i++){
 		mpz_init(&myMes1_h[i]);
-		mpz_init(&myMes2_h[i]);
 	}
 
-	///////get Message1
+	///////get Message pairs
 	char* line = NULL;
 	size_t len = 0;
-	//char test_str[1024];
 
 	FILE* fp2 = fopen(argv[2], "r");//input from pair storage
 	if (fp2 == NULL){
@@ -99,7 +94,7 @@ int main (int argc, char *argv[]) {
 	}
 
 	long long unsigned line_num = 0;
-	while ((getline(&line, &len, fp2)) != -1) {
+	while ((getline(&line, &len, fp2)) != -1) { ///////////////////////todo : read  pairs
 		line[strcspn(line, "\n")] = 0;
 		mpz_set_str_host(&myMes1_h[line_num], line);
 		line_num++;
@@ -108,24 +103,6 @@ int main (int argc, char *argv[]) {
 		}
 	}
 	fclose(fp2);
-
-	///////get Message2
-	FILE* fp3 = fopen(argv[3], "r");//input from pair storage
-	if (fp3 == NULL){
-	    exit(EXIT_FAILURE);
-	}
-
-	line_num = 0;
-	while ((getline(&line, &len, fp3)) != -1) {
-		line[strcspn(line, "\n")] = 0;
-		mpz_set_str_host(&myMes2_h[line_num], line);
-		//printf("%s\n", mpz_get_str(&test, test_str, 1024));
-		line_num++;
-		if(line_num == pairs){
-			break;
-		}
-	}
-	fclose(fp3);
 
 	if (line)
 	    free(line);
@@ -138,7 +115,7 @@ int main (int argc, char *argv[]) {
 	///////get Message2
 	//char mes2_input[] = "00000000000987654321";
 	//char mes2_input[] = "00000008c6d8166335bef22e";
-	//mpz_set_str_host(&myMes2_h[0], mes2_input); //input from string
+	//mpz_set_str_host(&myMes1_h[1], mes2_input); //input from string
 
 //	//debug
 //	char test_str[1024];
@@ -149,9 +126,6 @@ int main (int argc, char *argv[]) {
 	mpz_t *myMes1_d;
 	cudaMalloc((mpz_t **) &myMes1_d, mesSize);
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);
-	mpz_t *myMes2_d;
-	cudaMalloc((mpz_t **) &myMes2_d, mesSize);
-	cudaMemcpy(myMes2_d, myMes2_h, mesSize, cudaMemcpyHostToDevice);
 
 	///////get e
 	char e_input[] = "101";
@@ -175,8 +149,8 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(eBits_d, eBits, sizeof(int) * e_bitsLength, cudaMemcpyHostToDevice);
 
 	///////get d
-	char d_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
-	//char d_input[] = "101";
+	//char d_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
+	char d_input[] = "101";
 
 	int d_bitsLength = (int)strlen(d_input);
 
@@ -207,7 +181,7 @@ int main (int argc, char *argv[]) {
 	mpz_t *d_t;
 	mpz_t *_x1_mpz;
 	mpz_t *_x2_mpz;
-	cudaMalloc((void **) &clockTable_d, samples * sizeof(long long int));
+	cudaMalloc((void **) &clockTable_d, pairs * sizeof(long long int));
 	cudaMalloc((void **) &tmp, varSize);
 	cudaMalloc((void **) &tmp2, varSize);
 	cudaMalloc((void **) &d_t, varSize);
@@ -220,7 +194,7 @@ int main (int argc, char *argv[]) {
 //	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
 //	printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
 //
-//	MontSQMLadder<<<1, thread_num>>>(myMes1_d, myMes2_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+//	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 //	cudaDeviceSynchronize();
 //
 //	cudaMemcpy(myMes1_d, _x1_mpz, mesSize, cudaMemcpyDeviceToDevice);
@@ -229,7 +203,7 @@ int main (int argc, char *argv[]) {
 //	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
 //	printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
 
-	MontSQMLadder<<<1, thread_num>>>(myMes1_d, myMes2_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 
 //	cudaMemcpy(myMes1_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
@@ -237,10 +211,10 @@ int main (int argc, char *argv[]) {
 //	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
 //	printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
 
-	cudaMemcpy(clockTable_h, clockTable_d, samples * sizeof(long long int), cudaMemcpyDeviceToHost);
+	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 
 	FILE *fp1= fopen(argv[1], "w");
-	for (int q = 0; q < samples; q++){
+	for (int q = 0; q < pairs; q++){
 		fprintf(fp1, "%lld\n", clockTable_h[q]);
 	}
 	fclose(fp1);
@@ -250,7 +224,6 @@ int main (int argc, char *argv[]) {
 	cudaFree(eBits_d);
 	cudaFree(dBits_d);
 	cudaFree(myMes1_d);
-	cudaFree(myMes2_d);
 	cudaFree(tmp);
 	cudaFree(tmp2);
 	cudaFree(d_t);
@@ -260,7 +233,6 @@ int main (int argc, char *argv[]) {
 	////////free host
 	free(clockTable_h);
 	free(myMes1_h);
-	free(myMes2_h);
 	free(eBits);
 	free(dBits);
 
