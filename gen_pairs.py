@@ -195,33 +195,33 @@ d = modinv(e, n_lambda) #67 bits
 # f1.close()
 # f2.close()
 #  
-# f1 = open("divpairs_pre0.txt","w+")
-# f2 = open("nondivpairs_pre0.txt","w+")
-# FindPairs (10000, n, e, 0, f1, f2, 1)
-# f1.close()
-# f2.close()
-
-
-f1 = open("divpairs_nopre65.txt","w+")
-f2 = open("nondivpairs_nopre65.txt","w+")
-FindPairs (10000, n, d, 65, f1, f2, 0)
-f1.close()
-f2.close()
- 
-f1 = open("divpairs_nopre64.txt","w+")
-f2 = open("nondivpairs_nopre64.txt","w+")
-FindPairs (10000, n, d, 64, f1, f2, 0)
-f1.close()
-f2.close()
-
-f1 = open("divpairs_pre65.txt","w+")
-f2 = open("nondivpairs_pre65.txt","w+")
-FindPairs (10000, n, d, 65, f1, f2, 1)
-f1.close()
-f2.close()
- 
 f1 = open("divpairs_pre0.txt","w+")
 f2 = open("nondivpairs_pre0.txt","w+")
+FindPairs (10000, n, e, 0, f1, f2, 1)
+f1.close()
+f2.close()
+
+
+# f1 = open("divpairs_nopre65.txt","w+")
+# f2 = open("nondivpairs_nopre65.txt","w+")
+# FindPairs (10000, n, d, 65, f1, f2, 0)
+# f1.close()
+# f2.close()
+#  
+# f1 = open("divpairs_nopre64.txt","w+")
+# f2 = open("nondivpairs_nopre64.txt","w+")
+# FindPairs (10000, n, d, 64, f1, f2, 0)
+# f1.close()
+# f2.close()
+# 
+# f1 = open("divpairs_pre65.txt","w+")
+# f2 = open("nondivpairs_pre65.txt","w+")
+# FindPairs (10000, n, d, 65, f1, f2, 1)
+# f1.close()
+# f2.close()
+ 
+f1 = open("divpairs_pre64.txt","w+")
+f2 = open("nondivpairs_pre64.txt","w+")
 FindPairs (10000, n, d, 64, f1, f2, 1)
 f1.close()
 f2.close()

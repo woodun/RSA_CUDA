@@ -19,20 +19,20 @@
 #./main div_pre0.txt divpairs_pre0.txt 10000 >> runtime.txt
 
 
-echo "" >> runtime.txt
-
-
-./main nodiv_nopre65.txt nondivpairs_nopre65.txt 10000 >> runtime.txt
-./main div_nopre65.txt divpairs_nopre65.txt 10000 >> runtime.txt
-
-./main nodiv_nopre64.txt nondivpairs_nopre64.txt 10000 >> runtime.txt
-./main div_nopre64.txt divpairs_nopre64.txt 10000 >> runtime.txt
-
-
-echo "" >> runtime.txt
-
-./main nodiv_pre65.txt nondivpairs_pre65.txt 10000 >> runtime.txt
-./main div_pre65.txt divpairs_pre65.txt 10000 >> runtime.txt
+#echo "" >> runtime.txt
+#
+#
+#./main nodiv_nopre65.txt nondivpairs_nopre65.txt 10000 >> runtime.txt
+#./main div_nopre65.txt divpairs_nopre65.txt 10000 >> runtime.txt
+#
+#./main nodiv_nopre64.txt nondivpairs_nopre64.txt 10000 >> runtime.txt
+#./main div_nopre64.txt divpairs_nopre64.txt 10000 >> runtime.txt
+#
+#
+#echo "" >> runtime.txt
+#
+#./main nodiv_pre65.txt nondivpairs_pre65.txt 10000 >> runtime.txt
+#./main div_pre65.txt divpairs_pre65.txt 10000 >> runtime.txt
 
 ./main nodiv_pre64.txt nondivpairs_pre64.txt 10000 >> runtime.txt
 ./main div_pre64.txt divpairs_pre64.txt 10000 >> runtime.txt
