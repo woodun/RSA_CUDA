@@ -58,8 +58,8 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre):
 	
 	_x2_1 = _x1_1 * _x1_1
 	_x2_2 = _x1_2 * _x1_2
-	s2_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
-	s2_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)	
+	s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+	s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
 	_x2_1 = REDC(rmod, n, n_, _x2_1, l)
 	_x2_2 = REDC(rmod, n, n_, _x2_2, l)
 	
