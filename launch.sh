@@ -38,6 +38,6 @@
 #./main div_pre64.txt divpairs_pre64.txt 10000 >> runtime.txt
 
 
-./main nodiv_pre64.txt nondivpairs_pre64.txt 100 >> runtime.txt
-./main bit1div_pre64.txt bit1divpairs_pre64.txt 100 >> runtime.txt
-./main bit0div_pre64.txt bit0divpairs_pre64.txt 100 >> runtime.txt
+./main nodiv_pre64.txt nondivpairs_pre64.txt 10 >> runtime.txt
+./main bit1div_pre64.txt bit1divpairs_pre64.txt 10 >> runtime.txt
+./main bit0div_pre64.txt bit0divpairs_pre64.txt 10 >> runtime.txt
