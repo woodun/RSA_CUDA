@@ -3,7 +3,8 @@
 #include <math.h>
 #include "kernel.cu"
 #include <time.h>
-#include "mpz.h"
+#include "cuda_mpz.h"
+#include <gmp.h>
 
 long long unsigned time_diff(timespec start, timespec end){
 	struct timespec temp;
@@ -43,26 +44,26 @@ int main (int argc, char *argv[]) {
 	long long int *clockTable_h;
 	clockTable_h = (long long int*) malloc( pairs * sizeof(long long int));
 
-	mpz_cuda h_n;
-	mpz_cuda h_n_;
-	mpz_cuda h_r2;
+	cuda_mpz_t h_n;
+	cuda_mpz_t h_n_;
+	cuda_mpz_t h_r2;
 	int rl = 70;
 
-	mpz_init(&h_n);
-	mpz_init(&h_n_);
-	mpz_init(&h_r2);
+	cuda_mpz_init(&h_n);
+	cuda_mpz_init(&h_n_);
+	cuda_mpz_init(&h_r2);
 
 	///////get n
 	char n_input[] = "00000038f6e8cfba55dd0e47";
-	mpz_set_str_host(&h_n, n_input);
+	cuda_mpz_set_str_host(&h_n, n_input);
 	
 	///////get n_
 	char n__input[] = "0000002e8457440e0d93c489";
-	mpz_set_str_host(&h_n_, n__input);
+	cuda_mpz_set_str_host(&h_n_, n__input);
 
 	///////get r2
 	char r2_input[] = "0000003709d17d8f8686609f";
-	mpz_set_str_host(&h_r2, r2_input);
+	cuda_mpz_set_str_host(&h_r2, r2_input);
 
 	///////get e
 	char e_input[] = "101";
@@ -109,35 +110,35 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(dBits_d, dBits, sizeof(int) * d_bitsLength, cudaMemcpyHostToDevice);
 
 	///////device memory
-	unsigned varSize = sizeof(mpz_cuda) * thread_num;
+	unsigned varSize = sizeof(cuda_mpz_t) * thread_num;
 
 	long long int *clockTable_d;
-	mpz_cuda *tmp;
-	mpz_cuda *tmp2;
-	mpz_cuda *d_t;
-	mpz_cuda *_x1_mpz;
-	mpz_cuda *_x2_mpz;
+	cuda_mpz_t *tmp;
+	cuda_mpz_t *tmp2;
+	cuda_mpz_t *d_t;
+	cuda_mpz_t *_x1_cuda_mpz;
+	cuda_mpz_t *_x2_cuda_mpz;
 	cudaMalloc((void **) &clockTable_d, pairs * sizeof(long long int));
 	cudaMalloc((void **) &tmp, varSize);
 	cudaMalloc((void **) &tmp2, varSize);
 	cudaMalloc((void **) &d_t, varSize);
-	cudaMalloc((void **) &_x2_mpz, varSize);
-	cudaMalloc((void **) &_x1_mpz, varSize);
+	cudaMalloc((void **) &_x2_cuda_mpz, varSize);
+	cudaMalloc((void **) &_x1_cuda_mpz, varSize);
 
-	init<<<1, thread_num>>>(_x1_mpz, _x2_mpz, tmp, tmp2, d_t);
+	init<<<1, thread_num>>>(_x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, d_t);
 	cudaDeviceSynchronize();
 
 	///////get Messages
-	long long unsigned mesSize = sizeof(mpz_cuda) * data_num;
-	mpz_cuda *myMes1_h;
-	myMes1_h = (mpz_cuda*) malloc (mesSize);//CPU
+	long long unsigned mesSize = sizeof(cuda_mpz_t) * data_num;
+	cuda_mpz_t *myMes1_h;
+	myMes1_h = (cuda_mpz_t*) malloc (mesSize);//CPU
 
 	for(long long unsigned i = 0; i < data_num; i++){
-		mpz_init(&myMes1_h[i]);
+		cuda_mpz_init(&myMes1_h[i]);
 	}
 
-	mpz_cuda *myMes1_d;
-	cudaMalloc((mpz_cuda **) &myMes1_d, mesSize);//GPU
+	cuda_mpz_t *myMes1_d;
+	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize);//GPU
 
 	///////get Message pairs
 	char* line = NULL;
@@ -152,7 +153,7 @@ int main (int argc, char *argv[]) {
 		long long unsigned line_num = 0;
 		while ((getline(&line, &len, fp)) != -1) {
 			line[strcspn(line, "\n")] = 0;
-			mpz_set_str_host(&myMes1_h[line_num], line);
+			cuda_mpz_set_str_host(&myMes1_h[line_num], line);
 			line_num++;
 			if(line_num == data_num){
 				break;
@@ -162,7 +163,7 @@ int main (int argc, char *argv[]) {
 
 		cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);
 
-		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 		cudaDeviceSynchronize();
 
 		cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
@@ -185,8 +186,8 @@ int main (int argc, char *argv[]) {
 	cudaFree(tmp);
 	cudaFree(tmp2);
 	cudaFree(d_t);
-	cudaFree(_x1_mpz);
-	cudaFree(_x2_mpz);
+	cudaFree(_x1_cuda_mpz);
+	cudaFree(_x2_cuda_mpz);
 
 	////////free host
 	if (line){

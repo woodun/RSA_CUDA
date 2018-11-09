@@ -4,7 +4,7 @@
 #include "kernel.cu"
 #include <time.h>
 #include "mpz.h"
-#include <gmp.h>
+
 
 long long unsigned time_diff(timespec start, timespec end){
 	struct timespec temp;
