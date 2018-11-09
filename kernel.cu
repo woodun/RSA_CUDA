@@ -33,8 +33,6 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 
 	long long int t1, t2;
 
-	long long int combo_num = 0;
-
 	int k = blockIdx.x * blockDim.x + threadIdx.x;
 
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
@@ -96,8 +94,6 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 
 		t2 = clock64();//end of necessary kernel instructions
-
-//		printf("combo_num: %lld, iter1: %u, iter2: %u\n", combo_num, iter1, iter2);
 
 		if( j == 1){
 			clockTable[iter1] = t2 - t1;
