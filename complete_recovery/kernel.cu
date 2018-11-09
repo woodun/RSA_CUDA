@@ -1,17 +1,9 @@
-/******************************************************************************
- *cr
- *cr            (C) Copyright 2010 The Board of Trustees of the
- *cr                        University of Illinois
- *cr                         All Rights Reserved
- *cr
- ******************************************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "mpz.h"
 
 
-__device__ mpz_t* REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t* t){//mpz_t* RMOD, int L, mpz_t* N, mpz_t* N_ should not be changed.
+__device__ mpz_cuda* REDC(int RL, mpz_cuda* N, mpz_cuda* N_, mpz_cuda* T, mpz_cuda* tmp, mpz_cuda* t){//mpz_cuda* RMOD, int L, mpz_cuda* N, mpz_cuda* N_ should not be changed.
 
 	//m = ((T & R) * N_) & R
 	mpz_bitwise_truncate(t, T, RL);
@@ -35,7 +27,7 @@ __device__ mpz_t* REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t*
 	}
 }
 
-__global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t) {
+__global__ void MontSQMLadder(mpz_cuda * mes1, long long unsigned pairs, mpz_cuda* _x1, mpz_cuda* _x2, mpz_cuda* tmp, mpz_cuda* tmp2, int rl, mpz_cuda r2, mpz_cuda vn, mpz_cuda vn_, int* eBits, int eLength, long long int* clockTable, mpz_cuda* t) {
 
 	__shared__ digit_t s_index[32];
 
@@ -53,8 +45,8 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 
 		t1 = clock64();//beginning of necessary instructions within the kernel
 
-		mpz_t* n = &vn;
-		mpz_t* n_ = &vn_;
+		mpz_cuda* n = &vn;
+		mpz_cuda* n_ = &vn_;
 		int j = blockIdx.x * blockDim.x + threadIdx.x;
 
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
@@ -113,7 +105,7 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 	}
 }
 
-__global__ void init(mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, mpz_t* t){
+__global__ void init(mpz_cuda* _x1, mpz_cuda* _x2, mpz_cuda* tmp, mpz_cuda* tmp2, mpz_cuda* t){
 	int j = blockIdx.x * blockDim.x + threadIdx.x;
 
 	mpz_init(&tmp[j]);////initial value not used

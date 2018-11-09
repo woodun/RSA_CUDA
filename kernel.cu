@@ -1,11 +1,3 @@
-/******************************************************************************
- *cr
- *cr            (C) Copyright 2010 The Board of Trustees of the
- *cr                        University of Illinois
- *cr                         All Rights Reserved
- *cr
- ******************************************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "mpz.h"

@@ -1,18 +1,10 @@
-
-/******************************************************************************
- *
- *            (C) Copyright 2010 The Board of Trustees of the
- *                        University of Illinois
- *                         All Rights Reserved
- *
- ******************************************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include "kernel.cu"
 #include <time.h>
 #include "mpz.h"
+#include <gmp.h>
 
 long long unsigned time_diff(timespec start, timespec end){
 	struct timespec temp;
@@ -213,23 +205,11 @@ int main (int argc, char *argv[]) {
 
 	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 
-//	FILE *fp1= fopen(argv[1], "w");
-//	for (int q = 0; q < pairs; q++){
-//		fprintf(fp1, "%lld\n", clockTable_h[q]);
-//	}
-//	fclose(fp1);
-
-	mpz_t sum;
-	mpz_init(&sum);
-	mpz_set_llui(&sum, 0);
-
-	for (int q = 0; q < pairs; q++){
-
+	FILE *fp1= fopen(argv[1], "w");
+	for (long long unsigned q = 0; q < pairs; q++){
+		fprintf(fp1, "%lld\n", clockTable_h[q]);
 	}
-
-	fprintf(fp1, "%lld\n", clockTable_h[q]);
-	char test_str[1024];
-	printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
+	fclose(fp1);
 
 	////////free device
 	cudaFree(clockTable_d);

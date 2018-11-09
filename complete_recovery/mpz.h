@@ -21,12 +21,12 @@ typedef struct {
   digit_t  digits[DIGITS_CAPACITY];
   unsigned capacity;
   char     sign;
-} mpz_t;
+} mpz_cuda;
 
-__host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize);
+__host__ inline char* mpz_get_str(mpz_cuda *mpz, char *str, int bufsize);
 
 /**
- * @brief Check that the mpz_t struct has enough memory to store __capacity
+ * @brief Check that the mpz_cuda struct has enough memory to store __capacity
  * digits.
  */
 #ifndef __CUDACC__
@@ -67,7 +67,7 @@ __host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize);
 #endif
 
 /**
- * @brief Do some sanity checking on the mpz_t sign field.
+ * @brief Do some sanity checking on the mpz_cuda sign field.
  */
 #ifndef __CUDACC__
 #define CHECK_STRS(s1, s2)                                            \
@@ -81,11 +81,11 @@ __host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize);
 #endif
 
 
-__device__ __host__ inline int mpz_is_negative(mpz_t *mpz) {
+__device__ __host__ inline int mpz_is_negative(mpz_cuda *mpz) {
   return (mpz->sign == MPZ_NEGATIVE);
 }
 
-__device__ __host__ inline void mpz_negate(mpz_t *mpz) {
+__device__ __host__ inline void mpz_negate(mpz_cuda *mpz) {
   mpz->sign = (mpz->sign == MPZ_NEGATIVE) ? MPZ_NONNEGATIVE : MPZ_NEGATIVE;
   if (digits_is_zero(mpz->digits, mpz->capacity)) {
     mpz->sign = MPZ_NONNEGATIVE;
@@ -95,16 +95,16 @@ __device__ __host__ inline void mpz_negate(mpz_t *mpz) {
 /**
  * @brief Initialize an mpz struct to 0.
  */
-__device__ __host__ inline void mpz_init(mpz_t *mpz) {
+__device__ __host__ inline void mpz_init(mpz_cuda *mpz) {
   mpz->capacity = DIGITS_CAPACITY;
   /* digits_set_zero(mpz->digits); */
   /* mpz->sign = MPZ_NONNEGATIVE; */
 }
 
 /**
- * @brief Assign an mpz_t struct to the value of another mpz_t struct.
+ * @brief Assign an mpz_cuda struct to the value of another mpz_cuda struct.
  */
-__device__ __host__ inline void mpz_set(mpz_t *to, mpz_t *from) {
+__device__ __host__ inline void mpz_set(mpz_cuda *to, mpz_cuda *from) {
   unsigned i;
 
   for (i = 0; i < to->capacity; i++) {
@@ -121,7 +121,7 @@ __device__ __host__ inline void mpz_set(mpz_t *to, mpz_t *from) {
 /**
  * @brief Set the mpz integer to the provided integer.
  */
-__device__ __host__ inline void mpz_set_i(mpz_t *mpz, int z) {
+__device__ __host__ inline void mpz_set_i(mpz_cuda *mpz, int z) {
   mpz->sign = (z < 0) ? MPZ_NEGATIVE : MPZ_NONNEGATIVE;
   digits_set_lui(mpz->digits, abs(z));
 }
@@ -129,12 +129,12 @@ __device__ __host__ inline void mpz_set_i(mpz_t *mpz, int z) {
 /**
  * @brief Set the mpz integer to the provided integer.
  */
-__device__ __host__ inline void mpz_set_lui(mpz_t *mpz, unsigned long z) {
+__device__ __host__ inline void mpz_set_lui(mpz_cuda *mpz, unsigned long z) {
   mpz->sign = MPZ_NONNEGATIVE;
   digits_set_lui(mpz->digits, z);
 }
 
-__device__ __host__ inline void mpz_set_llui(mpz_t *mpz, unsigned long long z) {// changes
+__device__ __host__ inline void mpz_set_llui(mpz_cuda *mpz, unsigned long long z) {// changes
   mpz->sign = MPZ_NONNEGATIVE;
   digits_set_llui(mpz->digits, z);
 }
@@ -142,7 +142,7 @@ __device__ __host__ inline void mpz_set_llui(mpz_t *mpz, unsigned long long z) {
 /**
  * @brief Set the mpz integer to the provided integer.
  */
-__device__ __host__ inline void mpz_set_ui(mpz_t *mpz, unsigned z) {
+__device__ __host__ inline void mpz_set_ui(mpz_cuda *mpz, unsigned z) {
   mpz->sign = MPZ_NONNEGATIVE;
   digits_set_lui(mpz->digits, z);
 }
@@ -150,7 +150,7 @@ __device__ __host__ inline void mpz_set_ui(mpz_t *mpz, unsigned z) {
 /**
  * @brief Set the mpz integer based on the provided (hex) string.
  */
-__device__ __host__ inline void mpz_set_str(mpz_t *mpz, const char *user_str) {
+__device__ __host__ inline void mpz_set_str(mpz_cuda *mpz, const char *user_str) {
   unsigned num_digits;
   unsigned i;
   int is_zero;
@@ -203,7 +203,7 @@ __device__ __host__ inline void mpz_set_str(mpz_t *mpz, const char *user_str) {
 /**
  * @brief Set the mpz integer based on the provided (hex) string.
  */
-__host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//changes
+__host__ inline void mpz_set_str_host(mpz_cuda *mpz, const char *user_str) {//changes
   unsigned num_digits;
   unsigned i;
   int is_zero;
@@ -253,18 +253,18 @@ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//chang
 #endif
 }
 
-__device__ __host__ inline void mpz_get_binary_str(mpz_t *mpz, char *str, unsigned s) {
+__device__ __host__ inline void mpz_get_binary_str(mpz_cuda *mpz, char *str, unsigned s) {
   (void) mpz;
   (void) str;
   (void) s;
 }
 
 /**
- * @brief Destroy the mpz_t struct.
+ * @brief Destroy the mpz_cuda struct.
  *
  * @deprecated
  */
-__device__ __host__ inline void mpz_destroy(mpz_t *mpz) {
+__device__ __host__ inline void mpz_destroy(mpz_cuda *mpz) {
   (void) mpz;
 }
 
@@ -273,10 +273,10 @@ __device__ __host__ inline void mpz_destroy(mpz_t *mpz) {
  *
  *      dst := op1 + op2
  *
- * @warning It is assumed that all mpz_t parameters have been initialized.
+ * @warning It is assumed that all mpz_cuda parameters have been initialized.
  * @warning Assumes dst != op1 != op2
  */
-__device__ __host__ inline void mpz_add(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
+__device__ __host__ inline void mpz_add(mpz_cuda *dst, mpz_cuda *op1, mpz_cuda *op2) {
 #ifdef __CUDACC__
   unsigned op1_digit_count = digits_count(op1->digits);
   unsigned op2_digit_count = digits_count(op2->digits);
@@ -334,7 +334,7 @@ __device__ __host__ inline void mpz_add(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   CHECK_SIGN(dst);
 }
 
-__device__ __host__ inline void mpz_bitwise_and(mpz_t *dst, mpz_t *op1, mpz_t *op2) {//changes
+__device__ __host__ inline void mpz_bitwise_and(mpz_cuda *dst, mpz_cuda *op1, mpz_cuda *op2) {//changes
 #ifdef __CUDACC__
   unsigned op1_digit_count = digits_count(op1->digits);
   unsigned op2_digit_count = digits_count(op2->digits);
@@ -354,7 +354,7 @@ __device__ __host__ inline void mpz_bitwise_and(mpz_t *dst, mpz_t *op1, mpz_t *o
   digits_bitwise_and(dst->digits, dst->capacity, op1->digits, op1->capacity, op2->digits, op2->capacity);
 }
 
-__device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int n_bits) {//changes
+__device__ __host__ inline void mpz_bitwise_truncate(mpz_cuda *dst, mpz_cuda *src, int n_bits) {//changes
   digit_t *digits = src->digits;
   unsigned capacity = src->capacity;
 
@@ -384,7 +384,7 @@ __device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int
   }
 }
 
-__device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int n_bits) {//changes
+__device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_cuda *mpz, int n_bits) {//changes
   digit_t *digits = mpz->digits;
   unsigned capacity = mpz->capacity;
 
@@ -410,7 +410,7 @@ __device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int n_bits) 
   digits[rs_digits] = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
 }
 
-__device__ __host__ inline void mpz_addeq(mpz_t *op1, mpz_t *op2) {
+__device__ __host__ inline void mpz_addeq(mpz_cuda *op1, mpz_cuda *op2) {
 
   /* If both are negative, treate them as positive and negate the result */
   if (mpz_is_negative(op1) && mpz_is_negative(op2)) {
@@ -450,10 +450,10 @@ __device__ __host__ inline void mpz_addeq(mpz_t *op1, mpz_t *op2) {
 /**
  * @brief Perform dst := op1 - op2.
  *
- * @warning Assumes that all mpz_t parameters have been initialized.
+ * @warning Assumes that all mpz_cuda parameters have been initialized.
  * @warning Assumes dst != op1 != op2
  */
-__device__ __host__ inline void mpz_sub(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
+__device__ __host__ inline void mpz_sub(mpz_cuda *dst, mpz_cuda *op1, mpz_cuda *op2) {
   mpz_negate(op2);
   mpz_add(dst, op1, op2);
   mpz_negate(op2);
@@ -462,10 +462,10 @@ __device__ __host__ inline void mpz_sub(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
 /**
  * @brief Perform op1 -= op2.
  *
- * @warning Assumes that all mpz_t parameters have been initialized.
+ * @warning Assumes that all mpz_cuda parameters have been initialized.
  * @warning Assumes op1 != op2
  */
-__device__ __host__ inline void mpz_subeq(mpz_t *op1, mpz_t *op2) {
+__device__ __host__ inline void mpz_subeq(mpz_cuda *op1, mpz_cuda *op2) {
   mpz_negate(op2);
   mpz_addeq(op1, op2);
   mpz_negate(op2);
@@ -474,10 +474,10 @@ __device__ __host__ inline void mpz_subeq(mpz_t *op1, mpz_t *op2) {
 /**
  * @brief Perform dst := op1 * op2.
  *
- * @warning Assumes that all mpz_t parameters have been initialized.
+ * @warning Assumes that all mpz_cuda parameters have been initialized.
  * @warning Assumes dst != op1 != op2
  */
-__device__ __host__ inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
+__device__ __host__ inline void mpz_mult(mpz_cuda *dst, mpz_cuda *op1, mpz_cuda *op2) {
   unsigned op1_digit_count = digits_count(op1->digits);
   unsigned op2_digit_count = digits_count(op2->digits);
   unsigned capacity = max(op1_digit_count, op2_digit_count);
@@ -492,7 +492,7 @@ __device__ __host__ inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   /* digits_set_zero(dst->digits); */
 
   /* We pass in capacity as the number of digits rather that the actual
-   * number of digits in each mpz_t struct. This is done because the
+   * number of digits in each mpz_cuda struct. This is done because the
    * multiplication code has some assumptions and optimizations (e.g.
    * op1 and op2 to have the same number of digits) */
   digits_mult(dst->digits, op1->digits, op2->digits, capacity, dst->capacity);
@@ -520,7 +520,7 @@ __device__ __host__ inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
 #define MPZ_LESS    -1
 #define MPZ_GREATER  1
 #define MPZ_EQUAL    0
-__device__ __host__ inline int mpz_compare(mpz_t *a, mpz_t *b) {
+__device__ __host__ inline int mpz_compare(mpz_cuda *a, mpz_cuda *b) {
   int cmp;
   int negative;
 
@@ -542,48 +542,48 @@ __device__ __host__ inline int mpz_compare(mpz_t *a, mpz_t *b) {
 }
 
 /** @brief Return true if a == b */
-__device__ __host__ inline int mpz_equal(mpz_t *a, mpz_t *b) {
+__device__ __host__ inline int mpz_equal(mpz_cuda *a, mpz_cuda *b) {
   return (mpz_compare(a, b) == 0);
 }
 /** @brief Return true if a == 1 */
-__device__ __host__ inline int mpz_equal_one(mpz_t *a) {
+__device__ __host__ inline int mpz_equal_one(mpz_cuda *a) {
   if (MPZ_NEGATIVE == a->sign) {
     return false;
   }
   return digits_equal_one(a->digits, a->capacity);
 }
 /** @brief Return true if a < b */
-__device__ __host__ inline int mpz_lt(mpz_t *a, mpz_t *b) {
+__device__ __host__ inline int mpz_lt(mpz_cuda *a, mpz_cuda *b) {
   return (mpz_compare(a, b) < 0);
 }
 /** @brief Return true if a <= b */
-__device__ __host__ inline int mpz_lte(mpz_t *a, mpz_t *b) {
+__device__ __host__ inline int mpz_lte(mpz_cuda *a, mpz_cuda *b) {
   return (mpz_compare(a, b) <= 0);
 }
 /** @brief Return true if a > b */
-__device__ __host__ inline int mpz_gt(mpz_t *a, mpz_t *b) {
+__device__ __host__ inline int mpz_gt(mpz_cuda *a, mpz_cuda *b) {
   return (mpz_compare(a, b) > 0);
 }
 /** @brief Return true if a == 1 */
-__device__ __host__ inline int mpz_gt_one(mpz_t *a) {
+__device__ __host__ inline int mpz_gt_one(mpz_cuda *a) {
   if (MPZ_NEGATIVE == a->sign) {
     return false;
   }
   return digits_gt_one(a->digits, a->capacity);
 }
 /** @brief Return true if a >= b */
-__device__ __host__ inline int mpz_gte(mpz_t *a, mpz_t *b) {
+__device__ __host__ inline int mpz_gte(mpz_cuda *a, mpz_cuda *b) {
   return (mpz_compare(a, b) >= 0);
 }
 
 /**
  * @brief Return the string representation of the integer represented by the
- * mpz_t struct.
+ * mpz_cuda struct.
  *
  * @warning If buf is NULL, the string is dynamically allocated and must
  * therefore be freed by the user.
  */
-__host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize) {
+__host__ inline char* mpz_get_str(mpz_cuda *mpz, char *str, int bufsize) {
   int print_zeroes = 0; // don't print leading 0s
   int i;
   int str_index = 0;
@@ -620,7 +620,7 @@ __host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize) {
   return str;
 }
 
-__device__ inline void mpz_print_str_device(mpz_t *mpz) {//changes
+__device__ inline void mpz_print_str_device(mpz_cuda *mpz) {//changes
   int print_zeroes = 0; // don't print leading 0s
 
   if (mpz_is_negative(mpz)) {
@@ -646,13 +646,13 @@ __device__ inline void mpz_print_str_device(mpz_t *mpz) {//changes
   }
 }
 
-__host__ inline void mpz_print(mpz_t *mpz) {
+__host__ inline void mpz_print(mpz_cuda *mpz) {
   char str[1024];
   mpz_get_str(mpz, str, 1024);
   printf("%s\n", str);
 }
 
-__host__ __device__ inline void mpz_set_bit(mpz_t *mpz, unsigned bit_offset,
+__host__ __device__ inline void mpz_set_bit(mpz_cuda *mpz, unsigned bit_offset,
                                             unsigned bit) {//changes
   digits_set_bit(mpz->digits, bit_offset, bit);
 
@@ -662,7 +662,7 @@ __host__ __device__ inline void mpz_set_bit(mpz_t *mpz, unsigned bit_offset,
   }
 }
 
-__device__ __host__ inline void mpz_bit_lshift(mpz_t *mpz) {
+__device__ __host__ inline void mpz_bit_lshift(mpz_cuda *mpz) {
   bits_lshift(mpz->digits, mpz->capacity);
 
   if (MPZ_NEGATIVE == mpz->sign && digits_is_zero(mpz->digits, mpz->capacity)) {
@@ -670,11 +670,11 @@ __device__ __host__ inline void mpz_bit_lshift(mpz_t *mpz) {
   }
 }
 
-__device__ __host__ inline void mpz_bit_rshift(mpz_t *mpz, int n_bits) {
+__device__ __host__ inline void mpz_bit_rshift(mpz_cuda *mpz, int n_bits) {
   for(int i=0;i<n_bits;i++) bits_rshift(mpz->digits, mpz->capacity);
 }
 
-__device__ __host__ inline void mpz_bitwise_rshift_eq(mpz_t *mpz, int n_bits) {//changes
+__device__ __host__ inline void mpz_bitwise_rshift_eq(mpz_cuda *mpz, int n_bits) {//changes
   digit_t *digits = mpz->digits;
   unsigned capacity = mpz->capacity;
 
@@ -701,7 +701,7 @@ __device__ __host__ inline void mpz_bitwise_rshift_eq(mpz_t *mpz, int n_bits) {/
   }
 }
 
-__device__ __host__ inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int n_bits) {//changes
+__device__ __host__ inline void mpz_bitwise_rshift(mpz_cuda *dst, mpz_cuda *src, int n_bits) {//changes
   digit_t *digits = src->digits;
   unsigned capacity = src->capacity;
 
@@ -728,11 +728,11 @@ __device__ __host__ inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int n
   }
 }
 
-__device__ __host__ inline digit_t mpz_get_last_digit(mpz_t *mpz) {//changes
+__device__ __host__ inline digit_t mpz_get_last_digit(mpz_cuda *mpz) {//changes
 	return mpz->digits[0];
 }
 
-__device__ __host__ inline int mpz_is_zero(mpz_t *mpz) {
+__device__ __host__ inline int mpz_is_zero(mpz_cuda *mpz) {
   unsigned d_index = 0;
   for (d_index = 0; d_index < mpz->capacity; d_index++) {
     //printf("d: %d\n", mpz->digits[d_index]);
@@ -741,8 +741,8 @@ __device__ __host__ inline int mpz_is_zero(mpz_t *mpz) {
   return 1; //true
 }
 
-__device__ __host__ inline void mpz_div(mpz_t *q, mpz_t *r, mpz_t *n,
-                                            mpz_t *d) {
+__device__ __host__ inline void mpz_div(mpz_cuda *q, mpz_cuda *r, mpz_cuda *n,
+                                            mpz_cuda *d) {
   unsigned n_digit_count = digits_count(n->digits);
   unsigned num_bits;
   int i;
@@ -816,14 +816,14 @@ __device__ __host__ inline void mpz_div(mpz_t *q, mpz_t *r, mpz_t *n,
  *    }
  *    gcd = a
  */
-__device__ __inline__ void mpz_gcd_tmp(mpz_t *gcd, mpz_t *op1, mpz_t *op2,
+__device__ __inline__ void mpz_gcd_tmp(mpz_cuda *gcd, mpz_cuda *op1, mpz_cuda *op2,
                                        // tmps
-                                       mpz_t *tmp1, mpz_t *tmp2,
-                                       mpz_t *tmp3) {
-  mpz_t *a = gcd;
-  mpz_t *b = tmp1;
-  mpz_t *mod = tmp2;
-  mpz_t *quo = tmp3;
+                                       mpz_cuda *tmp1, mpz_cuda *tmp2,
+                                       mpz_cuda *tmp3) {
+  mpz_cuda *a = gcd;
+  mpz_cuda *b = tmp1;
+  mpz_cuda *mod = tmp2;
+  mpz_cuda *quo = tmp3;
 
   int compare = mpz_compare(op1, op2);
 
@@ -837,10 +837,10 @@ __device__ __inline__ void mpz_gcd_tmp(mpz_t *gcd, mpz_t *op1, mpz_t *op2,
   }
 }
 
-__device__ __inline__ void mpz_gcd(mpz_t *gcd, mpz_t *op1, mpz_t *op2) {
-  mpz_t tmp1;
-  mpz_t tmp2;
-  mpz_t tmp3;
+__device__ __inline__ void mpz_gcd(mpz_cuda *gcd, mpz_cuda *op1, mpz_cuda *op2) {
+  mpz_cuda tmp1;
+  mpz_cuda tmp2;
+  mpz_cuda tmp3;
 
   mpz_init(&tmp1);
   mpz_init(&tmp2);
@@ -861,14 +861,14 @@ __device__ __inline__ void mpz_gcd(mpz_t *gcd, mpz_t *op1, mpz_t *op2) {
  *      base = (base * base) mod modulus
  *    return result
  */
-__device__ __inline__ void mpz_powmod_tmp(mpz_t *result, mpz_t *base,
-                                          mpz_t *exp, mpz_t *mod,
+__device__ __inline__ void mpz_powmod_tmp(mpz_cuda *result, mpz_cuda *base,
+                                          mpz_cuda *exp, mpz_cuda *mod,
                                           // temps
-                                          mpz_t *tmp1, mpz_t *tmp2,
-                                          mpz_t *tmp3) {
+                                          mpz_cuda *tmp1, mpz_cuda *tmp2,
+                                          mpz_cuda *tmp3) {
   unsigned iteration;
 
-  mpz_t *b = tmp3;
+  mpz_cuda *b = tmp3;
 
   // result = 1
   mpz_set_ui(result, 1);
@@ -896,11 +896,11 @@ __device__ __inline__ void mpz_powmod_tmp(mpz_t *result, mpz_t *base,
   }
 }
 
-__device__ __inline__ void mpz_powmod(mpz_t *result, mpz_t *base,
-                                      mpz_t *exp, mpz_t *mod) {
-  mpz_t tmp1;
-  mpz_t tmp2;
-  mpz_t tmp3;
+__device__ __inline__ void mpz_powmod(mpz_cuda *result, mpz_cuda *base,
+                                      mpz_cuda *exp, mpz_cuda *mod) {
+  mpz_cuda tmp1;
+  mpz_cuda tmp2;
+  mpz_cuda tmp3;
 
   mpz_init(&tmp1);
   mpz_init(&tmp2);
@@ -911,8 +911,8 @@ __device__ __inline__ void mpz_powmod(mpz_t *result, mpz_t *base,
 
 
 
-__device__ __inline__ void mpz_pow(mpz_t *result, mpz_t *base, unsigned exponent) {
-  mpz_t tmp;
+__device__ __inline__ void mpz_pow(mpz_cuda *result, mpz_cuda *base, unsigned exponent) {
+  mpz_cuda tmp;
   unsigned int i;
 
   mpz_init(&tmp);
@@ -929,7 +929,7 @@ __device__ __inline__ void mpz_pow(mpz_t *result, mpz_t *base, unsigned exponent
 /**
  * @brief Compute a += i
  */
-__device__ __inline__ void mpz_addeq_i(mpz_t *a, int i) {
+__device__ __inline__ void mpz_addeq_i(mpz_cuda *a, int i) {
   if (0 == i) return;
 
   if (i < 0) {
@@ -945,7 +945,7 @@ __device__ __inline__ void mpz_addeq_i(mpz_t *a, int i) {
 /**
  * @brief Compute result = a * i
  */
-__device__ __inline__ void mpz_mult_u(mpz_t *result, mpz_t *a, unsigned i) {
+__device__ __inline__ void mpz_mult_u(mpz_cuda *result, mpz_cuda *a, unsigned i) {
   digits_mult_u(result->digits, a->digits, i);
 
   result->sign = a->sign;

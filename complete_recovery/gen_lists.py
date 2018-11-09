@@ -2,9 +2,6 @@
 
 import random, time, sys
 
-def red(num,mod):
-	return num % mod
-
 def bits(i):
 	return "{0:b}".format(i)
 
@@ -44,13 +41,8 @@ def CheckREDC(R,N,N_,T,L):
 	else:
 		return 0
 			
-def CheckDivExp(mes1, mes2, e, n):
-	r = findR(n)[1] 
-	rmod = r - 1  	
-	l = findR(n)[0] 
-	n_ = - modinv(n,r) & rmod 
-	r2 = (r << l) % n 
-	
+def CheckDivExp(mes1, mes2, e, n, n_, rmod, r2, l):
+		
 	s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
 	s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)	
 		
@@ -170,13 +162,13 @@ def Padding8 (n):
 		hex_n = "0" + hex_n;
 	return hex_n;
 			
-def FindPairs (num, mod, e, f1, f2, f3):
+def FindPairs (num, e, n, n_, rmod, r2, l, f1, f2, f3):
 	bit1_div_num = num
 	nondiv_num = num
 	bit0_div_num = num
 	while(True):
-		r1, r2 = random.randint(2, mod), random.randint(2, mod)
-		div_con = CheckDivExp(r1, r2, e, mod)	
+		r1, r2 = random.randint(2, n), random.randint(2, n)
+		div_con = CheckDivExp(r1, r2, e, n)	
 		if div_con == 1 and bit1_div_num > 0:				
 			f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
 			bit1_div_num-=1
@@ -193,11 +185,16 @@ random.seed(time.time())
 samples = int(sys.argv[1])
 n = int(sys.argv[2])
 current_d = int(sys.argv[3], 2)
+r = findR(n)[1] 
+rmod = r - 1  	
+l = findR(n)[0] 
+n_ = - modinv(n,r) & rmod 
+r2 = (r << l) % n 
 
 f1 = open("bit1divpairs_pre64.txt","w+")
 f2 = open("nondivpairs_pre64.txt","w+")
 f3 = open("bit0divpairs_pre64.txt","w+")
-FindPairs (samples, n, current_d, f1, f2, f3)
+FindPairs (samples, current_d, n, n_, rmod, r2, l, f1, f2, f3)
 f1.close()
 f2.close()
 f3.close()
