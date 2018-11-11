@@ -27,7 +27,10 @@ long long unsigned time_diff(timespec start, timespec end){
 //L1 enabled. (-keep -Xptxas -dlcm=ca --optimize 0)
 int main (int argc, char *argv[]) {
 
-	printf("%d", sizeof(mp_limb_t));
+	printf("%d\n", sizeof(mp_limb_t));
+	printf("%d\n", sizeof(unsigned));
+	printf("%d\n", sizeof(long unsigned));
+	printf("%d\n", sizeof(long long unsigned));
 //	mpz_t integ;
 //	mpz_init (integ);
 //	mpz_clear (integ);
