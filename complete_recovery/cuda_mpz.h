@@ -126,9 +126,9 @@ __device__ __host__ inline void cuda_mpz_set_gmp(cuda_mpz_t *to, mpz_t from) {//
 
   for (i = 0; i < src_size; i++) {
 	if((i & 1) == 0 ){
-		to->digits[i] = (digit_t) (from->mp_limb_t[i/2] & 0xffffffff );
+		to->digits[i] = (digit_t) (from->_mp_d[i/2] & 0xffffffff );
 	}else{
-		to->digits[i] = (digit_t) (from->mp_limb_t[i/2] >> 32);
+		to->digits[i] = (digit_t) (from->_mp_d[i/2] >> 32);
 	}
   }
 
