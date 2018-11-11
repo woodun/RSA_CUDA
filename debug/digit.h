@@ -12,13 +12,13 @@
 
 #include "compile.h"
 
-#define LOG2_DIGIT_BASE     64
+#define LOG2_DIGIT_BASE     32
 #define DIGIT_BASE          ((unsigned long long) 1 << (LOG2_DIGIT_BASE))
-#define DIGITS_CAPACITY     4 //changes: make enough space for large input
-#define MOD_LOG2_DIGIT_BASE     63 //changes
-#define LOG2_LOG2_DIGIT_BASE 6 //changes
+#define DIGITS_CAPACITY     8 //changes: make enough space for large input
+#define MOD_LOG2_DIGIT_BASE     31 //changes
+#define LOG2_LOG2_DIGIT_BASE 5 //changes
 
-typedef long long unsigned digit_t;//changes
+typedef unsigned digit_t;
 
 __device__ __host__ inline void digits_print(digit_t *digits,
                                             unsigned num_digits) {

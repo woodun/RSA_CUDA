@@ -27,16 +27,23 @@ long long unsigned time_diff(timespec start, timespec end){
 //L1 enabled. (-keep -Xptxas -dlcm=ca --optimize 0)
 int main (int argc, char *argv[]) {
 
-	printf("%d\n", sizeof(mp_limb_t));
-	printf("%d\n", sizeof(unsigned));
-	printf("%d\n", sizeof(long unsigned));
-	printf("%d\n", sizeof(long long unsigned));
-//	mpz_t integ;
-//	mpz_init (integ);
-//	mpz_clear (integ);
-//
-//	cuda_mpz_t test;
-//	cuda_mpz_init(&test);
+	mpz_t integ;
+	mpz_init (integ);
+
+	//test if mpz is little or big endian
+
+	char n_input[] = "00000038f6e8cfba55dd0e47";
+	mpz_set_str (integ, n_input, 16);
+
+	cuda_mpz_t test;
+	cuda_mpz_init(&test);
+
+
+	cuda_mpz_set_gmp(&test, integ);
+	char test_str[1024];
+	printf("%s\n", mpz_get_str(&h_n, test_str, 1024));
+
+	mpz_clear (integ);
 
 
 //	struct timespec ts1;

@@ -104,13 +104,13 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 }
 
 __global__ void init(cuda_mpz_t* _x1, cuda_mpz_t* _x2, cuda_mpz_t* tmp, cuda_mpz_t* tmp2, cuda_mpz_t* t){
-	int j = blockIdx.x * blockDim.x + threadIdx.x;
-
-//	cuda_mpz_init(&tmp[j]);////initial value not used
-//	cuda_mpz_init(&tmp2[j]);////initial value not used
-//	cuda_mpz_init(&_x1[j]);////initial value required
-//	cuda_mpz_init(&_x2[j]);////initial value required
-//	cuda_mpz_init(&t[j]);////initial value not used
+//	int j = blockIdx.x * blockDim.x + threadIdx.x;
+//
+////	cuda_mpz_init(&tmp[j]);////initial value not used
+////	cuda_mpz_init(&tmp2[j]);////initial value not used
+////	cuda_mpz_init(&_x1[j]);////initial value required
+////	cuda_mpz_init(&_x2[j]);////initial value required
+////	cuda_mpz_init(&t[j]);////initial value not used
 }
 
 

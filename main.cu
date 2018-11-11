@@ -24,7 +24,6 @@ long long unsigned time_diff(timespec start, timespec end){
 	return time_interval_s + time_interval_ns;
 }
 
-//L1 disabled. (-Xptxas -dlcm=cg --optimize 0)
 //L1 enabled. (-keep -Xptxas -dlcm=ca --optimize 0)
 int main (int argc, char *argv[]) {
 

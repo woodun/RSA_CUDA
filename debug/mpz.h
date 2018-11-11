@@ -377,7 +377,7 @@ __device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int
 	  dst->digits[d_index] = 0;
   }
 
-  dst->digits[rs_digits] = digits[rs_digits] & ( 0xffffffffffffffff >> ls_remainder);
+  dst->digits[rs_digits] = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
 
   for(int d_index = rs_digits - 1; d_index >= 0; d_index--) {//constant time for specific rl
 	  dst->digits[d_index] = digits[d_index];
@@ -407,7 +407,7 @@ __device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int n_bits) 
 	digits[d_index] = 0;
   }
 
-  digits[rs_digits] = digits[rs_digits] & ( 0xffffffffffffffff >> ls_remainder);
+  digits[rs_digits] = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
 }
 
 __device__ __host__ inline void mpz_addeq(mpz_t *op1, mpz_t *op2) {
@@ -600,10 +600,10 @@ __host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize) {
         return NULL;
       }
       if (!print_zeroes) {
-        str_index += sprintf(str + str_index, "%llx", digit);// changes
+        str_index += sprintf(str + str_index, "%x", digit);
       }
       else {
-        str_index += sprintf(str + str_index, "%016llx", digit);// changes
+        str_index += sprintf(str + str_index, "%08x", digit);
       }
       print_zeroes = 1;
     }
@@ -632,10 +632,10 @@ __device__ inline void mpz_print_str_device(mpz_t *mpz) {//changes
 
     if (digit != 0 || print_zeroes) {
       if (!print_zeroes) {
-    	  printf("0x%llx", digit);
+    	  printf("0x%x", digit);
       }
       else {
-    	  printf("%016llx", digit);
+    	  printf("%08x", digit);
       }
       print_zeroes = 1;
     }

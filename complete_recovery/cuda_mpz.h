@@ -119,6 +119,26 @@ __device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
   CHECK_SIGN(from);
 }
 
+__device__ __host__ inline void cuda_mpz_set_gmp(cuda_mpz_t *to, mpz_t from) {//changes
+  unsigned i;
+
+  src_size = from->MPZ_REALLOC * 2;
+
+  for (i = 0; i < src_size; i++) {
+	if((i & 1) == 0 ){
+		to->digits[i] = (digit_t) (from->mp_limb_t[i/2] & 0xffffffff );
+	}else{
+		to->digits[i] = (digit_t) (from->mp_limb_t[i/2] >> 32);
+	}
+  }
+
+  for (i = src_size; i < to->capacity; i++) {
+    to->digits[i] = 0;
+  }
+
+  to->sign = MPZ_NONNEGATIVE;//RSA only use positive numbers
+}
+
 /**
  * @brief Set the cuda_mpz integer to the provided integer.
  */
