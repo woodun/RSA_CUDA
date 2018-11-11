@@ -41,7 +41,7 @@ int main (int argc, char *argv[]) {
 
 	cuda_mpz_set_gmp(&test, integ);
 	char test_str[1024];
-	printf("%s\n", mpz_get_str(&h_n, test_str, 1024));
+	printf("%s\n", cuda_mpz_get_str(&test, test_str, 1024));
 
 	mpz_clear (integ);
 
