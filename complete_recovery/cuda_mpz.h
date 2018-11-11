@@ -653,7 +653,7 @@ __device__ inline void cuda_mpz_print_str_device(cuda_mpz_t *cuda_mpz) {//change
 
     if (digit != 0 || print_zeroes) {
       if (!print_zeroes) {
-    	  printf("0x%x", digit);
+    	  printf("%x", digit);
       }
       else {
     	  printf("%08x", digit);

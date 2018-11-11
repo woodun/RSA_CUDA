@@ -31,9 +31,7 @@ int main (int argc, char *argv[]) {
 	mpz_t integ;
 	mpz_init (integ);
 
-	//test if mpz is little or big endian
-
-	char n_input[] = "00000038f6e8cfba55dd0e47";
+	char n_input[] = "000000asdasdasd38f6e8cfba55dd0e47";
 	mpz_set_str (integ, n_input, 16);
 
 	cuda_mpz_t test;
