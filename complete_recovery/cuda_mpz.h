@@ -122,7 +122,7 @@ __device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
 __device__ __host__ inline void cuda_mpz_set_gmp(cuda_mpz_t *to, mpz_t from) {//changes
   unsigned i;
 
-  int src_size = from->MPZ_REALLOC * 2;
+  int src_size = from->_mp_size * 2;
 
   for (i = 0; i < src_size; i++) {
 	if((i & 1) == 0 ){
