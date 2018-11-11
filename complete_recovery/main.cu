@@ -31,17 +31,30 @@ int main (int argc, char *argv[]) {
 	mpz_t integ;
 	mpz_init (integ);
 
-	char n_input[] = "00000012312312338f6e8cfba55dd0e47";
-	mpz_set_str (integ, n_input, 16);
+	mpz_t rand_num1;
+	mpz_init (rand_num1);
 
 	cuda_mpz_t test;
 	cuda_mpz_init(&test);
 
-
-	cuda_mpz_set_gmp(&test, integ);
 	char test_str[1024];
-	printf("%s\n", cuda_mpz_get_str(&test, test_str, 1024));
 
+	char n_input[] = "00000012312312338f6e8cfba55dd0e47";
+	mpz_set_str (integ, n_input, 16);
+
+	///////RNG
+	gmp_randstate_t rand_state;
+	gmp_randinit_default (rand_state);
+	gmp_randseed_ui (rand_state, time(NULL));
+
+	for(int i = 0; i < 10; i++){
+		mpz_urandomm (rand_num1, rand_state, integ);
+		cuda_mpz_set_gmp(&test, rand_num1);
+		printf("%s\n", cuda_mpz_get_str(&test, test_str, 1024));
+	}
+
+	gmp_randclear (rand_state);
+	mpz_clear (rand_num1);
 	mpz_clear (integ);
 
 
