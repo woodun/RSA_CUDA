@@ -352,6 +352,8 @@ int main (int argc, char *argv[]) {
 	init<<<1, thread_num>>>(_x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, d_t);
 	cudaDeviceSynchronize();
 
+	printf("debug01\n");
+
 	///////get Messages
 	long long unsigned mesSize = sizeof(cuda_mpz_t) * data_num;
 	cuda_mpz_t *myMes1_h;
