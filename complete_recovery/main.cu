@@ -53,13 +53,13 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	cuda_mpz_set( _x1_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
 	cuda_mpz_set( _x1_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
 
+	printf("%s\n", cuda_mpz_get_str(_x1_1, test_str, 1024));
+	printf("%s\n", cuda_mpz_get_str(_x1_2, test_str, 1024));
+
 	//_x2_1 = _x1_1 * _x1_1
 	//_x2_2 = _x1_2 * _x1_2
 	cuda_mpz_mult(tmp2_1, _x1_1, t_1);
 	cuda_mpz_mult(tmp2_2, _x1_2, t_2);
-
-	printf("%s\n", cuda_mpz_get_str(tmp2_1, test_str, 1024));
-	printf("%s\n", cuda_mpz_get_str(tmp2_2, test_str, 1024));
 
 	//s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
 	//s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
