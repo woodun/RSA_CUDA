@@ -465,6 +465,8 @@ int main (int argc, char *argv[]) {
 		break;
 	}
 
+	exit(0);
+
 	long long int sum1 = 0;
 	long long int sum2 = 0;
 	long long int sum3 = 0;
