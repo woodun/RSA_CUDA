@@ -216,15 +216,15 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	if( d0_s1_1 != d0_s1_2 || d0_s2_1 != d0_s2_2 ){ //diverge for bit 0
 		if ( d1_s1_1 != d1_s1_2 || d1_s2_1 != d1_s2_2 ){ //diverge for bit 0 and diverge for bit 1
-			return 0
+			return 0;
 		} else{ //diverge for bit 0 and converge for bit 1
 			return 3;
 		}
 	} else if ( d1_s1_1 != d1_s1_2 || d1_s2_1 != d1_s2_2 ){ //converge for bit 0, diverge for bit 1
-		return 1
+		return 1;
 	}
 	else{ //converge for bit 0 and converge for bit 1
-		return 2
+		return 2;
 	}
 }
 
@@ -374,7 +374,7 @@ int main (int argc, char *argv[]) {
 	int	bit0_div_num = data_num;
 
 	cuda_mpz_t r1, r2;
-	cuda_mpz_t _x1_1, _x1_2, _x2_1, _x2_2
+	cuda_mpz_t _x1_1, _x1_2, _x2_1, _x2_2;
 	cuda_mpz_t _x1_1_temp, _x1_2_temp, _x2_1_temp, _x2_2_temp;
 	cuda_mpz_t tmp_1, tmp_2, tmp2_1, tmp2_2, t_1, t_2;
 
