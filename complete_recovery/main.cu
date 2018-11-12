@@ -432,8 +432,8 @@ int main (int argc, char *argv[]) {
 		cuda_mpz_set_gmp(&r2, rand_num);
 
 		char test_str[1024];
-		printf("%s\n", mpz_get_str(&r1, test_str, 1024));
-		printf("%s\n", mpz_get_str(&r2, test_str, 1024));
+		printf("%s\n", cuda_mpz_get_str(&r1, test_str, 1024));
+		printf("%s\n", cuda_mpz_get_str(&r2, test_str, 1024));
 
 		div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
 				&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
