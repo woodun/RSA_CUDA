@@ -10,9 +10,17 @@ cuda_mpz_t* REDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_
 
 	char test_str[1024];
 
+	printf("%s\n", cuda_mpz_get_str(T, test_str, 1024));
+
 	//m = ((T & R) * N_) & R
 	cuda_mpz_bitwise_truncate(t, T, RL);
+
+	printf("%s\n", cuda_mpz_get_str(t, test_str, 1024));
+
 	cuda_mpz_mult(tmp, N_, t);
+
+	printf("%s\n", cuda_mpz_get_str(tmp, test_str, 1024));
+
 	cuda_mpz_bitwise_truncate_eq(tmp, RL);
 
 	printf("%s\n", cuda_mpz_get_str(tmp, test_str, 1024));
