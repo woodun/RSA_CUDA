@@ -41,6 +41,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	int s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
 	if (s1_1 != s1_2){ //previous bits are all convergent
+		printf("debug-1\n");
 		return 0;
 	}
 
@@ -60,6 +61,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	int s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
 	if (s2_1 != s2_2){ //previous bits are all convergent
+		printf("debug-2\n");
 		return 0;
 	}
 
@@ -70,6 +72,9 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	//for i in e_b[1:]:
 	for(int i = 1; i < eLength; i++){ //big endian
+
+		printf("debug4\n");
+
 		if(eBits[i] == 0){
 			//_x2_1 = _x1_1 * _x2_1
 			//_x2_2 = _x1_2 * _x2_2
@@ -216,14 +221,18 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	if( d0_s1_1 != d0_s1_2 || d0_s2_1 != d0_s2_2 ){ //diverge for bit 0
 		if ( d1_s1_1 != d1_s1_2 || d1_s2_1 != d1_s2_2 ){ //diverge for bit 0 and diverge for bit 1
+			printf("debug0\n");
 			return 0;
 		} else{ //diverge for bit 0 and converge for bit 1
+			printf("debug3\n");
 			return 3;
 		}
 	} else if ( d1_s1_1 != d1_s1_2 || d1_s2_1 != d1_s2_2 ){ //converge for bit 0, diverge for bit 1
+		printf("debug1\n");
 		return 1;
 	}
 	else{ //converge for bit 0 and converge for bit 1
+		printf("debug2\n");
 		return 2;
 	}
 }
@@ -426,31 +435,23 @@ int main (int argc, char *argv[]) {
 				&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
 				&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2);
 
-		printf("debug0\n");
-
 		if (div_con == 1 && bit1_div_num > 0){
 			bit1_div_num--;
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
 			bit1_div_num--;
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
-
-			printf("debug1\n");
 		}
 		if (div_con == 2 && nondiv_num > 0){
 			nondiv_num--;
 			cuda_mpz_set( &myMes2_h[nondiv_num], &r2);
 			nondiv_num--;
 			cuda_mpz_set( &myMes2_h[nondiv_num], &r1);
-
-			printf("debug2\n");
 		}
 		if (div_con == 3 && bit0_div_num > 0){
 			bit0_div_num--;
 			cuda_mpz_set( &myMes3_h[bit0_div_num], &r2);
 			bit0_div_num--;
 			cuda_mpz_set( &myMes3_h[bit0_div_num], &r1);
-
-			printf("debug3\n");
 		}
 		if (bit1_div_num == 0 && nondiv_num == 0 && bit0_div_num == 0){
 			break;
