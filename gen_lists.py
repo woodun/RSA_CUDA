@@ -53,6 +53,9 @@ def CheckDivExp(mes1, mes2, e, n):
 	
 	s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
 	s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)	
+	
+	print(hex(mes1 * r2))
+	print(hex(mes2 * r2))
 		
 	if s1_1 != s1_2 : #previous bits are all convergent
 		print("asd\n")
