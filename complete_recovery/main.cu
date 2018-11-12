@@ -442,6 +442,7 @@ int main (int argc, char *argv[]) {
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
 		}
 		if (div_con == 2 && nondiv_num > 0){
+			printf("debug x2\n");
 			nondiv_num--;
 			cuda_mpz_set( &myMes2_h[nondiv_num], &r2);
 			nondiv_num--;
