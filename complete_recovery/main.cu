@@ -452,6 +452,7 @@ int main (int argc, char *argv[]) {
 	long long int sum2 = 0;
 	long long int sum3 = 0;
 
+	printf("debug1\n");
 	////////////////////////////////////////////////////////////////converge for bit 0, diverge for bit 1
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel

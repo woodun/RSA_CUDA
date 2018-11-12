@@ -56,12 +56,12 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 		//_x2 = REDC(rmod,n,n_,_x2,l)
 		cuda_mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
-//			if(j == 0){
-//				cuda_mpz_print_str_device(&_x1[j]);
-//				printf(" ");
-//				cuda_mpz_print_str_device(&_x2[j]);
-//				printf("\n");
-//			}
+			if(j == 0){
+				cuda_mpz_print_str_device(&_x1[j]);
+				printf(" ");
+				cuda_mpz_print_str_device(&_x2[j]);
+				printf("\n");
+			}
 
 		for(int i = eLength - 2; i >= 0; i--){
 
