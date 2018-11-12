@@ -55,6 +55,7 @@ def CheckDivExp(mes1, mes2, e, n):
 	s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)	
 		
 	if s1_1 != s1_2 : #previous bits are all convergent
+		print("asd\n")
 		return 0	
 	
 	_x1_1 = REDC(rmod, n, n_, mes1 * r2, l) 
@@ -66,6 +67,7 @@ def CheckDivExp(mes1, mes2, e, n):
 	s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
 	
 	if s2_1 != s2_2 : #previous bits are all convergent
+		print("sdf\n")
 		return 0
 	
 	_x2_1 = REDC(rmod, n, n_, _x2_1, l)
@@ -154,12 +156,16 @@ def CheckDivExp(mes1, mes2, e, n):
 	
 	if d0_s1_1 != d0_s1_2 or d0_s2_1 != d0_s2_2: #diverge for bit 0
 		if d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2: #diverge for bit 0 and diverge for bit 1
+			print ("debug0\n")
 			return 0
 		else: #diverge for bit 0 and converge for bit 1
+			print ("debug4\n")
 			return 4
 	elif d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2: #converge for bit 0, diverge for bit 1
+		print ("debug1\n")
 		return 1
 	else: #converge for bit 0 and converge for bit 1
+		print ("debug2\n")
 		return 2		
 			
 def Padding8 (n): 
@@ -176,6 +182,8 @@ def FindPairs (num, mod, e, f1, f2, f3):
 	bit0_div_num = num
 	while(True):
 		r1, r2 = random.randint(2, mod), random.randint(2, mod)
+		r1 = 0x30bb981bd55d145233
+		r2 = 0x35bd98947ef0b97a5e
 		div_con = CheckDivExp(r1, r2, e, mod)	
 		if div_con == 1 and bit1_div_num > 0:				
 			f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
@@ -188,16 +196,24 @@ def FindPairs (num, mod, e, f1, f2, f3):
 			bit0_div_num-=1
 		if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0:
 			break
+		break
 
 random.seed(time.time())
-samples = int(sys.argv[1])
-n = int(sys.argv[2])
-current_d = int(sys.argv[3], 2)
+p = 32416189867
+q = 32416189909
+n = p * q
+phi = (p - 1) * (q - 1)
+n_lambda = phi // egcd(p-1, q-1)[0] 
+e = 5
+d = modinv(e, n_lambda) #67 bits
+
+#samples = int(sys.argv[1])
+#current_d = int(sys.argv[3], 2)
 
 f1 = open("bit1divpairs_pre64.txt","w+")
 f2 = open("nondivpairs_pre64.txt","w+")
 f3 = open("bit0divpairs_pre64.txt","w+")
-FindPairs (samples, n, current_d, f1, f2, f3)
+FindPairs (10, n, 65, f1, f2, f3)
 f1.close()
 f2.close()
 f3.close()

@@ -109,12 +109,16 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre):
 			
 			if d0_s1_1 != d0_s1_2 or d0_s2_1 != d0_s2_2: #diverge for bit 0
 				if d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2: #diverge for bit 0 and diverge for bit 1
+					#print ("debug0\n")
 					return 0
 				else: #diverge for bit 0 and converge for bit 1
+					#print ("debug4\n")
 					return 4
 			elif d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2: #converge for bit 0, diverge for bit 1
+				#print ("debug1\n")
 				return 1
 			else: #converge for bit 0 and converge for bit 1
+				#print ("debug\n")
 				return 2			
 		else:
 			if i == '0':
@@ -184,7 +188,7 @@ e = 5
 d = modinv(e, n_lambda) #67 bits
 
 
-# PTX, more samples, don't use combo, stop at divergent bit (shorter bits), making preceding bits non divergent, cahces, 32 threads.
+# PTX, more samples, don't use combo, stop at divergent bit (shorter bits), making preceding bits non divergent, cahces, 32 threads. If check pre all convergent not working, try all divergent or 1/3 divergent.
 # f1 = open("divpairs_nopre1.txt","w+")
 # f2 = open("nondivpairs_nopre1.txt","w+")
 # FindPairs (10000, n, e, 1, f1, f2, 0)
@@ -228,10 +232,18 @@ d = modinv(e, n_lambda) #67 bits
 # f1.close()
 # f2.close()
  
-f1 = open("bit1divpairs_pre64.txt","w+")
-f2 = open("nondivpairs_pre64.txt","w+")
-f3 = open("bit0divpairs_pre64.txt","w+")
-FindPairs (10000, n, d, 64, f1, f2, f3, 1)
+# f1 = open("bit1divpairs_pre64.txt","w+")
+# f2 = open("nondivpairs_pre64.txt","w+")
+# f3 = open("bit0divpairs_pre64.txt","w+")
+# FindPairs (10000, n, d, 64, f1, f2, f3, 1)
+# f1.close()
+# f2.close()
+# f3.close()
+
+f1 = open("bit1divpairs_pre64.txt","w+",1)
+f2 = open("nondivpairs_pre64.txt","w+",1)
+f3 = open("bit0divpairs_pre64.txt","w+",1)
+FindPairs (10, n, d, 31, f1, f2, f3, 0)
 f1.close()
 f2.close()
 f3.close()
