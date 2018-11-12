@@ -99,7 +99,7 @@ __device__ __host__ inline void cuda_mpz_negate(cuda_mpz_t *cuda_mpz) {
 __device__ __host__ inline void cuda_mpz_init(cuda_mpz_t *cuda_mpz) {
   cuda_mpz->capacity = DIGITS_CAPACITY;
   /* digits_set_zero(cuda_mpz->digits); */
-  /* cuda_mpz->sign = MPZ_NONNEGATIVE; */
+  cuda_mpz->sign = MPZ_NONNEGATIVE; //changes
 }
 
 /**
