@@ -431,6 +431,10 @@ int main (int argc, char *argv[]) {
 		mpz_urandomm (rand_num, rand_state, mod);
 		cuda_mpz_set_gmp(&r2, rand_num);
 
+		char test_str[1024];
+		printf("%s\n", mpz_get_str(&r1, test_str, 1024));
+		printf("%s\n", mpz_get_str(&r2, test_str, 1024));
+
 		div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
 				&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
 				&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2);
@@ -442,7 +446,6 @@ int main (int argc, char *argv[]) {
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
 		}
 		if (div_con == 2 && nondiv_num > 0){
-			printf("debug x2\n");
 			nondiv_num--;
 			cuda_mpz_set( &myMes2_h[nondiv_num], &r2);
 			nondiv_num--;
