@@ -347,6 +347,8 @@ int main (int argc, char *argv[]) {
 	cudaMalloc((void **) &_x2_cuda_mpz, varSize);
 	cudaMalloc((void **) &_x1_cuda_mpz, varSize);
 
+	printf("debug0\n");
+	////////////////////////////////////////////////////////////////initialize
 	init<<<1, thread_num>>>(_x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, d_t);
 	cudaDeviceSynchronize();
 
