@@ -400,8 +400,6 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
 
   dst->digits[rs_digits] = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
 
-  printf("debug: %u %u %d\n", digits[rs_digits], dst->digits[rs_digits], ls_remainder);
-
   for(int d_index = rs_digits - 1; d_index >= 0; d_index--) {//constant time for specific rl
 	  dst->digits[d_index] = digits[d_index];
   }

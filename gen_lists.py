@@ -26,12 +26,9 @@ def findR(i):
 	i_b = "{0:b}".format(i)
 	return len(i_b), 2**len(i_b) 
 
-def REDC(R,N,N_,T,L): 
-	print(hex(T))
-	m = ((T & R) * N_) & R 
-	print(hex(m))
-	t = (T + m*N) >> L 
-	print(hex(t))
+def REDC(R,N,N_,T,L): 	
+	m = ((T & R) * N_) & R 	
+	t = (T + m*N) >> L 	
 	if t >= N:
 		t = t - N
 		return t
@@ -63,9 +60,6 @@ def CheckDivExp(mes1, mes2, e, n):
 	
 	_x1_1 = REDC(rmod, n, n_, mes1 * r2, l) 
 	_x1_2 = REDC(rmod, n, n_, mes2 * r2, l)
-	
-	print(hex(_x1_1))
-	print(hex(_x1_2))
 	
 	_x2_1 = _x1_1 * _x1_1
 	_x2_2 = _x1_2 * _x1_2	
@@ -188,8 +182,9 @@ def FindPairs (num, mod, e, f1, f2, f3):
 	bit0_div_num = num
 	while(True):
 		r1, r2 = random.randint(2, mod), random.randint(2, mod)
-		r1 = 0x30bb981bd55d145233
-		r2 = 0x35bd98947ef0b97a5e
+		r1 = 0x203138096451032373996
+		r2 = 0x994969860374520301187
+		print(r1, r2)
 		div_con = CheckDivExp(r1, r2, e, mod)	
 		if div_con == 1 and bit1_div_num > 0:				
 			f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )

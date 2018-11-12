@@ -8,29 +8,15 @@
 
 cuda_mpz_t* REDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){//cuda_mpz_t* RMOD, int L, cuda_mpz_t* N, cuda_mpz_t* N_ should not be changed.
 
-	char test_str[1024];
-
-	printf("%s\n", cuda_mpz_get_str(T, test_str, 1024));
-
 	//m = ((T & R) * N_) & R
 	cuda_mpz_bitwise_truncate(t, T, RL);
-
-	printf("%s\n", cuda_mpz_get_str(t, test_str, 1024));
-
 	cuda_mpz_mult(tmp, N_, t);
-
-	printf("%s\n", cuda_mpz_get_str(tmp, test_str, 1024));
-
 	cuda_mpz_bitwise_truncate_eq(tmp, RL);
-
-	printf("%s\n", cuda_mpz_get_str(tmp, test_str, 1024));
 
 	//t = (T + m*N) >> L
 	cuda_mpz_mult(t, tmp , N);
 	cuda_mpz_add(tmp, T, t);
 	cuda_mpz_bitwise_rshift(t, tmp, RL);
-
-	printf("%s\n", cuda_mpz_get_str(t, test_str, 1024));
 
 	if (cuda_mpz_gte(t , N)){
 		cuda_mpz_sub(tmp, t, N);
@@ -46,37 +32,15 @@ cuda_mpz_t* REDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_
 
 int CheckREDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){
 
-	char test_str[1024];
-
-	printf("%s\n", cuda_mpz_get_str(T, test_str, 1024));
-
-	printf("%s\n", cuda_mpz_get_str(t, test_str, 1024));
-
 	//m = ((T & R) * N_) & R
 	cuda_mpz_bitwise_truncate(t, T, RL);
-
-	printf("%s\n", cuda_mpz_get_str(t, test_str, 1024));
-
 	cuda_mpz_mult(tmp, N_, t);
-
-	printf("%s\n", cuda_mpz_get_str(tmp, test_str, 1024));
-
 	cuda_mpz_bitwise_truncate_eq(tmp, RL);
-
-	printf("%s\n", cuda_mpz_get_str(tmp, test_str, 1024));
 
 	//t = (T + m*N) >> L
 	cuda_mpz_mult(t, tmp , N);
-
-	printf("%s\n", cuda_mpz_get_str(t, test_str, 1024));
-
 	cuda_mpz_add(tmp, T, t);
-
-	printf("%s\n", cuda_mpz_get_str(tmp, test_str, 1024));
-
 	cuda_mpz_bitwise_rshift(t, tmp, RL);
-
-	printf("%s\n", cuda_mpz_get_str(t, test_str, 1024));
 
 	if (cuda_mpz_gte(t , N)){
 		return 1;
@@ -486,7 +450,6 @@ int main (int argc, char *argv[]) {
 	gmp_randinit_default (rand_state);
 	gmp_randseed_ui (rand_state, time(NULL));
 
-
 	while(1){
 
 		mpz_urandomm (rand_num, rand_state, mod);
@@ -494,14 +457,14 @@ int main (int argc, char *argv[]) {
 		mpz_urandomm (rand_num, rand_state, mod);
 		cuda_mpz_set_gmp(&r2, rand_num);
 
-		char r1_str[] = "0000000030bb981bd55d145233";
-		cuda_mpz_set_str_host(&r1, r1_str);
-		char r2_str[] = "0000000035bd98947ef0b97a5e";
-		cuda_mpz_set_str_host(&r2, r2_str);
-
-		char test_str[1024];
-		printf("%s\n", cuda_mpz_get_str(&r1, test_str, 1024));
-		printf("%s\n", cuda_mpz_get_str(&r2, test_str, 1024));
+//		char r1_str[] = "0000000030bb981bd55d145233";
+//		cuda_mpz_set_str_host(&r1, r1_str);
+//		char r2_str[] = "0000000035bd98947ef0b97a5e";
+//		cuda_mpz_set_str_host(&r2, r2_str);
+//
+//		char test_str[1024];
+//		printf("%s\n", cuda_mpz_get_str(&r1, test_str, 1024));
+//		printf("%s\n", cuda_mpz_get_str(&r2, test_str, 1024));
 
 		div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
 				&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
@@ -528,10 +491,7 @@ int main (int argc, char *argv[]) {
 		if (bit1_div_num == 0 && nondiv_num == 0 && bit0_div_num == 0){
 			break;
 		}
-		break;
 	}
-
-	exit(0);
 
 	long long int sum1 = 0;
 	long long int sum2 = 0;
