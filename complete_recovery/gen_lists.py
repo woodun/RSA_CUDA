@@ -119,14 +119,14 @@ def CheckDivExp(mes1, mes2, e, n, n_, rmod, r2, l):
 
 	#simulate exp bit 0
 	_x2_1 = _x1_1 * _x2_1
-	d0_s1_1 = CheckREDC(rmod, n, n_, _x2_1, l) 
+	d0_s2_1 = CheckREDC(rmod, n, n_, _x2_1, l) 
 	_x1_1 = _x1_1 * _x1_1
-	d0_s2_1 = CheckREDC(rmod, n, n_, _x1_1 ,l)
+	d0_s1_1 = CheckREDC(rmod, n, n_, _x1_1 ,l)
 	
 	_x2_2 = _x1_2 * _x2_2
-	d0_s1_2 = CheckREDC(rmod, n, n_, _x2_2, l) 
+	d0_s2_2 = CheckREDC(rmod, n, n_, _x2_2, l) 
 	_x1_2 = _x1_2 * _x1_2
-	d0_s2_2 = CheckREDC(rmod, n, n_, _x1_2 ,l) 
+	d0_s1_2 = CheckREDC(rmod, n, n_, _x1_2 ,l) 
 
 	#simulate exp bit 1
 	_x1_1 = _x1_1_temp
