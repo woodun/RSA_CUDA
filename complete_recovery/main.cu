@@ -6,6 +6,36 @@
 #include "cuda_mpz.h"
 #include <gmp.h>
 
+cuda_mpz_t* REDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){//cuda_mpz_t* RMOD, int L, cuda_mpz_t* N, cuda_mpz_t* N_ should not be changed.
+
+	char test_str[1024];
+
+	//m = ((T & R) * N_) & R
+	cuda_mpz_bitwise_truncate(t, T, RL);
+	cuda_mpz_mult(tmp, N_, t);
+	cuda_mpz_bitwise_truncate_eq(tmp, RL);
+
+	printf("%s\n", cuda_mpz_get_str(tmp, test_str, 1024));
+
+	//t = (T + m*N) >> L
+	cuda_mpz_mult(t, tmp , N);
+	cuda_mpz_add(tmp, T, t);
+	cuda_mpz_bitwise_rshift(t, tmp, RL);
+
+	printf("%s\n", cuda_mpz_get_str(t, test_str, 1024));
+
+	if (cuda_mpz_gte(t , N)){
+		cuda_mpz_sub(tmp, t, N);
+		cuda_mpz_set(t, tmp);
+		return t;
+    }
+	else{
+		cuda_mpz_sub(tmp, t, N);
+		cuda_mpz_set(tmp, t);
+	    return t;
+	}
+}
+
 int CheckREDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){
 
 	//m = ((T & R) * N_) & R
@@ -37,9 +67,6 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	cuda_mpz_mult(tmp2_1, mes1, r2);
 	//mes2 * r2
 	cuda_mpz_mult(tmp2_2, mes2, r2);
-
-	printf("%s\n", cuda_mpz_get_str(tmp2_1, test_str, 1024));
-	printf("%s\n", cuda_mpz_get_str(tmp2_2, test_str, 1024));
 
 	//s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
 	//s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)
