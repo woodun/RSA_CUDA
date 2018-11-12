@@ -61,6 +61,9 @@ def CheckDivExp(mes1, mes2, e, n):
 	_x1_1 = REDC(rmod, n, n_, mes1 * r2, l) 
 	_x1_2 = REDC(rmod, n, n_, mes2 * r2, l)
 	
+	print(hex(_x1_1))
+	print(hex(_x1_2))
+	
 	_x2_1 = _x1_1 * _x1_1
 	_x2_2 = _x1_2 * _x1_2	
 	s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
