@@ -56,6 +56,8 @@ int CheckREDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* 
 	cuda_mpz_add(tmp, T, t);
 	cuda_mpz_bitwise_rshift(t, tmp, RL);
 
+	printf("%s\n", cuda_mpz_get_str(t, test_str, 1024));
+
 	if (cuda_mpz_gte(t , N)){
 		return 1;
     }

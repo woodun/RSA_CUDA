@@ -27,6 +27,7 @@ def findR(i):
 	return len(i_b), 2**len(i_b) 
 
 def REDC(R,N,N_,T,L): 
+	print(hex(T))
 	m = ((T & R) * N_) & R 
 	print(hex(m))
 	t = (T + m*N) >> L 
