@@ -394,7 +394,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
   }
   */
 
-  for(int d_index = capacity - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
+  for(int d_index = capacity - 1; d_index >= rs_digits; d_index--) {//constant time for specific rl
 	  dst->digits[d_index] = 0;
   }
 
