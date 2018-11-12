@@ -439,9 +439,9 @@ int main (int argc, char *argv[]) {
 		}
 		if (div_con == 3 && bit0_div_num > 0){
 			bit0_div_num--;
-			cuda_mpz_set( &myMes2_h[bit0_div_num], &r2);
+			cuda_mpz_set( &myMes3_h[bit0_div_num], &r2);
 			bit0_div_num--;
-			cuda_mpz_set( &myMes2_h[bit0_div_num], &r1);
+			cuda_mpz_set( &myMes3_h[bit0_div_num], &r1);
 		}
 		if (bit1_div_num == 0 && nondiv_num == 0 && bit0_div_num == 0){
 			break;
