@@ -347,12 +347,9 @@ int main (int argc, char *argv[]) {
 	cudaMalloc((void **) &_x2_cuda_mpz, varSize);
 	cudaMalloc((void **) &_x1_cuda_mpz, varSize);
 
-	printf("debug0\n");
 	////////////////////////////////////////////////////////////////initialize
 	init<<<1, thread_num>>>(_x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, d_t);
 	cudaDeviceSynchronize();
-
-	printf("debug01\n");
 
 	///////get Messages
 	long long unsigned mesSize = sizeof(cuda_mpz_t) * data_num;
@@ -429,23 +426,31 @@ int main (int argc, char *argv[]) {
 				&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
 				&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2);
 
+		printf("debug0\n");
+
 		if (div_con == 1 && bit1_div_num > 0){
 			bit1_div_num--;
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
 			bit1_div_num--;
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
+
+			printf("debug1\n");
 		}
 		if (div_con == 2 && nondiv_num > 0){
 			nondiv_num--;
 			cuda_mpz_set( &myMes2_h[nondiv_num], &r2);
 			nondiv_num--;
 			cuda_mpz_set( &myMes2_h[nondiv_num], &r1);
+
+			printf("debug2\n");
 		}
 		if (div_con == 3 && bit0_div_num > 0){
 			bit0_div_num--;
 			cuda_mpz_set( &myMes3_h[bit0_div_num], &r2);
 			bit0_div_num--;
 			cuda_mpz_set( &myMes3_h[bit0_div_num], &r1);
+
+			printf("debug3\n");
 		}
 		if (bit1_div_num == 0 && nondiv_num == 0 && bit0_div_num == 0){
 			break;
@@ -456,7 +461,6 @@ int main (int argc, char *argv[]) {
 	long long int sum2 = 0;
 	long long int sum3 = 0;
 
-	printf("debug1\n");
 	////////////////////////////////////////////////////////////////converge for bit 0, diverge for bit 1
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
@@ -468,7 +472,6 @@ int main (int argc, char *argv[]) {
 	}
 	sum1 = sum1 / pairs;
 
-	printf("debug2\n");
 	////////////////////////////////////////////////////////////////converge for bit 0 and converge for bit 1
 	cudaMemcpy(myMes1_d, myMes2_h, mesSize, cudaMemcpyHostToDevice);
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
@@ -480,7 +483,6 @@ int main (int argc, char *argv[]) {
 	}
 	sum2 = sum2 / pairs;
 
-	printf("debug3\n");
 	////////////////////////////////////////////////////////////////diverge for bit 0 and converge for bit 1
 	cudaMemcpy(myMes1_d, myMes3_h, mesSize, cudaMemcpyHostToDevice);
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
