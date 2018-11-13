@@ -212,7 +212,7 @@ int main (int argc, char *argv[]) {
 
 	long long unsigned sum1 = 0;
 
-	for (long long unsigned q = pairs; q < pairs * 2; q++){
+	for (long long unsigned q = 0; q < pairs; q++){
 		sum1 += clockTable_h[q];
 	}
 	sum1 = sum1 / pairs;
@@ -239,7 +239,7 @@ int main (int argc, char *argv[]) {
 	struct timespec ts2;
 	clock_gettime(CLOCK_REALTIME, &ts2);
 
-	printf("%llu ", time_diff(ts1, ts2));
+	//printf("%llu ", time_diff(ts1, ts2));
 
     return 0;
 }
