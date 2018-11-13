@@ -210,6 +210,8 @@ int main (int argc, char *argv[]) {
 //	}
 //	fclose(fp1);
 
+	long long unsigned sum1 = 0;
+
 	for (long long unsigned q = pairs; q < pairs * 2; q++){
 		sum1 += clockTable_h[q];
 	}
