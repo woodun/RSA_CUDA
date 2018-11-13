@@ -43,9 +43,9 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	int s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 	int s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-	if (s1_1 != s1_2){
+	if (s1_1 != s1_2 && check_pre == 1){
 //		printf("asd\n");
-//		return 0;
+		return 0;
 		div_count++;
 	}
 
@@ -64,9 +64,9 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	int s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 	int s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-	if (s2_1 != s2_2){
+	if (s2_1 != s2_2 && check_pre == 1){
 //		printf("sdf\n");
-//		return 0;
+		return 0;
 		div_count++;
 	}
 
@@ -89,8 +89,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s2_1 != s2_2){
-//				return 0;
+			if (s2_1 != s2_2 && check_pre == 1){
+				return 0;
 				div_count++;
 			}
 
@@ -111,8 +111,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s1_1 != s1_2){
-//				return 0;
+			if (s1_1 != s1_2 && check_pre == 1){
+				return 0;
 				div_count++;
 			}
 
@@ -131,8 +131,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s1_1 != s1_2){
-//				return 0;
+			if (s1_1 != s1_2 && check_pre == 1){
+				return 0;
 				div_count++;
 			}
 
@@ -154,8 +154,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s2_1 != s2_2){
-//				return 0;
+			if (s2_1 != s2_2 && check_pre == 1){
+				return 0;
 				div_count++;
 			}
 
@@ -166,9 +166,9 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 		}
 	}
 
-	if(div_count != eLength && check_pre == 1){
-		return 0;
-	}
+//	if(div_count != eLength && check_pre == 1){
+//		return 0;
+//	}
 
 	//_x1_1_temp = _x1_1
 	cuda_mpz_set( _x1_1_temp, _x1_1);

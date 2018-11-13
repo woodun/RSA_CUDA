@@ -150,12 +150,13 @@ def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_nu
         else: #diverge for bit 0 and converge for bit 1
 #                     print ("debug4\n")
             return 4
-    elif d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2: #converge for bit 0, diverge for bit 1
+    else:
+        if d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2: #converge for bit 0, diverge for bit 1
 #                 print ("debug1\n")
-        return 1
-    else: #converge for bit 0 and converge for bit 1
+            return 1
+        else: #converge for bit 0 and converge for bit 1
 #                 print ("debug2\n")
-        return 2    
+            return 2    
             
 def Padding8 (n): 
     hex_n = hex(n).rstrip("L").lstrip("0x")
