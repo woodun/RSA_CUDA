@@ -258,6 +258,26 @@ print("bits: " + bits(current_bits))
 
 key = "1011011001001001010011110110010101010111001010110101111000111100001"
 
-   
+
+#     if d0_s1_1 != d0_s1_2 and d0_s2_1 != d0_s2_2: #diverge for bit 0 #diverge for bit 0 # not working, can only reach two branches
+#         if d1_s1_1 != d1_s1_2 and d1_s2_1 != d1_s2_2: #diverge for bit 0, diverge for bit 1
+#             print ("debug3\n")
+#             return 3
+#         elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1
+#             print ("debug4\n")
+#             return 4
+#         else:
+#             return 0
+#     elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0
+#         if d1_s1_1 != d1_s1_2 and d1_s2_1 != d1_s2_2: #converge for bit 0, diverge for bit 1
+#             print ("debug1\n")
+#             return 1
+#         elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1
+#             print ("debug2\n")
+#             return 2
+#         else:
+#             return 0
+#     else:
+#         return 0 
 
 
