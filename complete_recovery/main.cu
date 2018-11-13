@@ -516,14 +516,14 @@ int main (int argc, char *argv[]) {
 	long long int diff1 = abs(sum1 - sum2);
 	long long int diff2 = abs(sum2 - sum3);
 
-	printf("%lld %lld %lld %lld %lld\n", sum1, sum2, sum3, diff1, diff2);
+	printf("%lld %lld %lld %lld %lld %lld %lld\n", sum1, sum2, sum3, diff1, diff2, diff1 / diff2, diff2 / diff1);
 
-	if(diff1 / diff2 > 1.5){
-		//bit is 1
-	}else if(diff2 / diff1 > 1.5){
-		//bit is 0
-	}else{
-		//end of key
+	if(diff1 / diff2 > 1.3){//bit is 1
+		printf("bit is 1.\n");
+	}else if(diff2 / diff1 > 1.3){//bit is 0
+		printf("bit is 0.\n");
+	}else{//EOB
+		printf("end of bits.\n");
 	}
 
 	///////gmp clear
