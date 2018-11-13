@@ -29,7 +29,7 @@ int CheckREDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* 
 
 int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_t* _x1_1, cuda_mpz_t* _x1_2, cuda_mpz_t* _x2_1, cuda_mpz_t* _x2_2,
 		cuda_mpz_t* _x1_1_temp, cuda_mpz_t* _x1_2_temp, cuda_mpz_t* _x2_1_temp, cuda_mpz_t* _x2_2_temp,
-		cuda_mpz_t* tmp_1, cuda_mpz_t* tmp_2, cuda_mpz_t* tmp2_1, cuda_mpz_t* tmp2_2, int rl, cuda_mpz_t* r2, cuda_mpz_t* n, cuda_mpz_t* n_,  cuda_mpz_t* t_1, cuda_mpz_t* t_2){
+		cuda_mpz_t* tmp_1, cuda_mpz_t* tmp_2, cuda_mpz_t* tmp2_1, cuda_mpz_t* tmp2_2, int rl, cuda_mpz_t* r2, cuda_mpz_t* n, cuda_mpz_t* n_,  cuda_mpz_t* t_1, cuda_mpz_t* t_2, long check_pre){
 
 	int div_count = 0;
 
@@ -166,7 +166,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 		}
 	}
 
-	if(div_count != eLength){
+	if(div_count != eLength && check_pre == 1){
 		return 0;
 	}
 
@@ -272,7 +272,7 @@ int main (int argc, char *argv[]) {
 	clock_gettime(CLOCK_REALTIME, &ts1);
 
 	///////input control
-	if (argc < 2){
+	if (argc < 3){
 		exit(EXIT_FAILURE);
 	}
 
@@ -415,6 +415,7 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_init(&t_1);
 	cuda_mpz_init(&t_2);
 
+	long check_pre = strtol(argv[2], NULL, 10);
 	int known_bits[2048];
 	known_bits[0] = 1;
 	known_bits[1] = 0;
@@ -452,7 +453,7 @@ int main (int argc, char *argv[]) {
 
 		div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
 				&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-				&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2);
+				&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 
 		if (div_con == 1 && bit1_div_num > 0){
 			bit1_div_num--;
