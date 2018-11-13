@@ -1,4 +1,5 @@
-#!/usr/bin/python
+from __future__ import division
+
 import random, time, sys, re, os, subprocess
 
 def bits(i):
