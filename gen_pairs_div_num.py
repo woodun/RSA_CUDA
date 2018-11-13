@@ -28,9 +28,7 @@ def findR(i):
 
 def REDC(R,N,N_,T,L): 
 	m = ((T & R) * N_) & R 
-	print(hex(m))
 	t = (T + m*N) >> L 
-	print(hex(t))
 	if t >= N:
 		t = t - N
 		return t
@@ -217,14 +215,15 @@ d = modinv(e, n_lambda) #67 bits
 
 start = time.time()
 
-f1 = open("bit1divpairs_pre65.txt","w+",1)
-f2 = open("nondivpairs_pre65.txt","w+",1)
-f3 = open("divpairs_pre65.txt","w+",1)
-f4 = open("bit0divpairs_pre65.txt","w+",1)
-x = FindPairs (2000, n, d, 65, f1, f2, f3, f4, 0, (66 - 65) )
+f1 = open("bit1divpairs_pre64.txt","w+",1)
+f2 = open("nondivpairs_pre64.txt","w+",1)
+f3 = open("divpairs_pre64.txt","w+",1)
+f4 = open("bit0divpairs_pre64.txt","w+",1)
+x = FindPairs (2000, n, d, 64, f1, f2, f3, f4, 0, (66 - 65) )
 f1.close()
 f2.close()
 f3.close()
+f4.close()
 
 end = time.time()
 
