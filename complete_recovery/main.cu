@@ -432,7 +432,8 @@ int main (int argc, char *argv[]) {
 
 	///////RNG init
 	gmp_randstate_t rand_state;
-	gmp_randinit_default (rand_state);
+	//gmp_randinit_default (rand_state);
+	gmp_randinit_mt(rand_state);
 	gmp_randseed_ui (rand_state, time(NULL));
 
 	while(1){
