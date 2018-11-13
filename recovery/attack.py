@@ -214,6 +214,8 @@ print("1")
 eob = 0
 current_bits = 1
 temp = "0"
+# int(sys.argv[1])
+
 
 while(eob == 0 ): #32 threads with cache? bothdiv?
 
