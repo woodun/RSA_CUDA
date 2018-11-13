@@ -8,15 +8,21 @@
 
 cuda_mpz_t* REDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){//cuda_mpz_t* RMOD, int L, cuda_mpz_t* N, cuda_mpz_t* N_ should not be changed.
 
+	char test_str[1024];
+
 	//m = ((T & R) * N_) & R
 	cuda_mpz_bitwise_truncate(t, T, RL);
 	cuda_mpz_mult(tmp, N_, t);
 	cuda_mpz_bitwise_truncate_eq(tmp, RL);
 
+	printf("%s\n", cuda_mpz_get_str(tmp, test_str, 1024));
+
 	//t = (T + m*N) >> L
 	cuda_mpz_mult(t, tmp , N);
 	cuda_mpz_add(tmp, T, t);
 	cuda_mpz_bitwise_rshift(t, tmp, RL);
+
+	printf("%s\n", cuda_mpz_get_str(t, test_str, 1024));
 
 	if (cuda_mpz_gte(t , N)){
 		cuda_mpz_sub(tmp, t, N);
@@ -52,10 +58,9 @@ int CheckREDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* 
 
 int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_t* _x1_1, cuda_mpz_t* _x1_2, cuda_mpz_t* _x2_1, cuda_mpz_t* _x2_2,
 		cuda_mpz_t* _x1_1_temp, cuda_mpz_t* _x1_2_temp, cuda_mpz_t* _x2_1_temp, cuda_mpz_t* _x2_2_temp,
-		cuda_mpz_t* tmp_1, cuda_mpz_t* tmp_2, cuda_mpz_t* tmp2_1, cuda_mpz_t* tmp2_2, int rl, cuda_mpz_t* r2, cuda_mpz_t* n, cuda_mpz_t* n_,  cuda_mpz_t* t_1, cuda_mpz_t* t_2){
+		cuda_mpz_t* tmp_1, cuda_mpz_t* tmp_2, cuda_mpz_t* tmp2_1, cuda_mpz_t* tmp2_2, int rl, cuda_mpz_t* r2, cuda_mpz_t* n, cuda_mpz_t* n_,  cuda_mpz_t* t_1, cuda_mpz_t* t_2, int div_num){
 
-	char test_str[1024];
-
+	int div_count = 0;
 
 	//mes1 * r2
 	cuda_mpz_mult(tmp2_1, mes1, r2);
@@ -68,17 +73,15 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	int s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
 	if (s1_1 != s1_2){ //previous bits are all convergent
-		printf("asd\n");
-		return 0;
+//		printf("asd\n");
+//		return 0;
+		div_count++;
 	}
 
 	//_x1_1 = REDC(rmod, n, n_, mes1 * r2, l)
 	//_x1_2 = REDC(rmod, n, n_, mes2 * r2, l)
 	cuda_mpz_set( _x1_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
 	cuda_mpz_set( _x1_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
-
-	printf("%s\n", cuda_mpz_get_str(_x1_1, test_str, 1024));
-	printf("%s\n", cuda_mpz_get_str(_x1_2, test_str, 1024));
 
 	//_x2_1 = _x1_1 * _x1_1
 	//_x2_2 = _x1_2 * _x1_2
@@ -91,8 +94,9 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	int s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
 	if (s2_1 != s2_2){ //previous bits are all convergent
-		printf("sdf\n");
-		return 0;
+//		printf("sdf\n");
+//		return 0;
+		div_count++;
 	}
 
 	//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
@@ -115,7 +119,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
 			if (s2_1 != s2_2){ //previous bits are all convergent
-				return 0;
+//				return 0;
+				div_count++;
 			}
 
 			//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
@@ -136,7 +141,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
 			if (s1_1 != s1_2){ //previous bits are all convergent
-				return 0;
+//				return 0;
+				div_count++;
 			}
 
 			//_x1_1 = REDC(rmod, n, n_, _x1_1, l)
@@ -155,7 +161,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
 			if (s1_1 != s1_2){ //previous bits are all convergent
-				return 0;
+//				return 0;
+				div_count++;
 			}
 
 			//_x1_1 = REDC(rmod, n, n_, _x1_1, l)
@@ -177,7 +184,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
 			if (s2_1 != s2_2){ //previous bits are all convergent
-				return 0;
+//				return 0;
+				div_count++;
 			}
 
 			//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
@@ -185,6 +193,10 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
 			cuda_mpz_set( _x2_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
 		}
+	}
+
+	if(div_count != div_num){
+		return 0;
 	}
 
 	//_x1_1_temp = _x1_1
@@ -249,17 +261,17 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	if( d0_s1_1 != d0_s1_2 || d0_s2_1 != d0_s2_2 ){ //diverge for bit 0
 		if ( d1_s1_1 != d1_s1_2 || d1_s2_1 != d1_s2_2 ){ //diverge for bit 0 and diverge for bit 1
-			printf("debug0\n");
+//			printf("debug0\n");
 			return 0;
 		} else{ //diverge for bit 0 and converge for bit 1
-			printf("debug3\n");
+//			printf("debug3\n");
 			return 3;
 		}
 	} else if ( d1_s1_1 != d1_s1_2 || d1_s2_1 != d1_s2_2 ){ //converge for bit 0, diverge for bit 1
-		printf("debug1\n");
+//		printf("debug1\n");
 		return 1;
 	} else{ //converge for bit 0 and converge for bit 1
-		printf("debug2\n");
+//		printf("debug2\n");
 		return 2;
 	}
 }
@@ -457,18 +469,20 @@ int main (int argc, char *argv[]) {
 		mpz_urandomm (rand_num, rand_state, mod);
 		cuda_mpz_set_gmp(&r2, rand_num);
 
-//		char r1_str[] = "0000000030bb981bd55d145233";
-//		cuda_mpz_set_str_host(&r1, r1_str);
-//		char r2_str[] = "0000000035bd98947ef0b97a5e";
-//		cuda_mpz_set_str_host(&r2, r2_str);
-//
-//		char test_str[1024];
-//		printf("%s\n", cuda_mpz_get_str(&r1, test_str, 1024));
-//		printf("%s\n", cuda_mpz_get_str(&r2, test_str, 1024));
+		char r1_str[] = "0000000030bb981bd55d145233";
+		cuda_mpz_set_str_host(&r1, r1_str);
+		char r2_str[] = "0000000035bd98947ef0b97a5e";
+		cuda_mpz_set_str_host(&r2, r2_str);
+
+		char test_str[1024];
+		printf("%s\n", cuda_mpz_get_str(&r1, test_str, 1024));
+		printf("%s\n", cuda_mpz_get_str(&r2, test_str, 1024));
 
 		div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
 				&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
 				&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2);
+
+		exit(0);
 
 		if (div_con == 1 && bit1_div_num > 0){
 			bit1_div_num--;
