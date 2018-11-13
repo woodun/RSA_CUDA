@@ -86,7 +86,7 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre, div_num): # div_num is a relax
 		
 		if bit == c:			
 			
-			if div_count != div_num :
+			if check_pre == 1 and div_count != div_num :
 				return 0
 			
 			_x1_1_temp = _x1_1
@@ -221,7 +221,7 @@ f1 = open("bit1divpairs_pre65.txt","w+",1)
 f2 = open("nondivpairs_pre65.txt","w+",1)
 f3 = open("divpairs_pre65.txt","w+",1)
 f4 = open("bit0divpairs_pre65.txt","w+",1)
-x = FindPairs (1000, n, d, 65, f1, f2, f3, f4, 0, (66 - 65) )
+x = FindPairs (2000, n, d, 65, f1, f2, f3, f4, 0, (66 - 65) )
 f1.close()
 f2.close()
 f3.close()

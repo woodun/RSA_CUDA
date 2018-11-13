@@ -204,11 +204,17 @@ int main (int argc, char *argv[]) {
 
 	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 
-	FILE *fp1= fopen(argv[1], "w");
-	for (long long unsigned q = 0; q < pairs; q++){
-		fprintf(fp1, "%lld\n", clockTable_h[q]);
+//	FILE *fp1= fopen(argv[1], "w");
+//	for (long long unsigned q = 0; q < pairs; q++){
+//		fprintf(fp1, "%lld\n", clockTable_h[q]);
+//	}
+//	fclose(fp1);
+
+	for (long long unsigned q = pairs; q < pairs * 2; q++){
+		sum1 += clockTable_h[q];
 	}
-	fclose(fp1);
+	sum1 = sum1 / pairs;
+	printf("%lld\n", sum1);
 
 	////////free device
 	cudaFree(clockTable_d);
