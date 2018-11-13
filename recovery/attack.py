@@ -63,6 +63,10 @@ def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_nu
         if s2_1 != s2_2 :
             div_count+=1
     
+        if div_count != 1 :
+            return 0
+        div_count = 0
+    
     e_b = bits(e)   
     
     for i in e_b[1:]:        
@@ -100,9 +104,12 @@ def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_nu
                 div_count+=1
             if s2_1 != s2_2 :
                 div_count+=1
+            if div_count != 1 :
+                return 0
+            div_count = 0
             
-    if check_pre == 1 and div_count != div_num :
-        return 0
+#     if check_pre == 1 and div_count != div_num :
+#         return 0
     
     _x1_1_temp = _x1_1
     _x2_1_temp = _x2_1
@@ -193,21 +200,21 @@ eob = 0
 current_bits = 1
 temp = "0"
 
-while(eob == 0 ):
+while(eob == 0 ): #32 threads with cache? bothdiv?
 
     f1 = open("bit1divpairs_pre.txt","w+",1)
     f2 = open("nondivpairs_pre.txt","w+",1)
     f4 = open("bit0divpairs_pre.txt","w+",1)
-    FindPairs (32256, n, current_bits, n_, r2, rmod, l, f1, f2, f4, 1, len(bits(current_bits) ) )
+    FindPairs (2256, n, current_bits, n_, r2, rmod, l, f1, f2, f4, 1, len(bits(current_bits) ) )
     f1.close()
     f2.close()
     f4.close()
     
-    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "32256"])
+    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256"])
     print(sum1)
-    sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "32256"])
+    sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256"])
     print(sum2)
-    sum3 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "32256"]) #./main bit0divpairs_pre.txt 1000
+    sum3 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256"]) #./main bit0divpairs_pre.txt 1000
     print(sum3)
 
     diff1 = abs( int(sum1) - int(sum2) );
