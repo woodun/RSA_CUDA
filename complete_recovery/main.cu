@@ -374,24 +374,24 @@ int main (int argc, char *argv[]) {
 	long long unsigned mesSize = sizeof(cuda_mpz_t) * data_num;
 	cuda_mpz_t *myMes1_h;
 	myMes1_h = (cuda_mpz_t*) malloc (mesSize * 4); //CPU list converge for bit 0, diverge for bit 1
-	cuda_mpz_t *myMes2_h;
-	myMes2_h = (cuda_mpz_t*) malloc (mesSize); //CPU list converge for bit 0 and converge for bit 1
-	cuda_mpz_t *myMes3_h;
-	myMes3_h = (cuda_mpz_t*) malloc (mesSize); //CPU list diverge for bit 0 and converge for bit 1
+	//cuda_mpz_t *myMes2_h;
+	//myMes2_h = (cuda_mpz_t*) malloc (mesSize); //CPU list converge for bit 0 and converge for bit 1
+	//cuda_mpz_t *myMes3_h;
+	//myMes3_h = (cuda_mpz_t*) malloc (mesSize); //CPU list diverge for bit 0 and converge for bit 1
 
-	for(long long unsigned i = 0; i < data_num; i++){
+	for(long long unsigned i = 0; i < data_num * 4; i++){
 		cuda_mpz_init(&myMes1_h[i]);
-		cuda_mpz_init(&myMes2_h[i]);
-		cuda_mpz_init(&myMes3_h[i]);
+		//cuda_mpz_init(&myMes2_h[i]);
+		//cuda_mpz_init(&myMes3_h[i]);
 	}
 
 	cuda_mpz_t *myMes1_d;
 	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize * 4); //GPU
 
 	///////gen_pairs variables
-	int	bit1_div_num = data_num;
-	int nondiv_num = data_num;
-	int	bit0_div_num = data_num;
+	int	bit1_div_num = 0;
+	int nondiv_num = 0;
+	int	bit0_div_num = 0;
 
 	cuda_mpz_t r1, r2;
 	cuda_mpz_t _x1_1, _x1_2, _x2_1, _x2_2;
@@ -419,6 +419,7 @@ int main (int argc, char *argv[]) {
 	int known_bits[2048];
 	known_bits[0] = 1;
 	known_bits[1] = 0;
+	known_bits[2] = 1;
 	int known_bits_length = 2;
 	int div_con = 0;
 
@@ -456,25 +457,25 @@ int main (int argc, char *argv[]) {
 				&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
 				&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 
-		if (div_con == 1 && bit1_div_num > 0){
-			bit1_div_num--;
+		if (div_con == 1 && bit1_div_num < data_num){
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
-			cuda_mpz_set( &myMes1_h[bit1_div_num + data_num], &r2);
-			bit1_div_num--;
-			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
 			cuda_mpz_set( &myMes1_h[bit1_div_num + data_num], &r1);
+			bit1_div_num++;
+			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
+			cuda_mpz_set( &myMes1_h[bit1_div_num + data_num], &r2);
+			bit1_div_num++;
 		}
-		if (div_con == 2 && nondiv_num > 0){
-			nondiv_num--;
-			cuda_mpz_set( &myMes1_h[nondiv_num + data_num * 2], &r2);
-			nondiv_num--;
+		if (div_con == 2 && nondiv_num < data_num){
 			cuda_mpz_set( &myMes1_h[nondiv_num + data_num * 2], &r1);
+			nondiv_num++;
+			cuda_mpz_set( &myMes1_h[nondiv_num + data_num * 2], &r2);
+			nondiv_num++;
 		}
-		if (div_con == 3 && bit0_div_num > 0){
-			bit0_div_num--;
-			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r2);
-			bit0_div_num--;
+		if (div_con == 3 && bit0_div_num < data_num){
 			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r1);
+			bit0_div_num++;
+			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r2);
+			bit0_div_num++;
 		}
 //		if (div_con == 2 && nondiv_num > 0){
 //			nondiv_num--;
@@ -488,7 +489,7 @@ int main (int argc, char *argv[]) {
 //			bit0_div_num--;
 //			cuda_mpz_set( &myMes3_h[bit0_div_num], &r1);
 //		}
-		if (bit1_div_num == 0 && nondiv_num == 0 && bit0_div_num == 0){
+		if (bit1_div_num == data_num && nondiv_num == data_num && bit0_div_num == data_num){
 			break;
 		}
 	}
@@ -498,7 +499,7 @@ int main (int argc, char *argv[]) {
 	long long int sum3 = 0;
 
 	////////////////////////////////////////////////////////////////converge for bit 0, diverge for bit 1
-	cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);
+	cudaMemcpy(myMes1_d, myMes1_h, mesSize * 4 , cudaMemcpyHostToDevice);
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs * 4, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 	cudaMemcpy(clockTable_h, clockTable_d, 4 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
@@ -570,8 +571,8 @@ int main (int argc, char *argv[]) {
 	////////free host
 	free(clockTable_h);
 	free(myMes1_h);
-	free(myMes2_h);
-	free(myMes3_h);
+	//free(myMes2_h);
+	//free(myMes3_h);
 	free(eBits);
 	free(dBits);
 
