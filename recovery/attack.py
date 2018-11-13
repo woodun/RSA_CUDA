@@ -198,16 +198,16 @@ while(eob == 0 ):
     f1 = open("bit1divpairs_pre.txt","w+",1)
     f2 = open("nondivpairs_pre.txt","w+",1)
     f4 = open("bit0divpairs_pre.txt","w+",1)
-    FindPairs (4000, n, current_bits, n_, r2, rmod, l, f1, f2, f4, 1, len(bits(current_bits) ) )
+    FindPairs (10000, n, current_bits, n_, r2, rmod, l, f1, f2, f4, 1, len(bits(current_bits) ) )
     f1.close()
     f2.close()
     f4.close()
     
-    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "4000"])
+    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "10000"])
     print(sum1)
-    sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "4000"])
+    sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "10000"])
     print(sum2)
-    sum3 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "4000"]) #./main bit0divpairs_pre.txt 1000
+    sum3 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "10000"]) #./main bit0divpairs_pre.txt 1000
     print(sum3)
 
     diff1 = abs( int(sum1) - int(sum2) );
