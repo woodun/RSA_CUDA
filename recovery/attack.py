@@ -203,8 +203,11 @@ while(eob == 0 ):
     f4.close()
     
     sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "1000"])
+    print(sum1)
     sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "1000"])
+    print(sum2)
     sum3 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "1000"])
+    print(sum3)
 
     diff1 = abs( int(sum1) - int(sum2) );
     diff2 = abs( int(sum2) - int(sum3) );
