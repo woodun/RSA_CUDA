@@ -198,7 +198,7 @@ while(eob == 0 ):
     f1 = open("bit1divpairs_pre.txt","w+",1)
     f2 = open("nondivpairs_pre.txt","w+",1)
     f4 = open("bit0divpairs_pre.txt","w+",1)
-    FindPairs (10000, n, current_bits, n_, r2, rmod, l, f1, f2, f4, 1, len(bits(current_bits) ) )
+    FindPairs (10000, n, current_bits, n_, r2, rmod, l, f1, f2, f4, 0, len(bits(current_bits) ) )
     f1.close()
     f2.close()
     f4.close()
