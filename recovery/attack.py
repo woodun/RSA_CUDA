@@ -227,6 +227,9 @@ while(eob == 0 ):
         eob = 1
 
     current_bits = int(temp, 2)
+    
+    if len(bits(current_bits)) == 3 :
+        break
 
 print(bits(current_bits))
 
