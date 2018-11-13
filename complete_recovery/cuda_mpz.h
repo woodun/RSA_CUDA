@@ -394,6 +394,8 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
   }
   */
 
+  dst->sign = src->sign;
+
   for(int d_index = capacity - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
 	  dst->digits[d_index] = 0;
   }
@@ -423,6 +425,8 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
 	  return;
   }
   */
+
+  dst->sign = src->sign;
 
   for(int d_index = capacity - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
 	digits[d_index] = 0;
@@ -737,6 +741,8 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
 	  return;
   }
   */
+
+  dst->sign = src->sign;
 
   for(int d_index = 0; d_index < capacity - 1 - rs_digits; d_index++) {//constant time for specific rl
 	  dst->digits[d_index] = ( digits[d_index + rs_digits] >> rs_remainder ) | ( digits[d_index + rs_digits + 1] << ( LOG2_DIGIT_BASE - rs_remainder ) );
