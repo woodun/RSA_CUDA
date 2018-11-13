@@ -4,7 +4,7 @@ import os
 import subprocess
 
 
-subprocess.check_output(["main", "nondivpairs_pre63", "1000"])
+subprocess.check_output(["main", "nondivpairs_pre62.txt", "1000"])
 
 
 
