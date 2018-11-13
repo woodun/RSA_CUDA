@@ -209,11 +209,11 @@ while(eob == 0 ):
     diff1 = abs( int(sum1) - int(sum2) );
     diff2 = abs( int(sum2) - int(sum3) );
 
-    if diff1 / diff2 > 1.3 : #bit is 1
+    if diff1 / diff2 > 1.2 : #bit is 1
     #     print("bit is 1.\n");
         print("1")
         temp = bits(current_bits) + "1"
-    elif diff2 / diff1 > 1.3 : #bit is 0
+    elif diff2 / diff1 > 1.2 : #bit is 0
     #     print("bit is 0.\n");
         print("0")
         temp = bits(current_bits) + "0"
