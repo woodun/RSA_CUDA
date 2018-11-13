@@ -419,7 +419,7 @@ int main (int argc, char *argv[]) {
 	int known_bits[2048];
 	known_bits[0] = 1;
 	known_bits[1] = 0;
-	int known_bits_length = 2;
+	int known_bits_length = 1;
 	int div_con = 0;
 
 	///////gmp init
@@ -473,6 +473,18 @@ int main (int argc, char *argv[]) {
 			bit0_div_num--;
 			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 2], &r1);
 		}
+//		if (div_con == 2 && nondiv_num > 0){
+//			nondiv_num--;
+//			cuda_mpz_set( &myMes2_h[nondiv_num], &r2);
+//			nondiv_num--;
+//			cuda_mpz_set( &myMes2_h[nondiv_num], &r1);
+//		}
+//		if (div_con == 3 && bit0_div_num > 0){
+//			bit0_div_num--;
+//			cuda_mpz_set( &myMes3_h[bit0_div_num], &r2);
+//			bit0_div_num--;
+//			cuda_mpz_set( &myMes3_h[bit0_div_num], &r1);
+//		}
 		if (bit1_div_num == 0 && nondiv_num == 0 && bit0_div_num == 0){
 			break;
 		}
