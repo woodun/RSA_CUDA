@@ -167,7 +167,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	}
 
 	if(div_count != eLength){
-		return 0;
+//		return 0;
 	}
 
 	//_x1_1_temp = _x1_1
