@@ -580,7 +580,7 @@ int main (int argc, char *argv[]) {
 	struct timespec ts2;
 	clock_gettime(CLOCK_REALTIME, &ts2);
 
-	printf("%llu ", time_diff(ts1, ts2));
+	//printf("%llu ", time_diff(ts1, ts2));
 
     return 0;
 }

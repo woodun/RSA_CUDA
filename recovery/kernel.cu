@@ -38,7 +38,7 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
 	for(long long unsigned iter1 = 0; iter1 < pairs; iter1++){
 
-		mpz_set(&_x1[k], &mes1[2 * iter1 + k]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
+		mpz_set(&_x1[k], &mes1[2 * iter1 + k / 31 ]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 
 		t1 = clock64();//beginning of necessary instructions within the kernel

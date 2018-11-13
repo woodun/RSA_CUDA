@@ -37,8 +37,8 @@ int main (int argc, char *argv[]) {
 
 	long x = strtol(argv[2], NULL, 10);
 	long long unsigned pairs = x;
-	unsigned thread_num = 2;
-	long long unsigned data_num = pairs * thread_num;
+	unsigned thread_num = 32;
+	long long unsigned data_num = pairs * 2;
 
 	///////host memory
 	long long int *clockTable_h;
