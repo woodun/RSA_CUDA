@@ -4,9 +4,9 @@ import os
 import subprocess
 
 
-subprocess.check_output(["./main", "nondivpairs_pre62.txt", "1000"])
+sum1 = subprocess.check_output(["./main", "nondivpairs_pre62.txt", "1000"])
 
-
+print(sum1)
 
 
 # encryptionBit = []
