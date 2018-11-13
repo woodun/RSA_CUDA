@@ -54,15 +54,15 @@ def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_nu
     _x2_1 = REDC(rmod, n, n_, _x2_1, l)
     _x2_2 = REDC(rmod, n, n_, _x2_2, l)
     
+    div_count = 0
+     
     if check_pre == 1: 
         if s1_1 != s1_2 :
             div_count+=1
         if s2_1 != s2_2 :
             div_count+=1
     
-    e_b = bits(e)    
-    
-    div_count = 0
+    e_b = bits(e)   
     
     for i in e_b[1:]:        
         if i == '0':
