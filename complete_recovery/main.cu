@@ -43,7 +43,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	int s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 	int s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-	if (s1_1 != s1_2){ //previous bits are all convergent
+	if (s1_1 != s1_2){
 //		printf("asd\n");
 //		return 0;
 		div_count++;
@@ -64,7 +64,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	int s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 	int s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-	if (s2_1 != s2_2){ //previous bits are all convergent
+	if (s2_1 != s2_2){
 //		printf("sdf\n");
 //		return 0;
 		div_count++;
@@ -89,7 +89,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s2_1 != s2_2){ //previous bits are all convergent
+			if (s2_1 != s2_2){
 //				return 0;
 				div_count++;
 			}
@@ -111,7 +111,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s1_1 != s1_2){ //previous bits are all convergent
+			if (s1_1 != s1_2){
 //				return 0;
 				div_count++;
 			}
@@ -131,7 +131,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s1_1 != s1_2){ //previous bits are all convergent
+			if (s1_1 != s1_2){
 //				return 0;
 				div_count++;
 			}
@@ -154,7 +154,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s2_1 != s2_2){ //previous bits are all convergent
+			if (s2_1 != s2_2){
 //				return 0;
 				div_count++;
 			}
