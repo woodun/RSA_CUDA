@@ -283,7 +283,7 @@ int main (int argc, char *argv[]) {
 
 	///////host memory
 	long long int *clockTable_h;
-	clockTable_h = (long long int*) malloc( pairs * sizeof(long long int));
+	clockTable_h = (long long int*) malloc( 4 * pairs * sizeof(long long int));
 
 	cuda_mpz_t h_n;
 	cuda_mpz_t h_n_;
@@ -359,7 +359,7 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_t *d_t;
 	cuda_mpz_t *_x1_cuda_mpz;
 	cuda_mpz_t *_x2_cuda_mpz;
-	cudaMalloc((void **) &clockTable_d, pairs * sizeof(long long int));
+	cudaMalloc((void **) &clockTable_d, 4 * pairs * sizeof(long long int));
 	cudaMalloc((void **) &tmp, varSize);
 	cudaMalloc((void **) &tmp2, varSize);
 	cudaMalloc((void **) &d_t, varSize);
@@ -504,7 +504,7 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs * 4, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
-	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
+	cudaMemcpy(clockTable_h, clockTable_d, 4 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 
 	for (long long unsigned q = pairs; q < pairs * 2; q++){
 		sum1 += clockTable_h[q];

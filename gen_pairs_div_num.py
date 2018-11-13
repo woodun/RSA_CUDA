@@ -217,10 +217,10 @@ d = modinv(e, n_lambda) #67 bits
 
 start = time.time()
 
-f1 = open("bit1divpairs_pre64.txt","w+",1)
-f2 = open("nondivpairs_pre64.txt","w+",1)
-f3 = open("divpairs_pre64.txt","w+",1)
-f4 = open("bit0divpairs_pre64.txt","w+",1)
+f1 = open("bit1divpairs_pre65.txt","w+",1)
+f2 = open("nondivpairs_pre65.txt","w+",1)
+f3 = open("divpairs_pre65.txt","w+",1)
+f4 = open("bit0divpairs_pre65.txt","w+",1)
 x = FindPairs (10, n, d, 65, f1, f2, f3, f4, 1, (66 - 65) )
 f1.close()
 f2.close()
