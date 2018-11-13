@@ -210,7 +210,7 @@ def FindPairs (num, mod, e, bit, f1, f2, f3, f4, check_pre, div_num):
 # 			return 1	
 # 		if bit1_div_num == 0 and nondiv_num == 0 and bothdiv_num == 0: # no 1 0			
 # 			return 2			
-		if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0: # no 1 1				
+		if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0 and bothdiv_num == 0: # no 1 1				
 			return 3
 					
 
@@ -225,11 +225,11 @@ d = modinv(e, n_lambda) #67 bits
 
 start = time.time()
 
-f1 = open("bit1divpairs_pre63.txt","w+",1)
-f2 = open("nondivpairs_pre63.txt","w+",1)
-f3 = open("divpairs_pre63.txt","w+",1)
-f4 = open("bit0divpairs_pre63.txt","w+",1)
-x = FindPairs (10, n, d, 31, f1, f2, f3, f4, 0, (66 - 31) )
+f1 = open("bit1divpairs_pre63.txt","w+")
+f2 = open("nondivpairs_pre63.txt","w+")
+f3 = open("divpairs_pre63.txt","w+")
+f4 = open("bit0divpairs_pre63.txt","w+")
+x = FindPairs (10, n, d, 31, f1, f2, f3, f4, 1, (66 - 31) )
 f1.close()
 f2.close()
 f3.close()

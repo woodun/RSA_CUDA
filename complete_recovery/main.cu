@@ -166,7 +166,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 		}
 	}
 
-	if(div_count != eLength && check_pre == 1){
+	if(div_count != eLength && check_pre == 1){ //total divergence number
 		return 0;
 	}
 

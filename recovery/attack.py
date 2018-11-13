@@ -171,7 +171,7 @@ def Padding8 (n):
         hex_n = "0" + hex_n;
     return hex_n;
             
-def FindPairs (num, mod, e, n_, r2, rmod, l, f1, f2, f4, check_pre, div_num): 
+def FindPairs (num, mod, e, n_, r2, rmod, l, f1, f2, f3, f4, check_pre, div_num): 
     bit1_div_num = num #0 1
     nondiv_num = num #0 0
     bothdiv_num = num #1 1
@@ -185,10 +185,19 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, f1, f2, f4, check_pre, div_num):
         if div_con == 2 and nondiv_num > 0:                
             f2.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
             nondiv_num-=1
+        if div_con == 3 and bothdiv_num > 0:                
+            f3.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
+            bothdiv_num-=1
         if div_con == 4 and bit0_div_num > 0:                
             f4.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
-            bit0_div_num-=1            
-        if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0: # no 1 1                
+            bit0_div_num-=1
+#         if bit1_div_num == 0 and bothdiv_num == 0 and bit0_div_num == 0: # no 0 0            
+#             return 0    
+#         if bothdiv_num == 0 == 0 and nondiv_num == 0 and bit0_div_num == 0: # no 0 1        
+#             return 1    
+#         if bit1_div_num == 0 and nondiv_num == 0 and bothdiv_num == 0: # no 1 0            
+#             return 2            
+        if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0 and bothdiv_num == 0: # no 1 1                
             return 3
                     
 random.seed(time.time())
@@ -208,24 +217,32 @@ temp = "0"
 
 while(eob == 0 ): #32 threads with cache? bothdiv?
 
-    f1 = open("bit1divpairs_pre.txt","w+",1)
-    f2 = open("nondivpairs_pre.txt","w+",1)
-    f4 = open("bit0divpairs_pre.txt","w+",1)
-    FindPairs (2256, n, current_bits, n_, r2, rmod, l, f1, f2, f4, 1, len(bits(current_bits) ) )
+    f1 = open("bit1divpairs_pre.txt","w+")
+    f2 = open("nondivpairs_pre.txt","w+")
+    f3 = open("divpairs_pre.txt","w+")
+    f4 = open("bit0divpairs_pre.txt","w+")
+    FindPairs (2256, n, current_bits, n_, r2, rmod, l, f1, f2, f3, f4, 1, len(bits(current_bits) ) )
     f1.close()
     f2.close()
+    f3.close()
     f4.close()
     
     sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256"])
     print(sum1)
     sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256"])
     print(sum2)
-    sum3 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256"]) #./main bit0divpairs_pre.txt 1000
+    sum3 = subprocess.check_output(["./main", "nondivpairs.txt", "2256"])
     print(sum3)
+    sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256"]) #./main bit0divpairs_pre.txt 1000
+    print(sum4)
 
     diff1 = abs( int(sum1) - int(sum2) );
-    diff2 = abs( int(sum2) - int(sum3) );
+    diff2 = abs( int(sum2) - int(sum4) );
     print(diff1,diff2)
+    
+    diff3 = abs( int(sum1) - int(sum3) );
+    diff4 = abs( int(sum3) - int(sum4) );
+    print(diff3,diff4)
 
 #     if diff1 / diff2 > 1.2 : #bit is 1
 #     #     print("bit is 1.\n");
