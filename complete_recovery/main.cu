@@ -373,7 +373,7 @@ int main (int argc, char *argv[]) {
 	///////get Messages
 	long long unsigned mesSize = sizeof(cuda_mpz_t) * data_num;
 	cuda_mpz_t *myMes1_h;
-	myMes1_h = (cuda_mpz_t*) malloc (mesSize); //CPU list converge for bit 0, diverge for bit 1
+	myMes1_h = (cuda_mpz_t*) malloc (mesSize * 3); //CPU list converge for bit 0, diverge for bit 1
 	cuda_mpz_t *myMes2_h;
 	myMes2_h = (cuda_mpz_t*) malloc (mesSize); //CPU list converge for bit 0 and converge for bit 1
 	cuda_mpz_t *myMes3_h;
@@ -386,7 +386,7 @@ int main (int argc, char *argv[]) {
 	}
 
 	cuda_mpz_t *myMes1_d;
-	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize);//GPU
+	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize * 3);//GPU
 
 	///////gen_pairs variables
 	int	bit1_div_num = data_num;
@@ -463,15 +463,15 @@ int main (int argc, char *argv[]) {
 		}
 		if (div_con == 2 && nondiv_num > 0){
 			nondiv_num--;
-			cuda_mpz_set( &myMes2_h[nondiv_num], &r2);
+			cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r2);
 			nondiv_num--;
-			cuda_mpz_set( &myMes2_h[nondiv_num], &r1);
+			cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r1);
 		}
 		if (div_con == 3 && bit0_div_num > 0){
 			bit0_div_num--;
-			cuda_mpz_set( &myMes3_h[bit0_div_num], &r2);
+			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 2], &r2);
 			bit0_div_num--;
-			cuda_mpz_set( &myMes3_h[bit0_div_num], &r1);
+			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 2], &r1);
 		}
 		if (bit1_div_num == 0 && nondiv_num == 0 && bit0_div_num == 0){
 			break;
@@ -484,7 +484,7 @@ int main (int argc, char *argv[]) {
 
 	////////////////////////////////////////////////////////////////converge for bit 0, diverge for bit 1
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);
-	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs * 3, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 
@@ -492,28 +492,36 @@ int main (int argc, char *argv[]) {
 		sum1 += clockTable_h[q];
 	}
 	sum1 = sum1 / pairs;
-
-	////////////////////////////////////////////////////////////////converge for bit 0 and converge for bit 1
-	cudaMemcpy(myMes1_d, myMes2_h, mesSize, cudaMemcpyHostToDevice);
-	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
-	cudaDeviceSynchronize();
-	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
-
-	for (long long unsigned q = 0; q < pairs; q++){
+	for (long long unsigned q = pairs; q < pairs * 2; q++){
 		sum2 += clockTable_h[q];
 	}
 	sum2 = sum2 / pairs;
-
-	////////////////////////////////////////////////////////////////diverge for bit 0 and converge for bit 1
-	cudaMemcpy(myMes1_d, myMes3_h, mesSize, cudaMemcpyHostToDevice);
-	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
-	cudaDeviceSynchronize();
-	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
-
-	for (long long unsigned q = 0; q < pairs; q++){
+	for (long long unsigned q = pairs * 2; q < pairs * 3; q++){
 		sum3 += clockTable_h[q];
 	}
 	sum3 = sum3 / pairs;
+
+//	////////////////////////////////////////////////////////////////converge for bit 0 and converge for bit 1
+//	cudaMemcpy(myMes1_d, myMes2_h, mesSize, cudaMemcpyHostToDevice);
+//	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+//	cudaDeviceSynchronize();
+//	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
+//
+//	for (long long unsigned q = 0; q < pairs; q++){
+//		sum2 += clockTable_h[q];
+//	}
+//	sum2 = sum2 / pairs;
+//
+//	////////////////////////////////////////////////////////////////diverge for bit 0 and converge for bit 1
+//	cudaMemcpy(myMes1_d, myMes3_h, mesSize, cudaMemcpyHostToDevice);
+//	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+//	cudaDeviceSynchronize();
+//	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
+//
+//	for (long long unsigned q = 0; q < pairs; q++){
+//		sum3 += clockTable_h[q];
+//	}
+//	sum3 = sum3 / pairs;
 
 	long long int diff1 = abs(sum1 - sum2);
 	long long int diff2 = abs(sum2 - sum3);
