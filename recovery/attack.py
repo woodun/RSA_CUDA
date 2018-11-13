@@ -196,7 +196,7 @@ while(eob == 0 ):
     f1 = open("bit1divpairs_pre.txt","w+",1)
     f2 = open("nondivpairs_pre.txt","w+",1)
     f4 = open("bit0divpairs_pre.txt","w+",1)
-    FindPairs (sys.argv[1], n, current_bits, n_, r2, rmod, l, f1, f2, f4, 1, len(bits(current_bits) ) )
+    FindPairs (int(sys.argv[1]), n, current_bits, n_, r2, rmod, l, f1, f2, f4, 1, len(bits(current_bits) ) )
     f1.close()
     f2.close()
     f4.close()
@@ -205,8 +205,8 @@ while(eob == 0 ):
     sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "1000"])
     sum3 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "1000"])
 
-    diff1 = abs(sum1 - sum2);
-    diff2 = abs(sum2 - sum3);
+    diff1 = abs( int(sum1) - int(sum2) );
+    diff2 = abs( int(sum2) - int(sum3) );
 
     if diff1 / diff2 > 1.3 : #bit is 1
     #     print("bit is 1.\n");
