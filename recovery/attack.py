@@ -61,11 +61,10 @@ def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_nu
         if s1_1 != s1_2 :
             div_count+=1
         if s2_1 != s2_2 :
-            div_count+=1
-    
-        if div_count != 1 :
-            return 0
-        div_count = 0
+            div_count+=1    
+#         if div_count != 1 : #same divergence pattern
+#             return 0
+#         div_count = 0
     
     e_b = bits(e)   
     
@@ -104,12 +103,12 @@ def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_nu
                 div_count+=1
             if s2_1 != s2_2 :
                 div_count+=1
-            if div_count != 1 :
-                return 0
-            div_count = 0
+#             if div_count != 1 : #same divergence pattern
+#                 return 0
+#             div_count = 0
             
-#     if check_pre == 1 and div_count != div_num :
-#         return 0
+    if check_pre == 1 and div_count != div_num : #total divergence number
+        return 0
     
     _x1_1_temp = _x1_1
     _x2_1_temp = _x2_1
@@ -143,20 +142,26 @@ def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_nu
     _x2_2 = _x2_2 * _x2_2
     d1_s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
     
-    if d0_s1_1 != d0_s1_2 or d0_s2_1 != d0_s2_2: #diverge for bit 0
-        if d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2: #diverge for bit 0 and diverge for bit 1
-#                     print ("debug3\n")
+    if (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2): #diverge for bit 0
+        if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #diverge for bit 0, diverge for bit 1
+            print ("debug3\n")
             return 3
-        else: #diverge for bit 0 and converge for bit 1
-#                     print ("debug4\n")
+        elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1
+            print ("debug4\n")
             return 4
-    else:
-        if d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2: #converge for bit 0, diverge for bit 1
-#                 print ("debug1\n")
+        else:
+            return 0
+    elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0
+        if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #converge for bit 0, diverge for bit 1
+            print ("debug1\n")
             return 1
-        else: #converge for bit 0 and converge for bit 1
-#                 print ("debug2\n")
-            return 2    
+        elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1
+            print ("debug2\n")
+            return 2
+        else:
+            return 0
+    else:
+        return 0    
             
 def Padding8 (n): 
     hex_n = hex(n).rstrip("L").lstrip("0x")

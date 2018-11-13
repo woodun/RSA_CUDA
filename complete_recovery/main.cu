@@ -45,7 +45,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	if (s1_1 != s1_2 && check_pre == 1){
 //		printf("asd\n");
-		return 0;
+//		return 0;
 		div_count++;
 	}
 
@@ -66,7 +66,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	if (s2_1 != s2_2 && check_pre == 1){
 //		printf("sdf\n");
-		return 0;
+//		return 0;
 		div_count++;
 	}
 
@@ -90,7 +90,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
 			if (s2_1 != s2_2 && check_pre == 1){
-				return 0;
+//				return 0;
 				div_count++;
 			}
 
@@ -112,7 +112,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
 			if (s1_1 != s1_2 && check_pre == 1){
-				return 0;
+//				return 0;
 				div_count++;
 			}
 
@@ -132,7 +132,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
 			if (s1_1 != s1_2 && check_pre == 1){
-				return 0;
+//				return 0;
 				div_count++;
 			}
 
@@ -155,7 +155,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
 			if (s2_1 != s2_2 && check_pre == 1){
-				return 0;
+//				return 0;
 				div_count++;
 			}
 
@@ -166,9 +166,9 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 		}
 	}
 
-//	if(div_count != eLength && check_pre == 1){
-//		return 0;
-//	}
+	if(div_count != eLength && check_pre == 1){
+		return 0;
+	}
 
 	//_x1_1_temp = _x1_1
 	cuda_mpz_set( _x1_1_temp, _x1_1);
@@ -420,7 +420,7 @@ int main (int argc, char *argv[]) {
 	known_bits[0] = 1;
 	known_bits[1] = 0;
 	known_bits[2] = 1;
-	int known_bits_length = 1;
+	int known_bits_length = 2;
 	int div_con = 0;
 
 	///////gmp init
