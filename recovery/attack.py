@@ -142,26 +142,26 @@ def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_nu
     _x2_2 = _x2_2 * _x2_2
     d1_s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
     
-    if (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2): #diverge for bit 0
-        if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #diverge for bit 0, diverge for bit 1
+    if (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2): #diverge for bit 0 (1 0) or (0 1)
+        if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #diverge for bit 0, diverge for bit 1 (1 0) or (0 1)
 #             print ("debug3\n")
             return 3
-        elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1
+        elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1 (0 0)
 #             print ("debug4\n")
             return 4
         else:
             return 0
-    elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0
-        if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #converge for bit 0, diverge for bit 1
+    elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0 (0 0)
+        if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #converge for bit 0, diverge for bit 1 (1 0) or (0 1)
 #             print ("debug1\n")
             return 1
-        elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1
+        elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1 (0 0)
 #             print ("debug2\n")
             return 2
         else:
             return 0
     else:
-        return 0    
+        return 0   
             
 def Padding8 (n): 
     hex_n = hex(n).rstrip("L").lstrip("0x")
@@ -227,21 +227,22 @@ while(eob == 0 ): #32 threads with cache? bothdiv?
     f3.close()
     f4.close()
     
-    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256"])
+    #./main bit0divpairs_pre.txt 1000
+    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256"]) # greater means 1
     print(sum1)
     sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256"])
     print(sum2)
     sum3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256"])
     print(sum3)
-    sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256"]) #./main bit0divpairs_pre.txt 1000
+    sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256"]) # greater means 0
     print(sum4)
 
-    diff1 = abs( int(sum1) - int(sum2) );
-    diff2 = abs( int(sum2) - int(sum4) );
+    diff1 = abs( int(sum1) - int(sum2) ); # greater means 1
+    diff2 = abs( int(sum2) - int(sum4) ); # greater means 0
     print(diff1,diff2)
     
-    diff3 = abs( int(sum1) - int(sum3) );
-    diff4 = abs( int(sum3) - int(sum4) );
+    diff3 = abs( int(sum1) - int(sum3) ); # greater means 0
+    diff4 = abs( int(sum3) - int(sum4) ); # greater means 1
     print(diff3,diff4)
 
 #     if diff1 / diff2 > 1.2 : #bit is 1
@@ -256,7 +257,16 @@ while(eob == 0 ): #32 threads with cache? bothdiv?
 #     #     print("end of bits.\n");
 #         eob = 1
 
-    if diff1 > diff2 : #bit is 1
+#     if diff1 > diff2 : #bit is 1
+#     #     print("bit is 1.\n");
+#         print("1")
+#         temp = bits(current_bits) + "1"
+#     elif diff2 > diff1 : #bit is 0
+#     #     print("bit is 0.\n");
+#         print("0")
+#         temp = bits(current_bits) + "0"
+
+    if sum1 > sum4 : #bit is 1
     #     print("bit is 1.\n");
         print("1")
         temp = bits(current_bits) + "1"

@@ -122,26 +122,26 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre, div_num): # div_num is a relax
 			_x2_2 = _x2_2 * _x2_2
 			d1_s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
 			
-			if (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2): #diverge for bit 0
-				if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #diverge for bit 0, diverge for bit 1
+			if (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2): #diverge for bit 0 (1 0) or (0 1)
+				if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #diverge for bit 0, diverge for bit 1 (1 0) or (0 1)
 					print ("debug3\n")
 					return 3
-				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1
+				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1 (0 0)
 					print ("debug4\n")
 					return 4
 				else:
 					return 0
-			elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0
-				if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #converge for bit 0, diverge for bit 1
+			elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0 (0 0)
+				if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #converge for bit 0, diverge for bit 1 (1 0) or (0 1)
 					print ("debug1\n")
 					return 1
-				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1
+				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1 (0 0)
 					print ("debug2\n")
 					return 2
 				else:
 					return 0
 			else:
-				return 0		
+				return 0 		
 		else:
 			if i == '0':
 				_x2_1 = _x1_1 * _x2_1
@@ -249,25 +249,45 @@ print(end - start)
 # 		r1 = 0x00000032aab0362fe2d5ed34
 # 		r2 = 0x0000002a63c69c10cc6a3ae0
 
-# 	if d0_s1_1 != d0_s1_2 and d0_s2_1 != d0_s2_2: #diverge for bit 0 # not working, can only reach two branches
-# 		if d1_s1_1 != d1_s1_2 and d1_s2_1 != d1_s2_2: #diverge for bit 0, diverge for bit 1
-# 			print ("debug3\n")
-# 			return 3
-# 		elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1
-# 			print ("debug4\n")
-# 			return 4
-# 		else:
-# 			return 0
-# 	elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0
-# 		if d1_s1_1 != d1_s1_2 and d1_s2_1 != d1_s2_2: #converge for bit 0, diverge for bit 1
-# 			print ("debug1\n")
-# 			return 1
-# 		elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1
-# 			print ("debug2\n")
-# 			return 2
-# 		else:
-# 			return 0
-# 	else:
-# 		return 0 
+# 			if d0_s1_1 != d0_s1_2 and d0_s2_1 != d0_s2_2: #diverge for bit 0 # not working, can only reach two branches (1 1)
+# 				if d1_s1_1 != d1_s1_2 and d1_s2_1 != d1_s2_2: #diverge for bit 0, diverge for bit 1 (1 1)
+# 					print ("debug3\n")
+# 					return 3
+# 				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1 (0 0)
+# 					print ("debug4\n")
+# 					return 4
+# 				else:
+# 					return 0
+# 			elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0 (0 0)
+# 				if d1_s1_1 != d1_s1_2 and d1_s2_1 != d1_s2_2: #converge for bit 0, diverge for bit 1 (1 1)
+# 					print ("debug1\n")
+# 					return 1
+# 				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1 (0 0)
+# 					print ("debug2\n")
+# 					return 2
+# 				else:
+# 					return 0
+# 			else:
+# 				return 0 	
 
 
+# 			if (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2): #diverge for bit 0 (1 0) or (0 1)
+# 				if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #diverge for bit 0, diverge for bit 1 (1 0) or (0 1)
+# 					print ("debug3\n")
+# 					return 3
+# 				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1 (0 0)
+# 					print ("debug4\n")
+# 					return 4
+# 				else:
+# 					return 0
+# 			elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0 (0 0)
+# 				if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #converge for bit 0, diverge for bit 1 (1 0) or (0 1)
+# 					print ("debug1\n")
+# 					return 1
+# 				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1 (0 0)
+# 					print ("debug2\n")
+# 					return 2
+# 				else:
+# 					return 0
+# 			else:
+# 				return 0
