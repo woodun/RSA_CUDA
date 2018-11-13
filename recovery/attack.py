@@ -217,7 +217,7 @@ temp = "0"
 # int(sys.argv[1])
 
 
-while(eob == 0 ): #32 threads with cache? bothdiv?
+while(eob == 0 ): #32 threads with cache? multiple runs to vote.
 
     f1 = open("bit1divpairs_pre.txt","w+")
     f2 = open("nondivpairs_pre.txt","w+")
@@ -239,13 +239,17 @@ while(eob == 0 ): #32 threads with cache? bothdiv?
     sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256"]) # greater means 0
     print(sum4)
 
-    diff1 = abs( int(sum1) - int(sum2) ); # greater means 1
-    diff2 = abs( int(sum2) - int(sum4) ); # greater means 0
+    diff1 = int(sum1) - int(sum2) # greater means 1
+    diff2 = int(sum4) - int(sum2) # greater means 0
     print(diff1,diff2)
     
-    diff3 = abs( int(sum1) - int(sum3) ); # greater means 0
-    diff4 = abs( int(sum3) - int(sum4) ); # greater means 1
+    diff3 = int(sum1) - int(sum3) # greater means 0
+    diff4 = int(sum4) - int(sum3) # greater means 1
     print(diff3,diff4)
+    
+    diff5 = int(sum1) - int(sum4) # greater means 0
+    diff6 = int(sum3) - int(sum2) # greater means 1
+    print(diff5,diff6)
 
 #     if diff1 / diff2 > 1.2 : #bit is 1
 #     #     print("bit is 1.\n");
