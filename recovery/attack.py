@@ -190,7 +190,7 @@ r2 = (r << l) % n
 print("1")
 eob = 0
 current_bits = 1
-temp = "init"
+temp = "0"
 
 while(eob == 0 ):
 
