@@ -221,7 +221,7 @@ while(eob == 0 ): #32 threads with cache? bothdiv?
     f2 = open("nondivpairs_pre.txt","w+")
     f3 = open("divpairs_pre.txt","w+")
     f4 = open("bit0divpairs_pre.txt","w+")
-    FindPairs (2256, n, current_bits, n_, r2, rmod, l, f1, f2, f3, f4, 1, len(bits(current_bits) ) )
+    FindPairs (argv[1], n, current_bits, n_, r2, rmod, l, f1, f2, f3, f4, argv[2], len(bits(current_bits) ) )
     f1.close()
     f2.close()
     f3.close()
