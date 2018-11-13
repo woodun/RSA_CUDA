@@ -177,7 +177,6 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, f1, f2, f4, check_pre, div_num):
         if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0: # no 1 1                
             return 3
                     
-mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num
 random.seed(time.time())
 p = 32416189867
 q = 32416189909
@@ -188,7 +187,7 @@ l = findR(n)[0]
 n_ = - modinv(n,r) & rmod 
 r2 = (r << l) % n
 
-
+print("1")
 eob = 0
 current_bits = 1
 
