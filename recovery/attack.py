@@ -214,24 +214,33 @@ while(eob == 0 ):
     diff2 = abs( int(sum2) - int(sum3) );
     print(diff1,diff2)
 
-    if diff1 / diff2 > 1.2 : #bit is 1
+#     if diff1 / diff2 > 1.2 : #bit is 1
+#     #     print("bit is 1.\n");
+#         print("1")
+#         temp = bits(current_bits) + "1"
+#     elif diff2 / diff1 > 1.2 : #bit is 0
+#     #     print("bit is 0.\n");
+#         print("0")
+#         temp = bits(current_bits) + "0"
+#     else: #EOB
+#     #     print("end of bits.\n");
+#         eob = 1
+
+    if diff1 > diff2 : #bit is 1
     #     print("bit is 1.\n");
         print("1")
         temp = bits(current_bits) + "1"
-    elif diff2 / diff1 > 1.2 : #bit is 0
+    elif diff2 > diff1 : #bit is 0
     #     print("bit is 0.\n");
         print("0")
         temp = bits(current_bits) + "0"
-    else: #EOB
-    #     print("end of bits.\n");
-        eob = 1
-
+ 
     current_bits = int(temp, 2)
     
     if len(bits(current_bits)) == 3 :
         break
 
-print(bits(current_bits))
+print("bits: " + bits(current_bits))
 
 
 
