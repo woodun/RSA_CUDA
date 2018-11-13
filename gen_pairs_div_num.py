@@ -180,11 +180,11 @@ def FindPairs (num, mod, e, bit, f1, f2, f3, f4, check_pre, div_num):
 	bit0_div_num = num #1 0
 	while(True):
 		r1, r2 = random.randint(2, mod), random.randint(2, mod)
-		r1 = 0x30bb981bd55d145233
-		r2 = 0x35bd98947ef0b97a5e
+# 		r1 = 0x30bb981bd55d145233
+# 		r2 = 0x35bd98947ef0b97a5e
 
 		div_con = CheckDivExp(r1, r2, e, mod, bit, check_pre, div_num)	
-		break
+# 		break
 		if div_con == 1 and bit1_div_num > 0:				
 			f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
 			bit1_div_num-=1
@@ -222,7 +222,7 @@ f1 = open("bit1divpairs_pre64.txt","w+",1)
 f2 = open("nondivpairs_pre64.txt","w+",1)
 f3 = open("divpairs_pre64.txt","w+",1)
 f4 = open("bit0divpairs_pre64.txt","w+",1)
-x = FindPairs (10, n, d, 65, f1, f2, f3, f4, 1, (65 - 65) )
+x = FindPairs (10, n, d, 65, f1, f2, f3, f4, 1, (66 - 65) )
 f1.close()
 f2.close()
 f3.close()
