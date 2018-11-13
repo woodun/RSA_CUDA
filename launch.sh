@@ -19,29 +19,10 @@
 #./main div_pre0.txt divpairs_pre0.txt 10000 >> runtime.txt
 
 
-#echo "" >> runtime.txt
-#
-#
-#./main nodiv_nopre65.txt nondivpairs_nopre65.txt 10000 >> runtime.txt
-#./main div_nopre65.txt divpairs_nopre65.txt 10000 >> runtime.txt
-#
-#./main nodiv_nopre64.txt nondivpairs_nopre64.txt 10000 >> runtime.txt
-#./main div_nopre64.txt divpairs_nopre64.txt 10000 >> runtime.txt
-#
-#
-#echo "" >> runtime.txt
-#
-#./main nodiv_pre65.txt nondivpairs_pre65.txt 10000 >> runtime.txt
-#./main div_pre65.txt divpairs_pre65.txt 10000 >> runtime.txt
-#
-#./main nodiv_pre64.txt nondivpairs_pre64.txt 10000 >> runtime.txt
-#./main div_pre64.txt divpairs_pre64.txt 10000 >> runtime.txt
+./main nodiv_pre62.txt nondivpairs_pre62.txt 1000
+./main bit1div_pre62.txt bit1divpairs_pre62.txt 1000
+./main bit0div_pre62.txt bit0divpairs_pre62.txt 1000
 
-
-./main nodiv_pre64.txt nondivpairs_pre64.txt 1000
-./main bit1div_pre64.txt bit1divpairs_pre64.txt 1000
-./main bit0div_pre64.txt bit0divpairs_pre64.txt 1000
-
-./main nodiv_pre65.txt nondivpairs_pre65.txt 1000
-./main bit1div_pre65.txt bit1divpairs_pre65.txt 1000
-./main bit0div_pre65.txt bit0divpairs_pre65.txt 1000
+./main nodiv_pre63.txt nondivpairs_pre63.txt 1000
+./main bit1div_pre63.txt bit1divpairs_pre63.txt 1000
+./main bit0div_pre63.txt bit0divpairs_pre63.txt 1000
