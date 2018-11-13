@@ -173,10 +173,10 @@ int main (int argc, char *argv[]) {
 
 	long long unsigned sum1 = 0;
 
-	for (long long unsigned q = 0; q < pairs; q++){
+	for (long long unsigned q = 256; q < pairs; q++){
 		sum1 += clockTable_h[q];
 	}
-	sum1 = sum1 / pairs;
+	sum1 = sum1 / (pairs - 256);
 	printf("%lld", sum1);
 
 	////////free device
