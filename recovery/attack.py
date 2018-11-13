@@ -237,7 +237,7 @@ while(eob == 0 ):
  
     current_bits = int(temp, 2)
     
-    if len(bits(current_bits)) == 3 :
+    if len(bits(current_bits)) == 67 : # length of key
         break
 
 print("bits: " + bits(current_bits))
