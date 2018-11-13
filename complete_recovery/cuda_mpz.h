@@ -426,8 +426,6 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
   }
   */
 
-  dst->sign = src->sign;
-
   for(int d_index = capacity - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
 	digits[d_index] = 0;
   }

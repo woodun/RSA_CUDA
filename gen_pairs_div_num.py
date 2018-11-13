@@ -123,16 +123,16 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre, div_num): # div_num is a relax
 			
 			if d0_s1_1 != d0_s1_2 or d0_s2_1 != d0_s2_2: #diverge for bit 0
 				if d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2: #diverge for bit 0 and diverge for bit 1
-					print ("debug3\n")
+# 					print ("debug3\n")
 					return 3
 				else: #diverge for bit 0 and converge for bit 1
-					print ("debug4\n")
+# 					print ("debug4\n")
 					return 4
 			elif d1_s1_1 != d1_s1_2 or d1_s2_1 != d1_s2_2: #converge for bit 0, diverge for bit 1
-				print ("debug1\n")
+# 				print ("debug1\n")
 				return 1
 			else: #converge for bit 0 and converge for bit 1
-				print ("debug2\n")
+# 				print ("debug2\n")
 				return 2			
 		else:
 			if i == '0':
@@ -180,11 +180,10 @@ def FindPairs (num, mod, e, bit, f1, f2, f3, f4, check_pre, div_num):
 	bit0_div_num = num #1 0
 	while(True):
 		r1, r2 = random.randint(2, mod), random.randint(2, mod)
-		r1 = 0x30bb981bd55d145233
-		r2 = 0x35bd98947ef0b97a5e
-
+# 		r1 = 0x30bb981bd55d145233
+# 		r2 = 0x35bd98947ef0b97a5e
 		div_con = CheckDivExp(r1, r2, e, mod, bit, check_pre, div_num)	
-		break
+# 		break
 		if div_con == 1 and bit1_div_num > 0:				
 			f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
 			bit1_div_num-=1
