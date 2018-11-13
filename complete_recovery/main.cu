@@ -459,13 +459,9 @@ int main (int argc, char *argv[]) {
 		if (div_con == 1 && bit1_div_num > 0){
 			bit1_div_num--;
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
-			bit1_div_num--;
-			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
-		}
-		if (div_con == 1 && bit1_div_num > 0){
-			bit1_div_num--;
 			cuda_mpz_set( &myMes1_h[bit1_div_num + data_num], &r2);
 			bit1_div_num--;
+			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
 			cuda_mpz_set( &myMes1_h[bit1_div_num + data_num], &r1);
 		}
 		if (div_con == 2 && nondiv_num > 0){
