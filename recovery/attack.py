@@ -266,11 +266,11 @@ while(eob == 0 ): #32 threads with cache? bothdiv?
 #         print("0")
 #         temp = bits(current_bits) + "0"
 
-    if sum1 > sum4 : #bit is 1
+    if int(sum1) > int(sum4) : #bit is 1
     #     print("bit is 1.\n");
         print("1")
         temp = bits(current_bits) + "1"
-    elif diff2 > diff1 : #bit is 0
+    else : #bit is 0
     #     print("bit is 0.\n");
         print("0")
         temp = bits(current_bits) + "0"
