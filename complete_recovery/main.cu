@@ -417,7 +417,8 @@ int main (int argc, char *argv[]) {
 
 	int known_bits[2048];
 	known_bits[0] = 1;
-	int known_bits_length = 1;
+	known_bits[1] = 0;
+	int known_bits_length = 2;
 	int div_con = 0;
 
 	///////gmp init
