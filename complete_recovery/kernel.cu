@@ -59,7 +59,7 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 		s_index[k] = cuda_mpz_get_last_digit(&tmp2[j]);//make a dependency to make sure previous store is finished.
 		t3 = clock64();//beginning of necessary instructions within the kernel
 
-		REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j])
+		REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
 
 		s_index[k] = cuda_mpz_get_last_digit(&t[j]);//make a dependency to make sure previous store is finished.
 		t4 = clock64();//beginning of necessary instructions within the kernel
