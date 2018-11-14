@@ -219,14 +219,14 @@ eob = 0
 temp = "0"
 bit_count = 0
 
-# vote_0 = 0 # multiple runs to vote?
+# vote_0 = 0
 # vote_1 = 0
 key = "1011011001001001010011110110010101010111001010110101111000111100001"
 # int(sys.argv[1])
 
 
 print("1")
-while(eob == 0 ): # increase number of samples, ad hoc approach
+while(eob == 0 ): #32 threads with cache? multiple runs to vote. try many samples, ad hoc approach, time of divergence
 
     f1 = open("bit1divpairs_pre.txt","w+")
     f2 = open("nondivpairs_pre.txt","w+")
@@ -266,6 +266,27 @@ while(eob == 0 ): # increase number of samples, ad hoc approach
     diff6 = int(sum3) - int(sum2) # must be greater
     print(diff5,diff6)
 
+#     if diff1 / diff2 > 1.2 : #bit is 1
+#     #     print("bit is 1.\n");
+#         print("1")
+#         temp = bits(current_bits) + "1"
+#     elif diff2 / diff1 > 1.2 : #bit is 0
+#     #     print("bit is 0.\n");
+#         print("0")
+#         temp = bits(current_bits) + "0"
+#     else: #EOB
+#     #     print("end of bits.\n");
+#         eob = 1
+
+#     if diff1 > diff2 : #bit is 1
+#     #     print("bit is 1.\n");
+#         print("1")
+#         temp = bits(current_bits) + "1"
+#     elif diff2 > diff1 : #bit is 0
+#     #     print("bit is 0.\n");
+#         print("0")
+#         temp = bits(current_bits) + "0"
+
     if int(sum1) > int(sum4) : #bit is 1
     #     print("bit is 1.\n");
         print("1")
@@ -274,6 +295,19 @@ while(eob == 0 ): # increase number of samples, ad hoc approach
     #     print("bit is 0.\n");
         print("0")
         temp = bits(current_bits) + "0"
+
+#     if int(sum1) > int(sum4) : #bit is 1
+#         vote_1+=1
+#         print("1")
+#     else : #bit is 0
+#         vote_0+=1
+#         print("0")        
+#         
+#     if vote_1 == 3:
+#         temp = bits(current_bits) + "1"
+#         
+#     if vote_0 == 3:
+#         temp = bits(current_bits) + "0"      
 
     bit_count+=1
     current_bits = int(temp, 2)
