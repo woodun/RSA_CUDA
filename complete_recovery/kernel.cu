@@ -55,7 +55,7 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 		//x2 = _x1 * _x1
 		cuda_mpz_mult(&tmp2[j], &_x1[j], &t[j]);
 		//_x2 = REDC(rmod,n,n_,_x2,l)
-		cuda_mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]););
+		cuda_mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
 		/*
 		s_index[k] = cuda_mpz_get_last_digit(&tmp2[j]);//make a dependency to make sure previous store is finished.
