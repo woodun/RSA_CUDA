@@ -219,14 +219,15 @@ eob = 0
 temp = "0"
 bit_count = 0
 
-# vote_0 = 0
+# vote_0 = 0 # multiple runs to vote?
 # vote_1 = 0
 key = "1011011001001001010011110110010101010111001010110101111000111100001"
 # int(sys.argv[1])
 
-
+#get a good seed?
+# try large samples, ad hoc approach. The noise comes from other bits (affected by the pairs generated), not the hardware. Can we do something after or even before the GPU run to know their quality?
 print("1")
-while(eob == 0 ): #32 threads with cache? multiple runs to vote. try many samples, ad hoc approach, time of divergence
+while(eob == 0 ):    
 
     f1 = open("bit1divpairs_pre.txt","w+")
     f2 = open("nondivpairs_pre.txt","w+")
@@ -275,8 +276,7 @@ while(eob == 0 ): #32 threads with cache? multiple runs to vote. try many sample
         temp = bits(current_bits) + "1"
     else : #bit is 0
         print("0")
-        temp = bits(current_bits) + "0"
-         
+        temp = bits(current_bits) + "0"    
 
     bit_count+=1
     current_bits = int(temp, 2)
