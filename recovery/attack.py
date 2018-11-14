@@ -214,6 +214,10 @@ print("1")
 eob = 0
 current_bits = 1
 temp = "0"
+vote_0 = 0
+vote_1 = 0
+
+print(time.time())
 # int(sys.argv[1])
 
 
@@ -239,16 +243,22 @@ while(eob == 0 ): #32 threads with cache? multiple runs to vote.
     sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256"]) # greater means 0
     print(sum4)
 
-    diff1 = int(sum1) - int(sum2) # greater means 1
-    diff2 = int(sum4) - int(sum2) # greater means 0
-    print(diff1,diff2)
+    diff1 = int(sum1) - int(sum2) # close to zero means 0, greater than zero means 1
+    diff2 = int(sum4) - int(sum2) # close to zero means 1, greater than zero means 0
+    mean1 = (diff1 + diff2) / 2
+    print(diff1,diff2,mean1)
     
-    diff3 = int(sum1) - int(sum3) # greater means 0
-    diff4 = int(sum4) - int(sum3) # greater means 1
-    print(diff3,diff4)
+    diff3 = int(sum1) - int(sum3) # close to zero means 1, smaller than zero means 0
+    diff4 = int(sum4) - int(sum3) # close to zero means 0, smaller than zero means 1
+    mean2 = (diff3 + diff4) / 2
+    print(diff3,diff4, mean2)
     
-    diff5 = int(sum1) - int(sum4) # greater means 0
-    diff6 = int(sum3) - int(sum2) # greater means 1
+    val1 = mean1 + mean2
+    sign1 = mean1 * mean2
+    print(val1, sign1)
+    
+    diff5 = int(sum1) - int(sum4) # greater means 1
+    diff6 = int(sum3) - int(sum2) # must be greater
     print(diff5,diff6)
 
 #     if diff1 / diff2 > 1.2 : #bit is 1
@@ -280,13 +290,29 @@ while(eob == 0 ): #32 threads with cache? multiple runs to vote.
     #     print("bit is 0.\n");
         print("0")
         temp = bits(current_bits) + "0"
+
+#     if int(sum1) > int(sum4) : #bit is 1
+#         vote_1+=1
+#         print("1")
+#     else : #bit is 0
+#         vote_0+=1
+#         print("0")        
+#         
+#     if vote_1 == 3:
+#         temp = bits(current_bits) + "1"
+#         
+#     if vote_0 == 3:
+#         temp = bits(current_bits) + "0"
+    
+        
  
     current_bits = int(temp, 2)
+    print("bits: " + bits(current_bits))
     
     if len(bits(current_bits)) == 67 : # length of key
         break
 
-print("bits: " + bits(current_bits))
+
 
 
 key = "1011011001001001010011110110010101010111001010110101111000111100001"
