@@ -224,7 +224,7 @@ bit_count = 0
 key = "1011011001001001010011110110010101010111001010110101111000111100001"
 # int(sys.argv[1])
 
-#get a good seed?
+
 # try large samples, ad hoc approach. The noise comes from other bits (affected by the pairs generated), not the hardware. Can we do something after or even before the GPU run to know their quality?
 print("1")
 while(eob == 0 ):    
@@ -233,6 +233,7 @@ while(eob == 0 ):
     f2 = open("nondivpairs_pre.txt","w+")
     f3 = open("divpairs_pre.txt","w+")
     f4 = open("bit0divpairs_pre.txt","w+")
+    random.seed(1542226726.06)#get a good seed?
     FindPairs (2256, n, current_bits, n_, r2, rmod, l, f1, f2, f3, f4, int(sys.argv[1]), len(bits(current_bits) ) )
     f1.close()
     f2.close()
@@ -268,6 +269,14 @@ while(eob == 0 ):
     print(diff5,diff6)
 
 #     if abs(diff5) < 1000 :
+#         print("bit not accepted.")
+#         continue
+
+#     if diff6 < 1000 :
+#         print("bit not accepted.")
+#         continue
+
+#     if diff6 < 1000 :
 #         print("bit not accepted.")
 #         continue
 
