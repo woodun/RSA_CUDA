@@ -239,13 +239,13 @@ while(eob == 0 ): #32 threads with cache? multiple runs to vote. try many sample
     f4.close()
     
     #./main bit0divpairs_pre.txt 1000
-    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256"]) # greater means 1
+    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256", "bit1divpairs_out.txt"]) # greater means 1
     print(sum1)
-    sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256"])
+    sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256", "nondivpairs_out.txt"])
     print(sum2)
-    sum3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256"])
+    sum3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256", "divpairs_out.txt"])
     print(sum3)
-    sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256"]) # greater means 0
+    sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256", "bit0divpairs_out.txt"]) # greater means 0
     print(sum4)
 
     diff1 = int(sum1) - int(sum2) # close to zero means 0, greater than zero means 1
@@ -276,8 +276,7 @@ while(eob == 0 ): #32 threads with cache? multiple runs to vote. try many sample
     else : #bit is 0
         print("0")
         temp = bits(current_bits) + "0"
-
- 
+         
 
     bit_count+=1
     current_bits = int(temp, 2)
@@ -285,32 +284,6 @@ while(eob == 0 ): #32 threads with cache? multiple runs to vote. try many sample
        
     if bits(current_bits)[bit_count] != key[bit_count] : # length of key
         print("wrong key!");
-        sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256"]) # greater means 1
-        print(sum1)
-        sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256"])
-        print(sum2)
-        sum3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256"])
-        print(sum3)
-        sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256"]) # greater means 0
-        print(sum4)
-    
-        diff1 = int(sum1) - int(sum2) # close to zero means 0, greater than zero means 1
-        diff2 = int(sum4) - int(sum2) # close to zero means 1, greater than zero means 0
-        mean1 = (diff1 + diff2) / 2
-        print(diff1,diff2,mean1)
-        
-        diff3 = int(sum1) - int(sum3) # close to zero means 1, smaller than zero means 0
-        diff4 = int(sum4) - int(sum3) # close to zero means 0, smaller than zero means 1
-        mean2 = (diff3 + diff4) / 2
-        print(diff3,diff4, mean2)
-        
-        val1 = mean1 + mean2
-        sign1 = mean1 * mean2
-        print(val1, sign1)
-        
-        diff5 = int(sum1) - int(sum4) # greater means 1
-        diff6 = int(sum3) - int(sum2) # must be greater
-        print(diff5,diff6)
         break
     
     if len(bits(current_bits)) == 67 : # length of key
