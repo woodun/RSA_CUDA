@@ -221,7 +221,7 @@ print(time.time())
 # int(sys.argv[1])
 
 
-while(eob == 0 ): #32 threads with cache? multiple runs to vote.
+while(eob == 0 ): #32 threads with cache? multiple runs to vote. try many samples, ad hoc approach, time of divergence
 
     f1 = open("bit1divpairs_pre.txt","w+")
     f2 = open("nondivpairs_pre.txt","w+")

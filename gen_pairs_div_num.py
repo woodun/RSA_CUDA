@@ -56,12 +56,23 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre, div_num): # div_num is a relax
 	_x1_1 = REDC(rmod, n, n_, mes1 * r2, l) 
 	_x1_2 = REDC(rmod, n, n_, mes2 * r2, l)
 	
+# 	if s1_1 == s1_2 :#1,2 must be diverge here, for 65
+# 		return 0
+
+# 	if s1_1 != s1_2 :#4 must be converge here, for 65
+# 		return 0
+	
 	_x2_1 = _x1_1 * _x1_1
 	_x2_2 = _x1_2 * _x1_2
 	s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
 	s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
 	_x2_1 = REDC(rmod, n, n_, _x2_1, l)
 	_x2_2 = REDC(rmod, n, n_, _x2_2, l)
+
+# 	if s2_1 == s2_2 :#1,2 must be converge here, for 65
+# 		return 0
+# 	if s2_1 == s2_2 : #4 must be diverge here, for 65
+#  		return 0
 	
 	e_b = bits(e)
 	if bit > len(e_b) - 2 :
@@ -78,9 +89,9 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre, div_num): # div_num is a relax
 		
 		if check_pre == 1: 
 			if s1_1 != s1_2 :
-				div_count+=1
+				div_count+=1				
 			if s2_1 != s2_2 :
-				div_count+=1
+				div_count+=1				
 # 			if div_count != 1 : #same divergence pattern
 # 				return 0
 # 			div_count = 0
@@ -88,7 +99,7 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre, div_num): # div_num is a relax
 		if bit == c:			
 			
 			if check_pre == 1 and div_count != div_num : #total divergence number
-				return 0
+				return 0			
 			
 			_x1_1_temp = _x1_1
 			_x2_1_temp = _x2_1
@@ -229,7 +240,7 @@ f1 = open("bit1divpairs_pre63.txt","w+")
 f2 = open("nondivpairs_pre63.txt","w+")
 f3 = open("divpairs_pre63.txt","w+")
 f4 = open("bit0divpairs_pre63.txt","w+")
-x = FindPairs (10, n, d, 31, f1, f2, f3, f4, 1, (66 - 31) )
+x = FindPairs (10, n, d, 65, f1, f2, f3, f4, 1, (66 - 65) )
 f1.close()
 f2.close()
 f3.close()

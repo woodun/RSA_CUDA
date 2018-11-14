@@ -230,21 +230,44 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	//d1_s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
 	int d1_s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-	if( d0_s1_1 != d0_s1_2 || d0_s2_1 != d0_s2_2 ){ //diverge for bit 0
-		if ( d1_s1_1 != d1_s1_2 || d1_s2_1 != d1_s2_2 ){ //diverge for bit 0 and diverge for bit 1
-//			printf("debug0\n");
-			return 0;
-		} else{ //diverge for bit 0 and converge for bit 1
-//			printf("debug3\n");
+	if ( (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2) ){ //diverge for bit 0 (1 0) or (0 1)
+		if ( (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2) ){ //diverge for bit 0, diverge for bit 1 (1 0) or (0 1)
+			//printf ("debug3\n")
 			return 3;
+		} else if ( d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2 ) { //diverge for bit 0, converge for bit 1 (0 0)
+			//prinft ("debug4\n")
+			return 4;
+		} else {
+			return 0;
 		}
-	} else if ( d1_s1_1 != d1_s1_2 || d1_s2_1 != d1_s2_2 ){ //converge for bit 0, diverge for bit 1
-//		printf("debug1\n");
-		return 1;
-	} else{ //converge for bit 0 and converge for bit 1
-//		printf("debug2\n");
-		return 2;
+	} else if (d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2 ){ //converge for bit 0 (0 0)
+		if ( (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2) ){ //converge for bit 0, diverge for bit 1 (1 0) or (0 1)
+			//printf ("debug1\n")
+			return 1;
+		} else if ( d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2 ){ //converge for bit 0, converge for bit 1 (0 0)
+			//printf ("debug2\n")
+			return 2;
+		} else {
+			return 0;
+		}
+	} else {
+		return 0;
 	}
+//	if( d0_s1_1 != d0_s1_2 || d0_s2_1 != d0_s2_2 ){ //diverge for bit 0
+//		if ( d1_s1_1 != d1_s1_2 || d1_s2_1 != d1_s2_2 ){ //diverge for bit 0 and diverge for bit 1
+////			printf("debug0\n");
+//			return 0;
+//		} else{ //diverge for bit 0 and converge for bit 1
+////			printf("debug3\n");
+//			return 3;
+//		}
+//	} else if ( d1_s1_1 != d1_s1_2 || d1_s2_1 != d1_s2_2 ){ //converge for bit 0, diverge for bit 1
+////		printf("debug1\n");
+//		return 1;
+//	} else{ //converge for bit 0 and converge for bit 1
+////		printf("debug2\n");
+//		return 2;
+//	}
 }
 
 long long unsigned time_diff(timespec start, timespec end){
@@ -420,7 +443,7 @@ int main (int argc, char *argv[]) {
 	known_bits[0] = 1;
 	known_bits[1] = 0;
 	known_bits[2] = 1;
-	int known_bits_length = 2;
+	int known_bits_length = 1;
 	int div_con = 0;
 
 	///////gmp init
@@ -471,7 +494,7 @@ int main (int argc, char *argv[]) {
 			cuda_mpz_set( &myMes1_h[nondiv_num + data_num * 2], &r2);
 			nondiv_num++;
 		}
-		if (div_con == 3 && bit0_div_num < data_num){
+		if (div_con == 4 && bit0_div_num < data_num){
 			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r1);
 			bit0_div_num++;
 			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r2);
