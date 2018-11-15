@@ -234,7 +234,7 @@ while(eob == 0 ):
     f3 = open("divpairs_pre.txt","w+")
     f4 = open("bit0divpairs_pre.txt","w+")
 #     random.seed(1542226726.06)#get a good seed?
-    random.seed(0)#get a good seed?
+#     random.seed(0)#get a good seed?
     FindPairs (2256, n, current_bits, n_, r2, rmod, l, f1, f2, f3, f4, int(sys.argv[1]), len(bits(current_bits) ) )
     f1.close()
     f2.close()
@@ -289,6 +289,8 @@ while(eob == 0 ):
     if ( ( diff1 < 1000 and diff2 < 1000 ) or ( abs(diff1) > 1000 and abs(diff2) > 1000 ) ) and ( ( diff3 > -1000 and diff4 > -1000 ) or ( abs(diff3) > 1000 and abs(diff4) > 1000 ) ) :
         print("bit not accepted.")
         continue
+
+
 
     if int(sum1) > int(sum4) : #bit is 1
         print("1")
