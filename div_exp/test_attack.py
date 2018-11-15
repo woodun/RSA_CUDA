@@ -242,9 +242,11 @@ while(eob == 0 ):
     f4.close()
     
     #./main bit0divpairs_pre.txt 1000
-    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256", "bit1divpairs_out.txt"]) # greater means 1
+    out1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256", "bit1divpairs_out.txt"]) # greater means 1
+    sum1 = out1.splitlines()[0]
     print(sum1)
-    
+    div1 = out1.splitlines()[1]
+    print(div1)
     break
 
     sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256", "nondivpairs_out.txt"])
