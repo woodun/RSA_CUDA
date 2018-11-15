@@ -85,19 +85,19 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 				//_x1 = _x1 * _x2
 				mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
 				//_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
-				con1[j][i] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j])
-				mpz_set( &_x1[j],  );
+				con1[j][i] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
+				mpz_set( &_x1[j], &t[j]);
 				//_x2 = _x2 * _x2
 				mpz_set( &tmp[j], &_x2[j]);
 				mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
 				//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
-				con2[j][i] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j])
+				con2[j][i] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
 				mpz_set( &_x2[j], &t[j]);
 			}
 		}
 
 		//_x1 = REDC(rmod,n,n_,_x1,l)
-		con1[j][68] = REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j])
+		con1[j][68] = REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j]);
 		mpz_set( &_x1[j], &t[j]);
 
 		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
