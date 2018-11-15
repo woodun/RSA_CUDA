@@ -3,7 +3,7 @@
 #include "mpz.h"
 
 
-__device__ mpz_t* REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t* t){//mpz_t* RMOD, int L, mpz_t* N, mpz_t* N_ should not be changed.
+__device__ int REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t* t){//mpz_t* RMOD, int L, mpz_t* N, mpz_t* N_ should not be changed.
 
 	//m = ((T & R) * N_) & R
 	mpz_bitwise_truncate(t, T, RL);
@@ -18,18 +18,20 @@ __device__ mpz_t* REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t*
 	if (mpz_gte(t , N)){
 		mpz_sub(tmp, t, N);
 		mpz_set(t, tmp);
-		return t;
+		return 1;
     }
 	else{
 		mpz_sub(tmp, t, N);
 		mpz_set(tmp, t);
-	    return t;
+	    return 0;
 	}
 }
 
-__global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t) {
+__global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t, int* divTable) {
 
 	__shared__ digit_t s_index[32];
+	__shared__ digit_t con1[2][70];
+	__shared__ digit_t con2[2][70];
 
 	long long int t1, t2;
 
@@ -49,12 +51,14 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
 		mpz_mult(&tmp2[j], &_x1[j], &r2);
-		mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+		con1[j][69] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
+		mpz_set( &_x1[j], &t[j]);
 
 		//x2 = _x1 * _x1
 		mpz_mult(&tmp2[j], &_x1[j], &t[j]);
 		//_x2 = REDC(rmod,n,n_,_x2,l)
-		mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+		con2[j][69] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
+		mpz_set( &_x2[j], &t[j]);
 
 //			if(j == 0){
 //				mpz_print_str_device(&_x1[j]);
@@ -69,27 +73,32 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 				//x2 = _x1 * _x2
 				mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
 				//_x2 = REDC(rmod,n,n_,_x2,l)
-				mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				con1[j][i] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
+				mpz_set( &_x2[j], &t[j]);
 				//_x1 = _x1 * _x1
 				mpz_set( &tmp[j], &_x1[j]);
 				mpz_mult(&tmp2[j], &_x1[j], &tmp[j]);
 				//_x1 = REDC(rmod,n,n_,_x1,l)
-				mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				con2[j][i] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
+				mpz_set( &_x1[j], &t[j]);
 			} else {
 				//_x1 = _x1 * _x2
 				mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
 				//_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
-				mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				con1[j][i] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j])
+				mpz_set( &_x1[j],  );
 				//_x2 = _x2 * _x2
 				mpz_set( &tmp[j], &_x2[j]);
 				mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
 				//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
-				mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				con2[j][i] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j])
+				mpz_set( &_x2[j], &t[j]);
 			}
 		}
 
 		//_x1 = REDC(rmod,n,n_,_x1,l)
-		mpz_set( &_x1[j], REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j]) );
+		con1[j][68] = REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j])
+		mpz_set( &_x1[j], &t[j]);
 
 		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 
@@ -97,6 +106,17 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 
 		if( j == 1){
 			clockTable[iter1] = t2 - t1;
+
+			int div_count = 0;
+			for(int m = 0; m < 70; m++){
+				if(con1[0][m] != con1[1][m]){
+					div_count++;
+				}
+				if(con2[0][m] != con2[1][m]){
+					div_count++;
+				}
+			}
+			divTable[iter1] = div_count;
 		}
 	}
 }
