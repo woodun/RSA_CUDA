@@ -225,7 +225,7 @@ key = "1011011001001001010011110110010101010111001010110101111000111100001"
 # int(sys.argv[1])
 
 
-# try large samples, ad hoc approach. The noise comes from other bits (affected by the pairs generated), not the hardware. Can we do something after or even before the GPU run to know their quality?
+# try large samples, ad hoc approach. The noise mainly comes from other bits (affected by the pairs generated), not the hardware. Can we do something after or even before the GPU run to know their quality?
 print("1")
 while(eob == 0 ):    
 
