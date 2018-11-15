@@ -225,16 +225,13 @@ key = "1011011001001001010011110110010101010111001010110101111000111100001"
 # int(sys.argv[1])
 
 
-# try large samples, ad hoc approach. The noise mainly comes from other bits (affected by the pairs generated), not the hardware. Can we do something after or even before the GPU run to know their quality?
 print("1")
-while(eob == 0 ):    
+while(eob == 0 ): # increase number of samples, ad hoc approach
 
     f1 = open("bit1divpairs_pre.txt","w+")
     f2 = open("nondivpairs_pre.txt","w+")
     f3 = open("divpairs_pre.txt","w+")
     f4 = open("bit0divpairs_pre.txt","w+")
-#     random.seed(1542226726.06)#get a good seed?
-    random.seed(0)#get a good seed?
     FindPairs (2256, n, current_bits, n_, r2, rmod, l, f1, f2, f3, f4, int(sys.argv[1]), len(bits(current_bits) ) )
     f1.close()
     f2.close()
@@ -242,13 +239,13 @@ while(eob == 0 ):
     f4.close()
     
     #./main bit0divpairs_pre.txt 1000
-    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256", "bit1divpairs_out.txt"]) # greater means 1
+    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256"]) # greater means 1
     print(sum1)
-    sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256", "nondivpairs_out.txt"])
+    sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256"])
     print(sum2)
-    sum3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256", "divpairs_out.txt"])
+    sum3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256"])
     print(sum3)
-    sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256", "bit0divpairs_out.txt"]) # greater means 0
+    sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256"]) # greater means 0
     print(sum4)
 
     diff1 = int(sum1) - int(sum2) # close to zero means 0, greater than zero means 1
@@ -269,33 +266,14 @@ while(eob == 0 ):
     diff6 = int(sum3) - int(sum2) # must be greater
     print(diff5,diff6)
 
-#     if ( ( diff3 > -1000 and diff4 > -1000 ) or ( abs(diff3) > 1000 and abs(diff4) > 1000 ) ) :
-#         print("bit not accepted.")
-#         continue
-
-
-    if abs(diff5) < 1000 :
-        print("bit not accepted.")
-        continue
-
-#     if diff6 < 1000 :
-#         print("bit not accepted.")
-#         continue
-
-#     if diff6 < 1000 :
-#         print("bit not accepted.")
-#         continue
-
-#     if ( ( diff1 < 1000 and diff2 < 1000 ) or ( abs(diff1) > 1000 and abs(diff2) > 1000 ) ) and ( ( diff3 > -1000 and diff4 > -1000 ) or ( abs(diff3) > 1000 and abs(diff4) > 1000 ) ) :
-#         print("bit not accepted.")
-#         continue
-
     if int(sum1) > int(sum4) : #bit is 1
+    #     print("bit is 1.\n");
         print("1")
         temp = bits(current_bits) + "1"
     else : #bit is 0
+    #     print("bit is 0.\n");
         print("0")
-        temp = bits(current_bits) + "0"    
+        temp = bits(current_bits) + "0"
 
     bit_count+=1
     current_bits = int(temp, 2)

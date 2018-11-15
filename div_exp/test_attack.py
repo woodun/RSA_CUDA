@@ -244,6 +244,9 @@ while(eob == 0 ):
     #./main bit0divpairs_pre.txt 1000
     sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256", "bit1divpairs_out.txt"]) # greater means 1
     print(sum1)
+    
+    break
+
     sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256", "nondivpairs_out.txt"])
     print(sum2)
     sum3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256", "divpairs_out.txt"])
@@ -274,9 +277,9 @@ while(eob == 0 ):
 #         continue
 
 
-    if abs(diff5) < 1000 :
-        print("bit not accepted.")
-        continue
+#     if abs(diff5) < 1000 :
+#         print("bit not accepted.")
+#         continue
 
 #     if diff6 < 1000 :
 #         print("bit not accepted.")
