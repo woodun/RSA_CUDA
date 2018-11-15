@@ -218,15 +218,16 @@ current_bits = 1
 eob = 0
 temp = "0"
 bit_count = 0
+iter_count = 0
 
-# vote_0 = 0 # multiple runs to vote?
-# vote_1 = 0
+vote_0 = 0 # multiple runs to vote?
+vote_1 = 0
 key = "1011011001001001010011110110010101010111001010110101111000111100001"
 # int(sys.argv[1])
 
 
 # try large samples, ad hoc approach. The noise mainly comes from other bits (affected by the pairs generated), not the hardware. Can we do something after or even before the GPU run to know their quality?
-print("1")
+print("bits: " + bits(current_bits))
 while(eob == 0 ):    
 
     f1 = open("bit1divpairs_pre.txt","w+")
@@ -274,30 +275,57 @@ while(eob == 0 ):
 #         continue
 
 
-    if abs(diff5) < 1000 :
-        print("bit not accepted.")
-        continue
+#     if abs(diff5) < 1000 :
+#         print("bit not accepted.")
+#         continue
+# 
+#     if diff6 < 1000 :
+#         print("bit not accepted.")
+#         continue
+#  
+#     if diff6 < 1000 :
+#         print("bit not accepted.")
+#         continue
+#  
+#     if ( ( diff1 < 1000 and diff2 < 1000 ) or ( abs(diff1) > 1000 and abs(diff2) > 1000 ) ) and ( ( diff3 > -1000 and diff4 > -1000 ) or ( abs(diff3) > 1000 and abs(diff4) > 1000 ) ) :
+#         print("bit not accepted.")
+#         continue
 
-    if diff6 < 1000 :
-        print("bit not accepted.")
+    if iter_count < 8 :
+
+        iter_count+=1
+    
+        if int(sum1) > int(sum4) : #bit is 1
+            vote_1+=1
+        else : #bit is 0
+            vote_0+=1
+            
         continue
- 
-    if diff6 < 1000 :
-        print("bit not accepted.")
-        continue
- 
-    if ( ( diff1 < 1000 and diff2 < 1000 ) or ( abs(diff1) > 1000 and abs(diff2) > 1000 ) ) and ( ( diff3 > -1000 and diff4 > -1000 ) or ( abs(diff3) > 1000 and abs(diff4) > 1000 ) ) :
-        print("bit not accepted.")
-        continue
+    else:        
+        
+        if int(sum1) > int(sum4) : #bit is 1
+            vote_1+=1
+        else : #bit is 0
+            vote_0+=1
+            
+        if vote_1 > vote_0 : #bit is 1
+            print("1")
+            temp = bits(current_bits) + "1"
+        else : #bit is 0
+            print("0")
+            temp = bits(current_bits) + "0"    
+        
+        iter_count = 0
+        vote_1=0
+        vote_0=0
 
 
-
-    if int(sum1) > int(sum4) : #bit is 1
-        print("1")
-        temp = bits(current_bits) + "1"
-    else : #bit is 0
-        print("0")
-        temp = bits(current_bits) + "0"    
+#     if int(sum1) > int(sum4) : #bit is 1
+#         print("1")
+#         temp = bits(current_bits) + "1"
+#     else : #bit is 0
+#         print("0")
+#         temp = bits(current_bits) + "0"    
 
     bit_count+=1
     current_bits = int(temp, 2)
