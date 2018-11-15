@@ -163,25 +163,27 @@ int main (int argc, char *argv[]) {
 	cudaMalloc((void **) &_x2_mpz, varSize);
 	cudaMalloc((void **) &_x1_mpz, varSize);
 
-	int *divTable_d;///////div count
-	cudaMalloc((void **) &divTable_d, pairs * sizeof(int));///////div count
-	int *divTable_h;///////div count
-	divTable_h = (int*) malloc( pairs * sizeof(int));///////div count
+	//int *divTable_d;///////div count
+	//cudaMalloc((void **) &divTable_d, pairs * sizeof(int));///////div count
+	//int *divTable_h;///////div count
+	//divTable_h = (int*) malloc( pairs * sizeof(int));///////div count
 
 	init<<<1, thread_num>>>(_x1_mpz, _x2_mpz, tmp, tmp2, d_t);
 	cudaDeviceSynchronize();
 
-	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t, divTable_d);/////////////////////////////////////////kernel
+	//MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t, divTable_d);///////div count kernel
+
+	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 
 	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
-	cudaMemcpy(divTable_h, divTable_d, pairs * sizeof(int), cudaMemcpyDeviceToHost);///////div count
+	//cudaMemcpy(divTable_h, divTable_d, pairs * sizeof(int), cudaMemcpyDeviceToHost);///////div count
 
 	FILE *fp1= fopen(argv[3], "w");
 
 	long long unsigned sum1 = 0;
 	for (long long unsigned q = 256; q < pairs; q++){
-		fprintf(fp1, "%d ", divTable_h[q]);///////div count
+		//fprintf(fp1, "%d ", divTable_h[q]);///////div count
 		fprintf(fp1, "%lld\n", clockTable_h[q]);
 		sum1 += clockTable_h[q];
 	}
@@ -191,8 +193,8 @@ int main (int argc, char *argv[]) {
 
 	fclose(fp1);
 
-	cudaFree(divTable_d);///////div count
-	free(divTable_h);///////div count
+	//cudaFree(divTable_d);///////div count
+	//free(divTable_h);///////div count
 
 	////////free device
 	cudaFree(clockTable_d);

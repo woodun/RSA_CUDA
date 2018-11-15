@@ -300,7 +300,7 @@ while(eob == 0 ):
     bit_count+=1
     current_bits = int(temp, 2)
     print("bits: " + bits(current_bits))
-    
+       
     if bits(current_bits)[bit_count] != key[bit_count] : # length of key
         print("wrong key!");
         break
