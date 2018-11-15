@@ -278,17 +278,17 @@ while(eob == 0 ):
         print("bit not accepted.")
         continue
 
-#     if diff6 < 1000 :
-#         print("bit not accepted.")
-#         continue
-
-#     if diff6 < 1000 :
-#         print("bit not accepted.")
-#         continue
-
-#     if ( ( diff1 < 1000 and diff2 < 1000 ) or ( abs(diff1) > 1000 and abs(diff2) > 1000 ) ) and ( ( diff3 > -1000 and diff4 > -1000 ) or ( abs(diff3) > 1000 and abs(diff4) > 1000 ) ) :
-#         print("bit not accepted.")
-#         continue
+    if diff6 < 1000 :
+        print("bit not accepted.")
+        continue
+ 
+    if diff6 < 1000 :
+        print("bit not accepted.")
+        continue
+ 
+    if ( ( diff1 < 1000 and diff2 < 1000 ) or ( abs(diff1) > 1000 and abs(diff2) > 1000 ) ) and ( ( diff3 > -1000 and diff4 > -1000 ) or ( abs(diff3) > 1000 and abs(diff4) > 1000 ) ) :
+        print("bit not accepted.")
+        continue
 
     if int(sum1) > int(sum4) : #bit is 1
         print("1")
