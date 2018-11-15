@@ -52,23 +52,31 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 		cuda_mpz_mult(&tmp2[j], &_x1[j], &r2);
 		cuda_mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
-		//x2 = _x1 * _x1
-		cuda_mpz_mult(&tmp2[j], &_x1[j], &t[j]);
-		//_x2 = REDC(rmod,n,n_,_x2,l)
-		cuda_mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
-
-		/*
-		s_index[k] = cuda_mpz_get_last_digit(&tmp2[j]);//make a dependency to make sure previous store is finished.
+		s_index[k] = cuda_mpz_get_last_digit(&_x1[j]);//make a dependency to make sure previous store is finished.
 		t3 = clock64();//beginning of necessary instructions within the kernel
 
-		REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
+		//x2 = _x1 * _x1
+		cuda_mpz_mult(&tmp2[j], &_x1[j], &t[j]);
 
-		s_index[k] = cuda_mpz_get_last_digit(&t[j]);//make a dependency to make sure previous store is finished.
+		s_index[k] = cuda_mpz_get_last_digit(&tmp2[j]);//make a dependency to make sure previous store is finished.
 		t4 = clock64();//beginning of necessary instructions within the kernel
 		printf("%lld\n", t4 - t3);
 
-		cuda_mpz_set( &_x2[j],  &t[j]);
-		*/
+		//_x2 = REDC(rmod,n,n_,_x2,l)
+		cuda_mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+
+
+//		s_index[k] = cuda_mpz_get_last_digit(&tmp2[j]);//make a dependency to make sure previous store is finished.
+//		t3 = clock64();//beginning of necessary instructions within the kernel
+//
+//		REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
+//
+//		s_index[k] = cuda_mpz_get_last_digit(&t[j]);//make a dependency to make sure previous store is finished.
+//		t4 = clock64();//beginning of necessary instructions within the kernel
+//		printf("%lld\n", t4 - t3);
+//
+//		cuda_mpz_set( &_x2[j],  &t[j]);
+
 
 //		if(j == 0){
 //			cuda_mpz_print_str_device(&_x1[j]);
