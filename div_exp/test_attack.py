@@ -247,14 +247,24 @@ while(eob == 0 ):
     print(sum1)
     div1 = out1.splitlines()[1]
     print(div1)
-    break
-
-    sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256", "nondivpairs_out.txt"])
+    
+    out2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256", "nondivpairs_out.txt"])
+    sum2 = out1.splitlines()[0]
     print(sum2)
-    sum3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256", "divpairs_out.txt"])
+    div2 = out1.splitlines()[1]
+    print(div2)
+    
+    out3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256", "divpairs_out.txt"])
+    sum3 = out1.splitlines()[0]
     print(sum3)
-    sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256", "bit0divpairs_out.txt"]) # greater means 0
+    div3 = out1.splitlines()[1]
+    print(div3)
+    
+    out4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256", "bit0divpairs_out.txt"]) # greater means 0
+    sum4 = out1.splitlines()[0]
     print(sum4)
+    div4 = out1.splitlines()[1]
+    print(div4)
 
     diff1 = int(sum1) - int(sum2) # close to zero means 0, greater than zero means 1
     diff2 = int(sum4) - int(sum2) # close to zero means 1, greater than zero means 0
