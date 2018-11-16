@@ -242,28 +242,26 @@ while(eob == 0 ):
     f4.close()
     
     #./main bit0divpairs_pre.txt 1000
-    out1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "20256", "bit1divpairs_out.txt"]) # greater means 1
+    out1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256", "bit1divpairs_out.txt"]) # greater means 1
     sum1 = out1.splitlines()[0]
     print(sum1)
     div1 = out1.splitlines()[1]
     print(div1)        
     print(out1.splitlines()[2])
-    break
 
-
-    out2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "20256", "nondivpairs_out.txt"])
+    out2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256", "nondivpairs_out.txt"])
     sum2 = out2.splitlines()[0]
     print(sum2)
     div2 = out2.splitlines()[1]
     print(div2)
     
-    out3 = subprocess.check_output(["./main", "divpairs_pre.txt", "20256", "divpairs_out.txt"])
+    out3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256", "divpairs_out.txt"])
     sum3 = out3.splitlines()[0]
     print(sum3)
     div3 = out3.splitlines()[1]
     print(div3)
     
-    out4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "20256", "bit0divpairs_out.txt"]) # greater means 0
+    out4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256", "bit0divpairs_out.txt"]) # greater means 0
     sum4 = out4.splitlines()[0]
     print(sum4)
     div4 = out4.splitlines()[1]

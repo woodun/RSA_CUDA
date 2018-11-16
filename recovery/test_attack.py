@@ -226,7 +226,9 @@ key = "1011011001001001010011110110010101010111001010110101111000111100001"
 # int(sys.argv[1])
 
 
-# try large samples, ad hoc approach. The noise mainly comes from other bits (affected by the pairs generated), not the hardware. Can we do something after or even before the GPU run to know their quality?
+# try large samples, ad hoc approach. The noise mainly comes from other bits (affected by the pairs generated), not the hardware. Can we do something after or even before the GPU run to know their quality? 
+# seems mathematically the number of divergence of other bits will not be affected by previous bits (but not 100% sure because they cannot be all div or all non-div).
+# study the number of samples required to remove the randomness (maybe on gpu) and try to run on volta. try to find out why the kernel is so slow (where is the bottleneck?).
 print("bits: " + bits(current_bits))
 while(eob == 0 ):    
 
