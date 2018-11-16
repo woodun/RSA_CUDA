@@ -51,17 +51,24 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 		mpz_mult(&tmp2[j], &_x1[j], &r2);
 		mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
+		if(j == 0){
+			mpz_print_str_device(&_x1[j]);
+			printf(" ");
+			mpz_print_str_device(&_x2[j]);
+			printf("\n");
+		}
+
 		//x2 = _x1 * _x1
 		mpz_mult(&tmp2[j], &_x1[j], &t[j]);
 		//_x2 = REDC(rmod,n,n_,_x2,l)
 		mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
-//			if(j == 0){
-//				mpz_print_str_device(&_x1[j]);
-//				printf(" ");
-//				mpz_print_str_device(&_x2[j]);
-//				printf("\n");
-//			}
+		if(j == 0){
+			mpz_print_str_device(&_x1[j]);
+			printf(" ");
+			mpz_print_str_device(&_x2[j]);
+			printf("\n");
+		}
 
 		for(int i = eLength - 2; i >= 0; i--){
 
@@ -85,6 +92,13 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 				mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
 				//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
 				mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+			}
+
+			if(j == 0){
+				mpz_print_str_device(&_x1[j]);
+				printf(" ");
+				mpz_print_str_device(&_x2[j]);
+				printf("\n");
 			}
 		}
 
