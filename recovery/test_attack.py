@@ -233,7 +233,7 @@ key = "1000100010110110111110111000110000000001011000001000011010101101000101"
 # study the number of samples required to remove the randomness (maybe on gpu) and try to run on volta. try to find out why the kernel is so slow (where is the bottleneck?).
 # write code for all 4 cases and add prime number generator to test for larger ns. Maybe bit1div and nondiv is bad means bit0div and bothdiv is good.
 # the current rule to follow is that for each bit the diff1's distribution will be different, therefore the bit judging criterion must be determined per bit. 
-print("bits: " + bits(current_bits))
+print("current bits: " + bits(current_bits))
 while(eob == 0 ):    
 
     f1 = open("bit1divpairs_pre.txt","w+")
@@ -297,34 +297,6 @@ while(eob == 0 ):
 #         print("bit not accepted.")
 #         continue
 
-#     if iter_count < 8 :
-# 
-#         iter_count+=1
-#     
-#         if int(sum1) > int(sum4) : #bit is 1
-#             vote_1+=1
-#         else : #bit is 0
-#             vote_0+=1
-#             
-#         continue
-#     else:        
-#         
-#         if int(sum1) > int(sum4) : #bit is 1
-#             vote_1+=1
-#         else : #bit is 0
-#             vote_0+=1
-#             
-#         if vote_1 > vote_0 : #bit is 1
-#             print("1")
-#             temp = bits(current_bits) + "1"
-#         else : #bit is 0
-#             print("0")
-#             temp = bits(current_bits) + "0"    
-#         
-#         iter_count = 0
-#         vote_1=0
-#         vote_0=0
-
 
 #     if diff1 > 1000 : #bit is 1
 #         print("1")
@@ -334,20 +306,51 @@ while(eob == 0 ):
 #         temp = bits(current_bits) + "0"    
     
 
-    if abs(diff5) < 2000 :
-        print("bit not accepted.")
+    if abs(diff5) < 1000 :
+        print("bit not accepted. current bits: " + bits(current_bits))
         continue
 
-    if int(sum1) > int(sum4) : #bit is 1
-        print("1")
-        temp = bits(current_bits) + "1"
-    else : #bit is 0
-        print("0")
-        temp = bits(current_bits) + "0"    
+#     if int(sum1) > int(sum4) : #bit is 1
+#         print("1")
+#         temp = bits(current_bits) + "1"
+#     else : #bit is 0
+#         print("0")
+#         temp = bits(current_bits) + "0"
+        
+        
+    if iter_count < 8 :
+ 
+        iter_count+=1
+     
+        if diff5 > 0 : #bit is 1
+            vote_1+=1
+            print("bit voted: 1")
+        else : #bit is 0
+            vote_0+=1
+            print("bit voted: 0")
+        continue
+    else:        
+         
+        if diff5 > 0 : #bit is 1
+            vote_1+=1
+        else : #bit is 0
+            vote_0+=1
+             
+        if vote_1 > vote_0 : #bit is 1
+            print("bit accepted: 1")
+            temp = bits(current_bits) + "1"
+        else : #bit is 0
+            print("bit accepted: 0")
+            temp = bits(current_bits) + "0"    
+         
+        iter_count = 0
+        vote_1=0
+        vote_0=0
+        
 
     bit_count+=1
     current_bits = int(temp, 2)
-    print("bits: " + bits(current_bits))
+    print("current bits: " + bits(current_bits))
        
     if bits(current_bits)[bit_count] != key[bit_count] : # length of key
         print("wrong key!");
