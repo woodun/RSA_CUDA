@@ -5,6 +5,6 @@
 #PBS -m a
 #PBS -M hwang07@email.wm.edu
 PROG=python
-ARGS="test_attack.py 1"
+ARGS="test_attack.py 1 > output1.txt"
 cd $PBS_O_WORKDIR
 $PROG $ARGS
