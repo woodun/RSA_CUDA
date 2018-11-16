@@ -257,6 +257,7 @@ p = 32416189867
 q = 32416189909
 n = p*q 
 phi = (p-1)*(q-1)
+n_lambda = phi // egcd(p-1, q-1)[0] #changes: more efficient
 e = 5
 d = modinv(e, phi)
 
@@ -338,7 +339,7 @@ print ("\n\n\n\n\n")
 # print np.average(DivCoef(l, d, n))
 # l = FindNoDiv(1000, n, d, 52)
 # print np.average(DivCoef(l, d, n))
-d = 105080936679004107233
+
 n_rep = 10
 for i in range(2000,2001,100):
 	probes = []

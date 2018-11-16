@@ -324,12 +324,12 @@ while(eob == 0 ):
 #         vote_0=0
 
 
-#     if int(sum1) > int(sum4) : #bit is 1
-#         print("1")
-#         temp = bits(current_bits) + "1"
-#     else : #bit is 0
-#         print("0")
-#         temp = bits(current_bits) + "0"    
+    if int(sum1) > int(sum4) : #bit is 1
+        print("1")
+        temp = bits(current_bits) + "1"
+    else : #bit is 0
+        print("0")
+        temp = bits(current_bits) + "0"    
 
     bit_count+=1
     current_bits = int(temp, 2)
