@@ -332,7 +332,7 @@ while(eob == 0 ):
 #         print("0")
 #         temp = bits(current_bits) + "0"    
 
-    if abs(diff5) < 1000 :
+    if abs(diff5) < 2000 :
         print("bit not accepted.")
         continue
 
