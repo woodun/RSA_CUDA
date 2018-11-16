@@ -235,6 +235,7 @@ key = "1000100010110110111110111000110000000001011000001000011010101101000101"
 # the current rule to follow is that for each bit the diff1's distribution will be different, therefore the bit judging criterion must be determined per bit. 
 print("bits: " + bits(current_bits))
 while(eob == 0 ):    
+    break
 
     f1 = open("bit1divpairs_pre.txt","w+")
     f2 = open("nondivpairs_pre.txt","w+")
@@ -332,8 +333,7 @@ while(eob == 0 ):
 #     else : #bit is 0
 #         print("0")
 #         temp = bits(current_bits) + "0"    
-
-    break
+    
 
     if abs(diff5) < 2000 :
         print("bit not accepted.")
