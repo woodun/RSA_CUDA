@@ -247,7 +247,7 @@ while(eob == 0 ):
     print(sum1)
     div1 = out1.splitlines()[1]
     print(div1)        
-    print(out1.splitlines()[2])
+    #print(out1.splitlines()[2])
 
     out2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256", "nondivpairs_out.txt"])
     sum2 = out2.splitlines()[0]
