@@ -109,7 +109,7 @@ int main (int argc, char *argv[]) {
 	mpz_set_str_host(&myMes1_h[1], mes2_input); //input from string
 
 //	//debug
-//	char test_str[1024];
+	char test_str[1024];
 //	printf("%s\n", mpz_get_str(&h_n, test_str, 1024));
 //	printf("%s\n", mpz_get_str(&h_n_, test_str, 1024));
 //	printf("%s\n", mpz_get_str(&h_r2, test_str, 1024));
