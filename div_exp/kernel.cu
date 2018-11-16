@@ -108,7 +108,7 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 			clockTable[iter1] = t2 - t1;
 
 			int div_count = 0;
-			for(int m = 0; m < 66; m++){
+			for(int m = 0; m < 69; m++){
 				if(con1[0][m] != con1[1][m]){
 					div_count++;
 				}
