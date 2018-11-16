@@ -222,7 +222,9 @@ iter_count = 0
 
 vote_0 = 0 # multiple runs to vote?
 vote_1 = 0
-key = "1011011001001001010011110110010101010111001010110101111000111100001"
+#key = "1011011001001001010011110110010101010111001010110101111000111100001"
+key = "1000100010110110111110111000110000000001011000001000011010101101000101"
+
 # int(sys.argv[1])
 
 
@@ -293,33 +295,33 @@ while(eob == 0 ):
 #         print("bit not accepted.")
 #         continue
 
-    if iter_count < 8 :
-
-        iter_count+=1
-    
-        if int(sum1) > int(sum4) : #bit is 1
-            vote_1+=1
-        else : #bit is 0
-            vote_0+=1
-            
-        continue
-    else:        
-        
-        if int(sum1) > int(sum4) : #bit is 1
-            vote_1+=1
-        else : #bit is 0
-            vote_0+=1
-            
-        if vote_1 > vote_0 : #bit is 1
-            print("1")
-            temp = bits(current_bits) + "1"
-        else : #bit is 0
-            print("0")
-            temp = bits(current_bits) + "0"    
-        
-        iter_count = 0
-        vote_1=0
-        vote_0=0
+#     if iter_count < 8 :
+# 
+#         iter_count+=1
+#     
+#         if int(sum1) > int(sum4) : #bit is 1
+#             vote_1+=1
+#         else : #bit is 0
+#             vote_0+=1
+#             
+#         continue
+#     else:        
+#         
+#         if int(sum1) > int(sum4) : #bit is 1
+#             vote_1+=1
+#         else : #bit is 0
+#             vote_0+=1
+#             
+#         if vote_1 > vote_0 : #bit is 1
+#             print("1")
+#             temp = bits(current_bits) + "1"
+#         else : #bit is 0
+#             print("0")
+#             temp = bits(current_bits) + "0"    
+#         
+#         iter_count = 0
+#         vote_1=0
+#         vote_0=0
 
 
 #     if int(sum1) > int(sum4) : #bit is 1
@@ -337,7 +339,7 @@ while(eob == 0 ):
         print("wrong key!");
         break
     
-    if len(bits(current_bits)) == 67 : # length of key
+    if len(bits(current_bits)) == 70 : # length of key
         break
 
 
