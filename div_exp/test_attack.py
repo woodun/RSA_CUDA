@@ -221,7 +221,8 @@ bit_count = 0
 
 # vote_0 = 0 # multiple runs to vote?
 # vote_1 = 0
-key = "1011011001001001010011110110010101010111001010110101111000111100001"
+#key = "1011011001001001010011110110010101010111001010110101111000111100001"
+key = "1000100010110110111110111000110000000001011000001000011010101101000101"
 # int(sys.argv[1])
 
 
@@ -321,7 +322,7 @@ while(eob == 0 ):
         print("wrong key!");
         break
     
-    if len(bits(current_bits)) == 67 : # length of key
+    if len(bits(current_bits)) == 70 : # length of key
         break
 
 
