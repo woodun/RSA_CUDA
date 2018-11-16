@@ -7,4 +7,4 @@
 PROG=nvcc
 ARGS="--version"
 cd $PBS_O_WORKDIR
-$PROG $ARGS > version.txt
+nvcc --version > version.txt
