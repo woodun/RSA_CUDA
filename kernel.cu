@@ -7,13 +7,38 @@ __device__ mpz_t* REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t*
 
 	//m = ((T & R) * N_) & R
 	mpz_bitwise_truncate(t, T, RL);
+
+	mpz_print_str_device(&t[j]);
+	printf("\n");
+
 	mpz_mult(tmp, N_, t);
+
+	mpz_print_str_device(&tmp[j]);
+	printf("\n");
+
+
 	mpz_bitwise_truncate_eq(tmp, RL);
+
+	mpz_print_str_device(&tmp[j]);
+	printf("\n");
 
 	//t = (T + m*N) >> L
 	mpz_mult(t, tmp , N);
+
+	mpz_print_str_device(&t[j]);
+	printf("\n");
+
 	mpz_add(tmp, T, t);
+
+	mpz_print_str_device(&tmp[j]);
+	printf("\n");
+
+
 	mpz_bitwise_rshift(t, tmp, RL);
+
+
+	mpz_print_str_device(&t[j]);
+	printf("\n");
 
 	if (mpz_gte(t , N)){
 		mpz_sub(tmp, t, N);
