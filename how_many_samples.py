@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import random, time
-import numpy as np
+
 import sys
 
 def red(num,mod):
@@ -253,13 +253,14 @@ def DivCoef(l, e, n):
 
 
 random.seed(time.time())
-p = 32416189867
-q = 32416189909
-n = p*q 
+p = 47055833459
+q = 47055833533
+n = p*q
 phi = (p-1)*(q-1)
 n_lambda = phi // egcd(p-1, q-1)[0] #changes: more efficient
 e = 5
 d = modinv(e, phi)
+_d = modinv(e, n_lambda)
 
 e_b = bits(e)
 d_b = bits(d)
@@ -322,8 +323,9 @@ print (d1,d2)
 
 print (CalcDiv(d1,d2))
 print (d)
-
+print (_d)
 print(len(bits(d)))
+print(len(bits(_d)))
 
 print ("\n\n\n\n\n")
 # print(DivPattern(746346390363684944272,d,n))
@@ -340,6 +342,8 @@ print ("\n\n\n\n\n")
 # l = FindNoDiv(1000, n, d, 52)
 # print np.average(DivCoef(l, d, n))
 
+import numpy as np
+ 
 n_rep = 10
 for i in range(2000,2001,100):
 	probes = []
@@ -349,6 +353,24 @@ for i in range(2000,2001,100):
 		div_a =  np.average(div)
 		l = FindNoDiv(i, n, d, 53)
 		nodiv = np.average(DivCoef(l, d, n))
+		nodiv_a = np.average(nodiv)
+		delt = div_a - nodiv_a
+		probes.append(delt)
+		print ("Set size: %d div: %f nodiv: %f delta: %f" % (i, div_a, nodiv_a, delt))
+	print ("Accuracy rate for size %d: %f%% avg:%f\n" % (i, float(sum(x > 0 for x in probes)) / n_rep * 100, np.average(probes)))
+	sys.stdout.flush() 
+print ("%f" % (float(sum(x > 0 for x in probes)) / n_rep * 100))
+ 
+ 
+n_rep = 10
+for i in range(2000,2001,100):
+	probes = []
+	for j in range(n_rep):
+		l = FindDiv (i, n, _d, 53)
+		div = np.average(DivCoef(l, _d, n))
+		div_a =  np.average(div)
+		l = FindNoDiv(i, n, _d, 53)
+		nodiv = np.average(DivCoef(l, _d, n))
 		nodiv_a = np.average(nodiv)
 		delt = div_a - nodiv_a
 		probes.append(delt)
