@@ -100,12 +100,12 @@ int main (int argc, char *argv[]) {
 
 	/////get Message1
 	//char mes1_input[] = "00000000000123456789";
-	char mes1_input[] = "0000002a6975d3419d6adaaa";
+	char mes1_input[] = "000000000002ef";
 	mpz_set_str_host(&myMes1_h[0], mes1_input); //input from string
 
 	/////get Message2
 	//char mes2_input[] = "00000000000987654321";
-	char mes2_input[] = "00000008c6d8166335bef22e";
+	char mes2_input[] = "000000000000183";
 	mpz_set_str_host(&myMes1_h[1], mes2_input); //input from string
 
 //	//debug
@@ -119,7 +119,7 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);
 
 	///////get e
-	char e_input[] = "101";
+	char e_input[] = "11";
 	int e_bitsLength = (int)strlen(e_input);
 	int* eBits = (int *) malloc(sizeof(int) * e_bitsLength);
 
@@ -140,7 +140,7 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(eBits_d, eBits, sizeof(int) * e_bitsLength, cudaMemcpyHostToDevice);
 
 	///////get d
-	char d_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
+	char d_input[] = "1011010100011";
 	//char d_input[] = "101";
 
 	int d_bitsLength = (int)strlen(d_input);

@@ -207,12 +207,19 @@ def FindNoDiv (num, mod, e, bit):
 random.seed(time.time())
 p = 32416189867
 q = 32416189909
+p = 107
+q = 83
+
+
 n = p*q 
 phi = (p-1)*(q-1)
 n_lambda = phi // egcd(p-1, q-1)[0] #changes: more efficient
 print(phi, n_lambda)
-e = 5
-d = modinv(e, n_lambda) #changes: more efficient
+e = 3
+_d = modinv(e, n_lambda) #changes: more efficient
+d = modinv(e, phi) #changes: more efficient
+print (d)
+print (_d)
 
 e_b = bits(e)
 d_b = bits(d)
