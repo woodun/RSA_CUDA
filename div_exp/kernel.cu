@@ -67,7 +67,7 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 //				printf("\n");
 //			}
 
-		for(int i = eLength - 2; i >= 0; i--){
+		for(int i = eLength - 2; i >= 0; i--){ //0 - 65 = 67 - 1
 
 			if(eBits[i] == 0){
 				//x2 = _x1 * _x2
@@ -108,7 +108,7 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 			clockTable[iter1] = t2 - t1;
 
 			int div_count = 0;
-			for(int m = 0; m < 69; m++){
+			for(int m = 0; m < 66; m++){
 				if(con1[0][m] != con1[1][m]){
 					div_count++;
 				}
