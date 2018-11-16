@@ -1,0 +1,10 @@
+#!/bin/bash
+#PBS -l nodes=1:in01:ppn=1
+#PBS -l walltime=72:00:00
+#PBS -N RSA
+#PBS -m a
+#PBS -M hwang07@email.wm.edu
+PROG=python
+ARGS="test_attack.py 1"
+cd $PBS_O_WORKDIR
+$PROG $ARGS

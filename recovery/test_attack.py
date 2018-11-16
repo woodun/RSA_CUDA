@@ -231,7 +231,8 @@ key = "1000100010110110111110111000110000000001011000001000011010101101000101"
 # try large samples, ad hoc approach. The noise mainly comes from other bits (affected by the pairs generated), not the hardware. Can we do something after or even before the GPU run to know their quality? 
 # seems mathematically the number of divergence of other bits will not be affected by previous bits (but not 100% sure because they cannot be all div or all non-div).
 # study the number of samples required to remove the randomness (maybe on gpu) and try to run on volta. try to find out why the kernel is so slow (where is the bottleneck?).
-#write code for all 4 cases and add prime number generator to test for larger ns. Maybe bit1div and nondiv is bad means bit0div and bothdiv is good.
+# write code for all 4 cases and add prime number generator to test for larger ns. Maybe bit1div and nondiv is bad means bit0div and bothdiv is good.
+# the current rule to follow is that for each bit the diff1's distribution will be different, therefore the bit judging criterion must be determined per bit. 
 print("bits: " + bits(current_bits))
 while(eob == 0 ):    
 

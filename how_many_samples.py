@@ -263,7 +263,7 @@ q = 32416189909
 n = p*q
 phi = (p-1)*(q-1)
 n_lambda = phi // egcd(p-1, q-1)[0] #changes: more efficient
-e = 11
+e = 5
 d = modinv(e, phi)
 _d = modinv(e, n_lambda)
 
@@ -355,7 +355,7 @@ n_rep = 10
 for i in range(2000,2001,100):
 	probes = []
 	for j in range(n_rep):
-		l = FindDiv (i, n, d, len(bits(d)) - 2)
+		l = FindDiv (i, n, d, len(bits(d)) - 3)# even if second bit is positive, the third bit can be negative.
 		div = np.average(DivCoef(l, d, n))
 		div_a =  np.average(div)
 		l = FindNoDiv(i, n, d, 53)
@@ -373,7 +373,7 @@ n_rep = 10
 for i in range(2000,2001,100):
 	probes = []
 	for j in range(n_rep):
-		l = FindDiv (i, n, _d, len(bits(_d)) - 2)
+		l = FindDiv (i, n, _d, len(bits(_d)) - 3)
 		div = np.average(DivCoef(l, _d, n))
 		div_a =  np.average(div)
 		l = FindNoDiv(i, n, _d, 53)
