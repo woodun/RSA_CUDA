@@ -322,6 +322,8 @@ print (d1,d2)
 print (CalcDiv(d1,d2))
 print (d)
 
+print(len(bits(d)))
+
 print ("\n\n\n\n\n")
 # print(DivPattern(746346390363684944272,d,n))
 # print(enumerate(DivPattern(746346390363684944272,d,n)))
@@ -336,7 +338,7 @@ print ("\n\n\n\n\n")
 # print np.average(DivCoef(l, d, n))
 # l = FindNoDiv(1000, n, d, 52)
 # print np.average(DivCoef(l, d, n))
-
+d = 105080936679004107233
 n_rep = 10
 for i in range(2000,2001,100):
 	probes = []
