@@ -99,12 +99,12 @@ int main (int argc, char *argv[]) {
 //	    free(line);
 
 	/////get Message1
-	char mes1_input[] = "00000000000123456789";
+	//char mes1_input[] = "00000000000123456789";
 	char mes1_input[] = "0000002a6975d3419d6adaaa";
 	mpz_set_str_host(&myMes1_h[0], mes1_input); //input from string
 
 	/////get Message2
-	char mes2_input[] = "00000000000987654321";
+	//char mes2_input[] = "00000000000987654321";
 	char mes2_input[] = "00000008c6d8166335bef22e";
 	mpz_set_str_host(&myMes1_h[1], mes2_input); //input from string
 
