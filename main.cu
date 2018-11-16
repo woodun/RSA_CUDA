@@ -47,22 +47,22 @@ int main (int argc, char *argv[]) {
 	mpz_t h_n;
 	mpz_t h_n_;
 	mpz_t h_r2;
-	int rl = 70;
+	int rl = 14;
 
 	mpz_init(&h_n);
 	mpz_init(&h_n_);
 	mpz_init(&h_r2);
 
 	///////get n
-	char n_input[] = "00000038f6e8cfba55dd0e47";
+	char n_input[] = "000022b1";
 	mpz_set_str_host(&h_n, n_input);
 	
 	///////get n_
-	char n__input[] = "0000002e8457440e0d93c489";
+	char n__input[] = "000019af";
 	mpz_set_str_host(&h_n_, n__input);
 
 	///////get r2
-	char r2_input[] = "0000003709d17d8f8686609f";
+	char r2_input[] = "00001c3f";
 	mpz_set_str_host(&h_r2, r2_input);
 
 	///////get Messages
