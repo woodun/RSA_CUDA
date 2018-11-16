@@ -253,12 +253,17 @@ def DivCoef(l, e, n):
 
 
 random.seed(time.time())
-p = 47055833459
-q = 47055833533
+p = 97011687217
+q = 97011687221
+
+p = 97011687217
+q = 97011688157
+p = 32416189867
+q = 32416189909
 n = p*q
 phi = (p-1)*(q-1)
 n_lambda = phi // egcd(p-1, q-1)[0] #changes: more efficient
-e = 5
+e = 11
 d = modinv(e, phi)
 _d = modinv(e, n_lambda)
 
@@ -322,10 +327,12 @@ d2 = CheckDivExp(1001,d,n,52)
 print (d1,d2)
 
 print (CalcDiv(d1,d2))
-print (d)
-print (_d)
+print (bits(d))
+print (bits(_d))
 print(len(bits(d)))
 print(len(bits(_d)))
+print (bits(d).count('1'))
+print (bits(_d).count('1'))
 
 print ("\n\n\n\n\n")
 # print(DivPattern(746346390363684944272,d,n))
@@ -348,7 +355,7 @@ n_rep = 10
 for i in range(2000,2001,100):
 	probes = []
 	for j in range(n_rep):
-		l = FindDiv (i, n, d, 69)
+		l = FindDiv (i, n, d, len(bits(d)) - 2)
 		div = np.average(DivCoef(l, d, n))
 		div_a =  np.average(div)
 		l = FindNoDiv(i, n, d, 53)
@@ -366,7 +373,7 @@ n_rep = 10
 for i in range(2000,2001,100):
 	probes = []
 	for j in range(n_rep):
-		l = FindDiv (i, n, _d, 69)
+		l = FindDiv (i, n, _d, len(bits(_d)) - 2)
 		div = np.average(DivCoef(l, _d, n))
 		div_a =  np.average(div)
 		l = FindNoDiv(i, n, _d, 53)
