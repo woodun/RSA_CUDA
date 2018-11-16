@@ -4,7 +4,7 @@
 #PBS -N RSA
 #PBS -m a
 #PBS -M hwang07@email.wm.edu
-PROG=nvprof
-ARGS="./main 1000 1"
+PROG=nvcc
+ARGS="--version"
 cd $PBS_O_WORKDIR
-$PROG $ARGS > nvprof.txt
+$PROG $ARGS > version.txt
