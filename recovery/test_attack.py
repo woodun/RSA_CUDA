@@ -242,20 +242,20 @@ while(eob == 0 ):
     f4 = open("bit0divpairs_pre.txt","w+")
 #     random.seed(1542226726.06)#get a good seed?
 #     random.seed(0)#get a good seed?
-    FindPairs (2256, n, current_bits, n_, r2, rmod, l, f1, f2, f3, f4, int(sys.argv[1]), len(bits(current_bits) ) )
+    FindPairs (1256, n, current_bits, n_, r2, rmod, l, f1, f2, f3, f4, int(sys.argv[1]), len(bits(current_bits) ) )
     f1.close()
     f2.close()
     f3.close()
     f4.close()
     
     #./main bit0divpairs_pre.txt 1000
-    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256", "bit1divpairs_out.txt"]) # greater means 1
+    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "1256", "bit1divpairs_out.txt"]) # greater means 1
     print(sum1)
-    sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256", "nondivpairs_out.txt"])
+    sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "1256", "nondivpairs_out.txt"])
     print(sum2)
-    sum3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256", "divpairs_out.txt"])
+    sum3 = subprocess.check_output(["./main", "divpairs_pre.txt", "1256", "divpairs_out.txt"])
     print(sum3)
-    sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256", "bit0divpairs_out.txt"]) # greater means 0
+    sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "1256", "bit0divpairs_out.txt"]) # greater means 0
     print(sum4)
 
     diff1 = int(sum1) - int(sum2) # close to zero means 0, greater than zero means 1
