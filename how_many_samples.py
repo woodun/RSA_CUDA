@@ -348,7 +348,7 @@ n_rep = 10
 for i in range(2000,2001,100):
 	probes = []
 	for j in range(n_rep):
-		l = FindDiv (i, n, d, 53)
+		l = FindDiv (i, n, d, 69)
 		div = np.average(DivCoef(l, d, n))
 		div_a =  np.average(div)
 		l = FindNoDiv(i, n, d, 53)
@@ -366,7 +366,7 @@ n_rep = 10
 for i in range(2000,2001,100):
 	probes = []
 	for j in range(n_rep):
-		l = FindDiv (i, n, _d, 53)
+		l = FindDiv (i, n, _d, 69)
 		div = np.average(DivCoef(l, _d, n))
 		div_a =  np.average(div)
 		l = FindNoDiv(i, n, _d, 53)
