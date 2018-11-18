@@ -311,12 +311,12 @@ while(eob == 0 ):
         print("bit not accepted. current bits: " + bits(current_bits))
         continue
 
-    if diff5 > 0 : #bit is 1
-        print("bit accepted: 1")
-        temp = bits(current_bits) + "1"
-    else : #bit is 0
-        print("bit accepted: 0")
-        temp = bits(current_bits) + "0"
+#     if diff5 > 0 : #bit is 1
+#         print("bit accepted: 1")
+#         temp = bits(current_bits) + "1"
+#     else : #bit is 0
+#         print("bit accepted: 0")
+#         temp = bits(current_bits) + "0"
         
         
     if vote_1 < vote_count or vote_0 < vote_count :
