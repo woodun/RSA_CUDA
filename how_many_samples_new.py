@@ -44,7 +44,7 @@ def CheckREDC(R,N,N_,T,L):
 	else:
 		return 0
 			
-def CheckDivExp(mes1, mes2, e, n, bit, check_pre, div_num, num): 
+def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, bit, check_pre, div_num, num): 
 	# div_num is a relaxed condition, otherwise cannot reach very far bits. Also the non-bothdiv combo can always be reached. 
 	#set bit < 0 to enter check_div mode 
 	#now gen pair and check pre at the same time
@@ -54,11 +54,7 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre, div_num, num):
 	bothdiv_num = num #1 1
 	bit0_div_num = num #1 0
 	
-	r = findR(n)[1] 
-	rmod = r - 1  	
-	l = findR(n)[0] 
-	n_ = - modinv(n,r) & rmod 
-	r2 = (r << l) % n
+
 	
 	s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
 	s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)	
@@ -145,6 +141,7 @@ def CheckDivExp(mes1, mes2, e, n, bit, check_pre, div_num, num):
 			if (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2): #diverge for bit 0 (1 0) or (0 1)
 				if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #diverge for bit 0, diverge for bit 1 (1 0) or (0 1)
 					print ("debug3\n")
+					if bothdiv_num > 0
 					return 3
 				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1 (0 0)
 					print ("debug4\n")
@@ -249,28 +246,35 @@ def Padding8 (n):
 		hex_n = "0" + hex_n;
 	return hex_n;
 			
-def FindPairs (num, mod, e, bit, f1, f2, f3, f4, check_pre, div_num): 
+def FindPairs (num, n, e, bit, f1, f2, f3, f4, check_pre, div_num): 
+	
+	r = findR(n)[1] 
+	rmod = r - 1  	
+	l = findR(n)[0] 
+	n_ = - modinv(n,r) & rmod 
+	r2 = (r << l) % n
+	
 	bit1_div_num = num #0 1
 	nondiv_num = num #0 0
 	bothdiv_num = num #1 1
 	bit0_div_num = num #1 0
 	while(True):
-		r1, r2 = random.randint(2, mod), random.randint(2, mod)
+		rand1, rand2 = random.randint(2, n), random.randint(2, n)
 # 		r1 = 0x30bb981bd55d145233
 # 		r2 = 0x35bd98947ef0b97a5e
-		div_con = CheckDivExp(r1, r2, e, mod, bit, check_pre, div_num)	
+		div_con = CheckDivExp(rand1, rand2, e, n, n_, r2, rmod, l, bit, check_pre, div_num)	
 # 		break
 		if div_con == 1 and bit1_div_num > 0:				
-			f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
+			f1.write("%s\n%s\n" % (Padding8(rand1), Padding8(rand2) ) )
 			bit1_div_num-=1
 		if div_con == 2 and nondiv_num > 0:				
-			f2.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
+			f2.write("%s\n%s\n" % (Padding8(rand1), Padding8(rand2) ) )
 			nondiv_num-=1
 		if div_con == 3 and bothdiv_num > 0:				
-			f3.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
+			f3.write("%s\n%s\n" % (Padding8(rand1), Padding8(rand2) ) )
 			bothdiv_num-=1
 		if div_con == 4 and bit0_div_num > 0:				
-			f4.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
+			f4.write("%s\n%s\n" % (Padding8(rand1), Padding8(rand2) ) )
 			bit0_div_num-=1
 # 		if bit1_div_num == 0 and bothdiv_num == 0 and bit0_div_num == 0: # no 0 0			
 # 			return 0	

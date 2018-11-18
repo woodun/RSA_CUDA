@@ -7,4 +7,4 @@
 PROG=nvprof
 ARGS="./main 1000 1"
 cd $PBS_O_WORKDIR
-nvprof --print-gpu-trace --log-file prof1.txt ./main 1000 1 > nvprof.txt
+nvprof --log-file prof1.txt ./main 1000 1 > nvprof.txt

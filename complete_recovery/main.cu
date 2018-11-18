@@ -6,7 +6,7 @@
 #include "cuda_mpz.h"
 #include <gmp.h>
 
-
+//nvprof --print-gpu-trace --log-file prof1.txt ./main 1000 1 > nvprof.txt
 int CheckREDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){
 
 	//m = ((T & R) * N_) & R
