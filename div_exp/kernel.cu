@@ -51,7 +51,7 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
 		mpz_mult(&tmp2[j], &_x1[j], &r2);
-		con1[j][71] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
+		con1[j][70] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
 		mpz_set( &_x1[j], &t[j]);
 
 		//x2 = _x1 * _x1
@@ -107,8 +107,10 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 		if( j == 1){
 			clockTable[iter1] = t2 - t1;
 
+			con2[0][69] = 0;
+			con2[1][69] = 0;
 			int div_count = 0;
-			for(int m = 0; m < 69; m++){
+			for(int m = 0; m < 71; m++){
 				if(con1[0][m] != con1[1][m]){
 					div_count++;
 				}
