@@ -7,4 +7,4 @@
 PROG=nvprof
 ARGS="./main 1000 1"
 cd $PBS_O_WORKDIR
-$PROG $ARGS > nvprof.txt
+nvprof ./main 1000 1 > nvprof.txt
