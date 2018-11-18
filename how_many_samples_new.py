@@ -2,9 +2,6 @@
 
 import random, time, sys
 
-def red(num,mod):
-	return num % mod
-
 def bits(i):
 	return "{0:b}".format(i)
 
@@ -44,55 +41,46 @@ def CheckREDC(R,N,N_,T,L):
 	else:
 		return 0
 			
-def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, bit, check_pre, div_num, num): 
-	# div_num is a relaxed condition, otherwise cannot reach very far bits. Also the non-bothdiv combo can always be reached. 
-	#set bit < 0 to enter check_div mode 
-	#now gen pair and check pre at the same time
+def CheckDivExp(e, n, n_, r2, rmod, l, bit, check_pre, div_num, num): #now gen pair and check pre at the same time
+	
+	bit1_div_sum = 0 #0 1
+	nondiv_sum = 0 #0 0
+	bothdiv_sum = 0 #1 1
+	bit0_div_sum = 0 #1 0
 	
 	bit1_div_num = num #0 1
 	nondiv_num = num #0 0
 	bothdiv_num = num #1 1
 	bit0_div_num = num #1 0
 	
-
-	
-	s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
-	s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)	
-	_x1_1 = REDC(rmod, n, n_, mes1 * r2, l) 
-	_x1_2 = REDC(rmod, n, n_, mes2 * r2, l)
-	
-# 	if s1_1 == s1_2 :#1,2 must be diverge here, for 65
-# 		return 0
-
-# 	if s1_1 != s1_2 :#4 must be converge here, for 65
-# 		return 0
-	
-	_x2_1 = _x1_1 * _x1_1
-	_x2_2 = _x1_2 * _x1_2
-	s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
-	s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
-	_x2_1 = REDC(rmod, n, n_, _x2_1, l)
-	_x2_2 = REDC(rmod, n, n_, _x2_2, l)
-
-# 	if s2_1 == s2_2 :#1,2 must be converge here, for 65
-# 		return 0
-# 	if s2_1 == s2_2 : #4 must be diverge here, for 65
-#  		return 0
-	
 	e_b = bits(e)
-	if bit > len(e_b) - 2 :
+	bit_length = len(e_b) - 2
+	if bit > bit_length :
 		print ("Wrong bit!")
 		exit(1)
-	c = len(e_b) - 2
 	
-	div_count = 0
+	while bit1_div_num > 0 or nondiv_num > 0 or bothdiv_num > 0 or bit0_div_num > 0 :
 	
-	for i in e_b[1:]:
- 		
-# 		if check_pre == 1 and ( s1_1 != s1_2 or s2_1 != s2_2 ): #previous bits are all convergent no matter it is 0 or 1
-# 			return 0
+		mark = 0
+		div_count = 0
+		c = bit_length
 		
-		if check_pre == 1: 
+		mes1, mes2 = random.randint(2, n), random.randint(2, n)
+		
+		s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
+		s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)	
+		_x1_1 = REDC(rmod, n, n_, mes1 * r2, l) 
+		_x1_2 = REDC(rmod, n, n_, mes2 * r2, l)
+		
+		_x2_1 = _x1_1 * _x1_1
+		_x2_2 = _x1_2 * _x1_2
+		s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+		s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+		_x2_1 = REDC(rmod, n, n_, _x2_1, l)
+		_x2_2 = REDC(rmod, n, n_, _x2_2, l)
+		
+		for i in e_b[1:]:
+			
 			if s1_1 != s1_2 :
 				div_count+=1				
 			if s2_1 != s2_2 :
@@ -100,191 +88,196 @@ def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, bit, check_pre, div_num, num)
 # 			if div_count != 1 : #same divergence pattern
 # 				return 0
 # 			div_count = 0
-		
-		if bit == c:			
 			
-			if check_pre == 1 and div_count != div_num : #total divergence number
-				return 0			
-			
-			_x1_1_temp = _x1_1
-			_x2_1_temp = _x2_1
-			_x1_2_temp = _x1_2
-			_x2_2_temp = _x2_2
-
-			#simulate exp bit 0
-			_x2_1 = _x1_1 * _x2_1
-			d0_s1_1 = CheckREDC(rmod, n, n_, _x2_1, l) 
-			_x1_1 = _x1_1 * _x1_1
-			d0_s2_1 = CheckREDC(rmod, n, n_, _x1_1 ,l)
-			
-			_x2_2 = _x1_2 * _x2_2
-			d0_s1_2 = CheckREDC(rmod, n, n_, _x2_2, l) ##################################################todo: make gen pair and check pre in one function.
-			_x1_2 = _x1_2 * _x1_2
-			d0_s2_2 = CheckREDC(rmod, n, n_, _x1_2 ,l) 
-
-			#simulate exp bit 1
-			_x1_1 = _x1_1_temp
-			_x2_1 = _x2_1_temp
-			_x1_2 = _x1_2_temp
-			_x2_2 = _x2_2_temp
-			
-			_x1_1 = _x1_1 * _x2_1
-			d1_s1_1 = CheckREDC(rmod, n, n_, _x1_1, l) 
-			_x2_1 = _x2_1 * _x2_1
-			d1_s2_1 = CheckREDC(rmod, n, n_, _x2_1, l) 
-			
-			_x1_2 = _x1_2 * _x2_2
-			d1_s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
-			_x2_2 = _x2_2 * _x2_2
-			d1_s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
-			
-			if (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2): #diverge for bit 0 (1 0) or (0 1)
-				if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #diverge for bit 0, diverge for bit 1 (1 0) or (0 1)
-					print ("debug3\n")
-					if bothdiv_num > 0
-					return 3
-				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1 (0 0)
-					print ("debug4\n")
-					return 4
-				else:
-					return 0
-			elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0 (0 0)
-				if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #converge for bit 0, diverge for bit 1 (1 0) or (0 1)
-					print ("debug1\n")
-					return 1
-				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1 (0 0)
-					print ("debug2\n")
-					return 2
-				else:
-					return 0
-			else:
-				return 0 	
-		
-			#still continue to finish all bits
-			_x1_1 = _x1_1_temp
-			_x2_1 = _x2_1_temp
-			_x1_2 = _x1_2_temp
-			_x2_2 = _x2_2_temp
-			
-			if i == '0':
-				_x2_1 = _x1_1 * _x2_1
-				s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
-				_x2_1 = REDC(rmod, n, n_, _x2_1, l) 
-				_x1_1 = _x1_1 * _x1_1
-				s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
-				_x1_1 = REDC(rmod, n, n_, _x1_1, l) 
+			if bit == c:			
 				
-				_x2_2 = _x1_2 * _x2_2
-				s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
-				_x2_2 = REDC(rmod, n, n_, _x2_2, l) 
-				_x1_2 = _x1_2 * _x1_2
-				s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
-				_x1_2 = REDC(rmod, n, n_, _x1_2, l) 				
-			else:
-				_x1_1 = _x1_1 * _x2_1
-				s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
-				_x1_1 = REDC(rmod, n, n_, _x1_1, l) 
-				_x2_1 = _x2_1 * _x2_1
-				s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
-				_x2_1 = REDC(rmod, n, n_, _x2_1, l)
+				if check_pre == 1 and div_count != div_num : #total divergence number
+					break			
 				
-				_x1_2 = _x1_2 * _x2_2
-				s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
-				_x1_2 = REDC(rmod, n, n_, _x1_2, l) 
-				_x2_2 = _x2_2 * _x2_2
-				s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
-				_x2_2 = REDC(rmod, n, n_, _x2_2, l)			
-		else:
-			if i == '0':
-				_x2_1 = _x1_1 * _x2_1
-				s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
-				_x2_1 = REDC(rmod, n, n_, _x2_1, l) 
-				_x1_1 = _x1_1 * _x1_1
-				s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
-				_x1_1 = REDC(rmod, n, n_, _x1_1, l) 
-				
-				_x2_2 = _x1_2 * _x2_2
-				s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
-				_x2_2 = REDC(rmod, n, n_, _x2_2, l) 
-				_x1_2 = _x1_2 * _x1_2
-				s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
-				_x1_2 = REDC(rmod, n, n_, _x1_2, l) 				
-			else:
-				_x1_1 = _x1_1 * _x2_1
-				s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
-				_x1_1 = REDC(rmod, n, n_, _x1_1, l) 
-				_x2_1 = _x2_1 * _x2_1
-				s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
-				_x2_1 = REDC(rmod, n, n_, _x2_1, l)
-				
-				_x1_2 = _x1_2 * _x2_2
-				s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
-				_x1_2 = REDC(rmod, n, n_, _x1_2, l) 
-				_x2_2 = _x2_2 * _x2_2
-				s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
-				_x2_2 = REDC(rmod, n, n_, _x2_2, l)
-		c -= 1
-			
-	s1 = CheckREDC(rmod,n,n_,_x1_1,l)
-	s2 = CheckREDC(rmod,n,n_,_x1_2,l)
+				_x1_1_temp = _x1_1
+				_x2_1_temp = _x2_1
+				_x1_2_temp = _x1_2
+				_x2_2_temp = _x2_2
 	
-	if check_pre == 1: 
+				#simulate exp bit 0
+				_x2_1 = _x1_1 * _x2_1
+				d0_s1_1 = CheckREDC(rmod, n, n_, _x2_1, l) 
+				_x1_1 = _x1_1 * _x1_1
+				d0_s2_1 = CheckREDC(rmod, n, n_, _x1_1 ,l)
+				
+				_x2_2 = _x1_2 * _x2_2
+				d0_s1_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+				_x1_2 = _x1_2 * _x1_2
+				d0_s2_2 = CheckREDC(rmod, n, n_, _x1_2 ,l) 
+	
+				#simulate exp bit 1
+				_x1_1 = _x1_1_temp
+				_x2_1 = _x2_1_temp
+				_x1_2 = _x1_2_temp
+				_x2_2 = _x2_2_temp
+				
+				_x1_1 = _x1_1 * _x2_1
+				d1_s1_1 = CheckREDC(rmod, n, n_, _x1_1, l) 
+				_x2_1 = _x2_1 * _x2_1
+				d1_s2_1 = CheckREDC(rmod, n, n_, _x2_1, l) 
+				
+				_x1_2 = _x1_2 * _x2_2
+				d1_s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
+				_x2_2 = _x2_2 * _x2_2
+				d1_s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+				
+				if (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2): #diverge for bit 0 (1 0) or (0 1)
+					if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #diverge for bit 0, diverge for bit 1 (1 0) or (0 1)
+						#print ("debug3\n")
+						if bothdiv_num > 0 :
+							bothdiv_num-=1
+							mark = 3
+						else:
+							break
+					elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1 (0 0)
+						#print ("debug4\n")
+						if bit0_div_num > 0 :
+							bit0_div_num-=1
+							mark = 4
+						else:
+							break
+					else:
+						break
+				elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0 (0 0)
+					if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #converge for bit 0, diverge for bit 1 (1 0) or (0 1)
+						#print ("debug1\n")
+						if bit1_div_num > 0 :
+							bit1_div_num-=1
+							mark = 1
+						else:
+							break
+					elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1 (0 0)
+						#print ("debug2\n")
+						if nondiv_num > 0 :
+							nondiv_num-=1
+							mark = 2
+						else:
+							break
+					else:
+						break
+				else:
+					break 	
+			
+				#still continue to finish all bits
+				_x1_1 = _x1_1_temp
+				_x2_1 = _x2_1_temp
+				_x1_2 = _x1_2_temp
+				_x2_2 = _x2_2_temp
+				
+				if i == '0':
+					_x2_1 = _x1_1 * _x2_1
+					s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+					_x2_1 = REDC(rmod, n, n_, _x2_1, l) 
+					_x1_1 = _x1_1 * _x1_1
+					s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
+					_x1_1 = REDC(rmod, n, n_, _x1_1, l) 
+					
+					_x2_2 = _x1_2 * _x2_2
+					s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+					_x2_2 = REDC(rmod, n, n_, _x2_2, l) 
+					_x1_2 = _x1_2 * _x1_2
+					s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
+					_x1_2 = REDC(rmod, n, n_, _x1_2, l) 				
+				else:
+					_x1_1 = _x1_1 * _x2_1
+					s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
+					_x1_1 = REDC(rmod, n, n_, _x1_1, l) 
+					_x2_1 = _x2_1 * _x2_1
+					s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+					_x2_1 = REDC(rmod, n, n_, _x2_1, l)
+					
+					_x1_2 = _x1_2 * _x2_2
+					s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
+					_x1_2 = REDC(rmod, n, n_, _x1_2, l) 
+					_x2_2 = _x2_2 * _x2_2
+					s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+					_x2_2 = REDC(rmod, n, n_, _x2_2, l)			
+			else:
+				if i == '0':
+					_x2_1 = _x1_1 * _x2_1
+					s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+					_x2_1 = REDC(rmod, n, n_, _x2_1, l) 
+					_x1_1 = _x1_1 * _x1_1
+					s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
+					_x1_1 = REDC(rmod, n, n_, _x1_1, l) 
+					
+					_x2_2 = _x1_2 * _x2_2
+					s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+					_x2_2 = REDC(rmod, n, n_, _x2_2, l) 
+					_x1_2 = _x1_2 * _x1_2
+					s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
+					_x1_2 = REDC(rmod, n, n_, _x1_2, l) 				
+				else:
+					_x1_1 = _x1_1 * _x2_1
+					s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
+					_x1_1 = REDC(rmod, n, n_, _x1_1, l) 
+					_x2_1 = _x2_1 * _x2_1
+					s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+					_x2_1 = REDC(rmod, n, n_, _x2_1, l)
+					
+					_x1_2 = _x1_2 * _x2_2
+					s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
+					_x1_2 = REDC(rmod, n, n_, _x1_2, l) 
+					_x2_2 = _x2_2 * _x2_2
+					s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+					_x2_2 = REDC(rmod, n, n_, _x2_2, l)
+			c -= 1
+				
+		if mark == 0 :
+			continue
+			
+		s1 = CheckREDC(rmod,n,n_,_x1_1,l)
+		s2 = CheckREDC(rmod,n,n_,_x1_2,l)
+		
+		
 		if s1_1 != s1_2 :
 			div_count+=1				
 		if s2_1 != s2_2 :
 			div_count+=1
 		if s1 != s2 :
 			div_count+=1
+				
+		if mark == 1 :
+			bit1_div_sum+=div_count
+		elif mark == 2 :
+			nondiv_sum+=div_count
+		elif mark == 3 :
+			bothdiv_sum+=div_count
+		else: # mark == 4
+			bit0_div_sum+=div_count			
 			
-	return div_count
-			
-def Padding8 (n): 
-	hex_n = hex(n).rstrip("L").lstrip("0x")
-	# print("%s\n" % hex_n)
-	padding = 8 - (len(hex_n) % 8);
-	for i in range(padding):
-		hex_n = "0" + hex_n;
-	return hex_n;
-			
-def FindPairs (num, n, e, bit, f1, f2, f3, f4, check_pre, div_num): 
+	sum1 = bit1_div_sum / num
+	sum2 = nondiv_sum / num
+	sum3 = bothdiv_sum / num
+	sum4 = bit0_div_sum / num
+	print(sum1)
+	print(sum2)
+	print(sum3)
+	print(sum4)
 	
-	r = findR(n)[1] 
-	rmod = r - 1  	
-	l = findR(n)[0] 
-	n_ = - modinv(n,r) & rmod 
-	r2 = (r << l) % n
-	
-	bit1_div_num = num #0 1
-	nondiv_num = num #0 0
-	bothdiv_num = num #1 1
-	bit0_div_num = num #1 0
-	while(True):
-		rand1, rand2 = random.randint(2, n), random.randint(2, n)
-# 		r1 = 0x30bb981bd55d145233
-# 		r2 = 0x35bd98947ef0b97a5e
-		div_con = CheckDivExp(rand1, rand2, e, n, n_, r2, rmod, l, bit, check_pre, div_num)	
-# 		break
-		if div_con == 1 and bit1_div_num > 0:				
-			f1.write("%s\n%s\n" % (Padding8(rand1), Padding8(rand2) ) )
-			bit1_div_num-=1
-		if div_con == 2 and nondiv_num > 0:				
-			f2.write("%s\n%s\n" % (Padding8(rand1), Padding8(rand2) ) )
-			nondiv_num-=1
-		if div_con == 3 and bothdiv_num > 0:				
-			f3.write("%s\n%s\n" % (Padding8(rand1), Padding8(rand2) ) )
-			bothdiv_num-=1
-		if div_con == 4 and bit0_div_num > 0:				
-			f4.write("%s\n%s\n" % (Padding8(rand1), Padding8(rand2) ) )
-			bit0_div_num-=1
-# 		if bit1_div_num == 0 and bothdiv_num == 0 and bit0_div_num == 0: # no 0 0			
-# 			return 0	
-# 		if bothdiv_num == 0 == 0 and nondiv_num == 0 and bit0_div_num == 0: # no 0 1		
-# 			return 1	
-# 		if bit1_div_num == 0 and nondiv_num == 0 and bothdiv_num == 0: # no 1 0			
-# 			return 2			
-		if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0 and bothdiv_num == 0: # no 1 1				
-			return 3
-					
+	diff1 = sum1 - sum2 # close to zero means 0, greater than zero means 1
+	diff2 = sum4 - sum2 # close to zero means 1, greater than zero means 0
+	mean1 = (diff1 + diff2) / 2
+	print(diff1,diff2,mean1)
+    
+	diff3 = sum1 - sum3 # close to zero means 1, smaller than zero means 0
+	diff4 = sum4 - sum3 # close to zero means 0, smaller than zero means 1
+	mean2 = (diff3 + diff4) / 2
+	print(diff3,diff4, mean2)
+    
+	val1 = mean1 + mean2
+	sign1 = mean1 * mean2
+	print(val1, sign1)
+    
+	diff5 = sum1 - sum4 # greater means 1
+	diff6 = sum3 - sum2 # must be greater
+	print(diff5,diff6)
+
 
 random.seed(time.time())
 p = 32416189867
@@ -295,71 +288,47 @@ n_lambda = phi // egcd(p-1, q-1)[0]
 e = 5
 d = modinv(e, n_lambda) #67 bits
 
+r = findR(n)[1] 
+rmod = r - 1  	
+l = findR(n)[0] 
+n_ = - modinv(n,r) & rmod 
+r2 = (r << l) % n
+	
+bit = 62
+
+key = "1011011001001001010011110110010101010111001010110101111000111100001"
+print(bits(d))
+print("\n") 
+
 start = time.time()
 
-f1 = open("bit1divpairs_pre63.txt","w+")
-f2 = open("nondivpairs_pre63.txt","w+")
-f3 = open("divpairs_pre63.txt","w+")
-f4 = open("bit0divpairs_pre63.txt","w+")
-x = FindPairs (10, n, d, 65, f1, f2, f3, f4, 1, (66 - 65) )
-f1.close()
-f2.close()
-f3.close()
-f4.close()
+print(key[(66 - bit)])
+for i in range(10):
+	CheckDivExp(d, n, n_, r2, rmod, l, bit, 1, (66 - bit), 8000)
 
 end = time.time()
+
+print("\n") 
 
 print(end - start) 
 
 
-# 		r1 = 0x00000020f4b3c58ffa465da3
-# 		r2 = 0x0000001208745fb52368a4b1
- 		
-# 		r1 = 0x0000001b67ee32abb0c0adac
-# 		r2 = 0x0000000afa5463b0cd2e6a9c
-# 		
-# 		r1 = 0x00000032aab0362fe2d5ed34
-# 		r2 = 0x0000002a63c69c10cc6a3ae0
-
-# 			if d0_s1_1 != d0_s1_2 and d0_s2_1 != d0_s2_2: #diverge for bit 0 # not working, can only reach two branches (1 1)
-# 				if d1_s1_1 != d1_s1_2 and d1_s2_1 != d1_s2_2: #diverge for bit 0, diverge for bit 1 (1 1)
-# 					print ("debug3\n")
-# 					return 3
-# 				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1 (0 0)
-# 					print ("debug4\n")
-# 					return 4
-# 				else:
-# 					return 0
-# 			elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0 (0 0)
-# 				if d1_s1_1 != d1_s1_2 and d1_s2_1 != d1_s2_2: #converge for bit 0, diverge for bit 1 (1 1)
-# 					print ("debug1\n")
-# 					return 1
-# 				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1 (0 0)
-# 					print ("debug2\n")
-# 					return 2
-# 				else:
-# 					return 0
-# 			else:
-# 				return 0 	
 
 
-# 			if (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2): #diverge for bit 0 (1 0) or (0 1)
-# 				if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #diverge for bit 0, diverge for bit 1 (1 0) or (0 1)
-# 					print ("debug3\n")
-# 					return 3
-# 				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1 (0 0)
-# 					print ("debug4\n")
-# 					return 4
-# 				else:
-# 					return 0
-# 			elif d0_s1_1 == d0_s1_2 and d0_s2_1 == d0_s2_2: #converge for bit 0 (0 0)
-# 				if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #converge for bit 0, diverge for bit 1 (1 0) or (0 1)
-# 					print ("debug1\n")
-# 					return 1
-# 				elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1 (0 0)
-# 					print ("debug2\n")
-# 					return 2
-# 				else:
-# 					return 0
-# 			else:
-# 				return 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
