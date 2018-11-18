@@ -52,15 +52,15 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 		cuda_mpz_mult(&tmp2[j], &_x1[j], &r2);
 		cuda_mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
-		s_index[k] = cuda_mpz_get_last_digit(&_x1[j]);//make a dependency to make sure previous store is finished.
-		t3 = clock64();//beginning of necessary instructions within the kernel
+//		s_index[k] = cuda_mpz_get_last_digit(&_x1[j]);//make a dependency to make sure previous store is finished.
+//		t3 = clock64();//beginning of necessary instructions within the kernel
 
 		//x2 = _x1 * _x1
 		cuda_mpz_mult(&tmp2[j], &_x1[j], &t[j]);
 
-		s_index[k] = cuda_mpz_get_last_digit(&tmp2[j]);//make a dependency to make sure previous store is finished.
-		t4 = clock64();//beginning of necessary instructions within the kernel
-		printf("%lld\n", t4 - t3);
+//		s_index[k] = cuda_mpz_get_last_digit(&tmp2[j]);//make a dependency to make sure previous store is finished.
+//		t4 = clock64();//beginning of necessary instructions within the kernel
+//		printf("%lld\n", t4 - t3);
 
 		//_x2 = REDC(rmod,n,n_,_x2,l)
 		cuda_mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
@@ -77,6 +77,7 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 //
 //		cuda_mpz_set( &_x2[j],  &t[j]);
 
+		printf("debug4\n");
 
 //		if(j == 0){
 //			cuda_mpz_print_str_device(&_x1[j]);
@@ -86,6 +87,8 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 //		}
 
 		for(int i = eLength - 2; i >= 0; i--){
+
+			printf("debug5\n");
 
 			if(eBits[i] == 0){
 				//x2 = _x1 * _x2

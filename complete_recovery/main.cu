@@ -460,6 +460,8 @@ int main (int argc, char *argv[]) {
 	gmp_randinit_mt(rand_state);
 	gmp_randseed_ui (rand_state, time(NULL));
 
+	printf("debug1\n");
+
 	while(1){
 
 		mpz_urandomm (rand_num, rand_state, mod);
@@ -521,11 +523,15 @@ int main (int argc, char *argv[]) {
 	long long int sum2 = 0;
 	long long int sum3 = 0;
 
+	printf("debug2\n");
+
 	////////////////////////////////////////////////////////////////converge for bit 0, diverge for bit 1
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize * 4 , cudaMemcpyHostToDevice);
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs * 4, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 	cudaMemcpy(clockTable_h, clockTable_d, 4 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
+
+	printf("debug3\n");
 
 	for (long long unsigned q = pairs; q < pairs * 2; q++){
 		sum1 += clockTable_h[q];
