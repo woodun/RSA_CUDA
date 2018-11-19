@@ -32,7 +32,7 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 	__shared__ digit_t s_index[32];
 
 	long long int t1, t2;
-	long long int t3, t4;
+	//long long int t3, t4;
 
 	int k = blockIdx.x * blockDim.x + threadIdx.x;
 
