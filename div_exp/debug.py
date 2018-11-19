@@ -241,7 +241,7 @@ def Padding8 (n):
         hex_n = "0" + hex_n;
     return hex_n;
             
-def FindPairs (num, mod, e, n_, r2, rmod, l, check_pre, div_num, d): 
+def FindPairs (num, mod, e, n_, r2, rmod, l, f1, f2, f3, f4, check_pre, div_num, d): 
     
     bit1_div_sum = 0 #0 1
     nondiv_sum = 0 #0 0
@@ -256,15 +256,19 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, check_pre, div_num, d):
         r1, r2 = random.randint(2, mod), random.randint(2, mod)
         div_con = CheckDivExp(r1, r2, e, mod, n_, r2, rmod, l, check_pre, div_num)    
         if div_con == 1 and bit1_div_num > 0:                
+            f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
             bit1_div_sum+=Exp(r1, r2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             bit1_div_num-=1
         if div_con == 2 and nondiv_num > 0:                
+            f2.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
             nondiv_sum+=Exp(r1, r2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             nondiv_num-=1
-        if div_con == 3 and bothdiv_num > 0:                
+        if div_con == 3 and bothdiv_num > 0:
+            f3.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
             bothdiv_sum+=Exp(r1, r2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             bothdiv_num-=1
-        if div_con == 4 and bit0_div_num > 0:                
+        if div_con == 4 and bit0_div_num > 0:
+            f4.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )         
             bit0_div_sum+=Exp(r1, r2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             bit0_div_num-=1
    
@@ -273,6 +277,8 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, check_pre, div_num, d):
             sum2 = nondiv_sum / num
             sum3 = bothdiv_sum / num
             sum4 = bit0_div_sum / num
+            
+            print("#########################################CPU output###########################################")
             print(sum1)
             print(sum2)
             print(sum3)
@@ -328,13 +334,62 @@ bit_count = 0
 #key = "1011011001001001010011110110010101010111001010110101111000111100001"
 key = "1000100010110110111110111000110000000001011000001000011010101101000101"
 # int(sys.argv[1])
-for i in range(10):
-    FindPairs (2000, n, current_bits, n_, r2, rmod, l, 0, len(bits(current_bits) ), d)
+for i in range(1):
+    
+    f1 = open("bit1divpairs_pre.txt","w+")
+    f2 = open("nondivpairs_pre.txt","w+")
+    f3 = open("divpairs_pre.txt","w+")
+    f4 = open("bit0divpairs_pre.txt","w+")
+    FindPairs (2000, n, current_bits, n_, r2, rmod, l,  f1, f2, f3, f4, 0, len(bits(current_bits) ), d)
+    f1.close()
+    f2.close()
+    f3.close()
+    f4.close()
 
+    print("#########################################GPU output###########################################")
+    #./main bit0divpairs_pre.txt 1000
+    out1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256", "bit1divpairs_out.txt"]) # greater means 1
+    sum1 = out1.splitlines()[0]
+    print(sum1)
+    div1 = out1.splitlines()[1]
+    print(div1)        
+    #print(out1.splitlines()[2])
 
+    out2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256", "nondivpairs_out.txt"])
+    sum2 = out2.splitlines()[0]
+    print(sum2)
+    div2 = out2.splitlines()[1]
+    print(div2)
+    
+    out3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256", "divpairs_out.txt"])
+    sum3 = out3.splitlines()[0]
+    print(sum3)
+    div3 = out3.splitlines()[1]
+    print(div3)
+    
+    out4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256", "bit0divpairs_out.txt"]) # greater means 0
+    sum4 = out4.splitlines()[0]
+    print(sum4)
+    div4 = out4.splitlines()[1]
+    print(div4)
 
-
-
+    diff1 = int(div1) - int(div2) # close to zero means 0, greater than zero means 1
+    diff2 = int(div4) - int(div2) # close to zero means 1, greater than zero means 0
+    mean1 = (diff1 + diff2) / 2
+    print(diff1,diff2,mean1)
+    
+    diff3 = int(div1) - int(div3) # close to zero means 1, smaller than zero means 0
+    diff4 = int(div4) - int(div3) # close to zero means 0, smaller than zero means 1
+    mean2 = (diff3 + diff4) / 2
+    print(diff3,diff4, mean2)
+    
+    val1 = mean1 + mean2
+    sign1 = mean1 * mean2
+    print(val1, sign1)
+    
+    diff5 = int(div1) - int(div4) # greater means 1
+    diff6 = int(div3) - int(div2) # must be greater
+    print(diff5,diff6)
 
 
 
