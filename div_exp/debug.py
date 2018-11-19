@@ -44,6 +44,9 @@ def CheckREDC(R,N,N_,T,L):
 
 def Exp1(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a relaxed condition, otherwise cannot reach very far bits. Also the non-bothdiv combo can always be reached.
     
+    print("mes1: ", hex(mes1))
+    print("mes2: ", hex(mes2))
+    
     s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
     s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)    
     _x1_1 = REDC(rmod, n, n_, mes1 * r2, l) 

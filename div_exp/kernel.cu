@@ -49,6 +49,17 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 		mpz_t* n_ = &vn_;
 		int j = blockIdx.x * blockDim.x + threadIdx.x;
 
+		if(j == 0){
+			printf("mes1: ");
+			mpz_print_str_device(&_x1[j]);
+			printf("\n");
+		}
+		if(j == 1){
+			printf("mes2: ");
+			mpz_print_str_device(&_x1[j]);
+			printf("\n");
+		}
+
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
 		mpz_mult(&tmp2[j], &_x1[j], &r2);
 		con1[j][70] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
@@ -67,7 +78,6 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 			mpz_print_str_device(&_x2[j]);
 			printf("\n");
 		}
-
 		if(j == 1){
 			printf("mes2: ");
 			mpz_print_str_device(&_x1[j]);
@@ -75,7 +85,6 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 			mpz_print_str_device(&_x2[j]);
 			printf("\n");
 		}
-
 		if(j == 0){
 			printf("(%d %d %d %d)\n",con1[0][70], con1[1][70], con2[j][70], con2[j][70]);
 		}
@@ -115,7 +124,6 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 				mpz_print_str_device(&_x2[j]);
 				printf("\n");
 			}
-
 			if(j == 1){
 				printf("mes2: ");
 				mpz_print_str_device(&_x1[j]);
@@ -137,7 +145,6 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 			mpz_print_str_device(&_x1[j]);
 			printf("\n");
 		}
-
 		if(j == 1){
 			printf("mes2: ");
 			mpz_print_str_device(&_x1[j]);
