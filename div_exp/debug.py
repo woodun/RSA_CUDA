@@ -346,23 +346,26 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, f1, f2, f3, f4, check_pre, div_num,
     bothdiv_num = num #1 1
     bit0_div_num = num #1 0
     while(True):
-        r1, r2 = random.randint(2, mod), random.randint(2, mod)
-        div_con = CheckDivExp(r1, r2, e, mod, n_, r2, rmod, l, check_pre, div_num)    
+        #mes1, mes2 = random.randint(2, mod), random.randint(2, mod)
+        mes1 = 0x2391c1cf910de74353
+        mes2 = 0x2fdc1454a7284fd5d6
+        div_con = CheckDivExp(mes1, mes2, e, mod, n_, r2, rmod, l, check_pre, div_num)    
         if div_con == 1 and bit1_div_num > 0:                
-            f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
-            bit1_div_sum+=Exp1(r1, r2, d, mod, n_, r2, rmod, l, check_pre, div_num)
+            f1.write("%s\n%s\n" % (Padding8(mes1), Padding8(mes2) ) )
+            bit1_div_sum+=Exp1(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)           
             bit1_div_num-=1
+            break
         if div_con == 2 and nondiv_num > 0:                
-            f2.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
-            nondiv_sum+=Exp(r1, r2, d, mod, n_, r2, rmod, l, check_pre, div_num)
+            f2.write("%s\n%s\n" % (Padding8(mes1), Padding8(mes2) ) )
+            nondiv_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             nondiv_num-=1
         if div_con == 3 and bothdiv_num > 0:
-            f3.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
-            bothdiv_sum+=Exp(r1, r2, d, mod, n_, r2, rmod, l, check_pre, div_num)
+            f3.write("%s\n%s\n" % (Padding8(mes1), Padding8(mes2) ) )
+            bothdiv_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             bothdiv_num-=1
         if div_con == 4 and bit0_div_num > 0:
-            f4.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )         
-            bit0_div_sum+=Exp(r1, r2, d, mod, n_, r2, rmod, l, check_pre, div_num)
+            f4.write("%s\n%s\n" % (Padding8(mes1), Padding8(mes2) ) )         
+            bit0_div_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             bit0_div_num-=1
    
         if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0 and bothdiv_num == 0: # all               
@@ -444,6 +447,7 @@ for i in range(1):
     out1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "1", "bit1divpairs_out.txt"]) # greater means 1
     
     print(out1) 
+    break    
     
     sum1 = out1.splitlines()[0]
     print(sum1)
@@ -451,7 +455,7 @@ for i in range(1):
     print(div1)        
     #print(out1.splitlines()[2])
     
-    break
+    
 
     out2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "1", "nondivpairs_out.txt"])
     sum2 = out2.splitlines()[0]

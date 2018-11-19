@@ -171,14 +171,14 @@ def Padding8 (n):
         hex_n = "0" + hex_n;
     return hex_n;
             
-def FindPairs (num, mod, e, n_, r2, rmod, l, f1, f2, f3, f4, check_pre, div_num): 
+def FindPairs (num, mod, e, n_, rsquare, rmod, l, f1, f2, f3, f4, check_pre, div_num): 
     bit1_div_num = num #0 1
     nondiv_num = num #0 0
     bothdiv_num = num #1 1
     bit0_div_num = num #1 0
     while(True):
         r1, r2 = random.randint(2, mod), random.randint(2, mod)
-        div_con = CheckDivExp(r1, r2, e, mod, n_, r2, rmod, l, check_pre, div_num)    
+        div_con = CheckDivExp(r1, r2, e, mod, n_, rsquare, rmod, l, check_pre, div_num)    
         if div_con == 1 and bit1_div_num > 0:                
             f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
             bit1_div_num-=1
@@ -199,7 +199,7 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, f1, f2, f3, f4, check_pre, div_num)
 #             return 2       
 #         if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0: # no 1 1                
 #             return 3     
-        if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0 and bothdiv_num == 0: # all               
+        if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0 and bothdiv_num == 0: # all
             return 4
           
 time1 = time.time()      
