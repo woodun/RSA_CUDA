@@ -183,14 +183,14 @@ int main (int argc, char *argv[]) {
 
 	long long unsigned sum1 = 0;
 	double sum_div = 0;
-	for (long long unsigned q = 256; q < pairs; q++){
+	for (long long unsigned q = 0; q < pairs; q++){
 		//fprintf(fp1, "%d ", divTable_h[q]);///////div count///////////////////print file
 		//fprintf(fp1, "%lld\n", clockTable_h[q]);///////////////////print file
 		sum1 += clockTable_h[q];
 		sum_div += divTable_h[q];
 	}
-	sum1 = sum1 / (pairs - 256);
-	sum_div = sum_div / (pairs - 256);
+	sum1 = sum1 / pairs;
+	sum_div = sum_div / pairs;
 
 	printf("%lld\n", sum1);
 	printf("%f\n", sum_div);

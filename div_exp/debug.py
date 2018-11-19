@@ -376,16 +376,16 @@ for i in range(1):
     diff1 = float(div1) - float(div2) # close to zero means 0, greater than zero means 1
     diff2 = float(div4) - float(div2) # close to zero means 1, greater than zero means 0
     mean1 = (diff1 + diff2) / 2
-    prfloat(diff1,diff2,mean1)
+    print(diff1,diff2,mean1)
     
     diff3 = float(div1) - float(div3) # close to zero means 1, smaller than zero means 0
     diff4 = float(div4) - float(div3) # close to zero means 0, smaller than zero means 1
     mean2 = (diff3 + diff4) / 2
-    prfloat(diff3,diff4, mean2)
+    print(diff3,diff4, mean2)
     
     val1 = mean1 + mean2
     sign1 = mean1 * mean2
-    prfloat(val1, sign1)
+    print(val1, sign1)
     
     diff5 = float(div1) - float(div4) # greater means 1
     diff6 = float(div3) - float(div2) # must be greater
