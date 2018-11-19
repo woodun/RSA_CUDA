@@ -114,8 +114,8 @@ def Exp1(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a 
         
     s1 = CheckREDC(rmod,n,n_,_x1_1,l)
     s2 = CheckREDC(rmod,n,n_,_x1_2,l)
-    _x1_1 = REDC(rmod,n,n_,_x1,l)    
-    _x1_2 = REDC(rmod,n,n_,_x1,l)
+    _x1_1 = REDC(rmod,n,n_,_x1_1,l)    
+    _x1_2 = REDC(rmod,n,n_,_x1_2,l)
            
     print("mes1: ", hex(_x1_1))
     print("mes2: ", hex(_x1_2))
