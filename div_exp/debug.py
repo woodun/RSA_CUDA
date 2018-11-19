@@ -439,6 +439,9 @@ for i in range(1):
     print("#########################################GPU output###########################################")
     #./main bit0divpairs_pre.txt 1000
     out1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "1", "bit1divpairs_out.txt"]) # greater means 1
+    
+    print(out1) 
+    
     sum1 = out1.splitlines()[0]
     print(sum1)
     div1 = out1.splitlines()[1]
