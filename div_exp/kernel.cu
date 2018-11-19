@@ -118,7 +118,7 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 					div_count++;
 				}
 			}
-			divTable[iter1] = div_count;
+			divTable[iter1] = div_count;////////////////////////////////////////////////////////////////todo: where is wrong with this number?
 		}
 	}
 }

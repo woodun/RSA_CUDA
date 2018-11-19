@@ -286,7 +286,8 @@ n = p * q
 phi = (p - 1) * (q - 1)
 n_lambda = phi // egcd(p-1, q-1)[0] 
 e = 5
-d = modinv(e, n_lambda) #67 bits
+_d = modinv(e, n_lambda) #67 bits
+d = modinv(e, phi)
 
 r = findR(n)[1] 
 rmod = r - 1  	
@@ -294,17 +295,18 @@ l = findR(n)[0]
 n_ = - modinv(n,r) & rmod 
 r2 = (r << l) % n
 	
-bit = 62
+bit = 68
 
-key = "1011011001001001010011110110010101010111001010110101111000111100001"
+#key = "1011011001001001010011110110010101010111001010110101111000111100001"
+key = "1000100010110110111110111000110000000001011000001000011010101101000101"
 print(bits(d))
 print("\n") 
 
 start = time.time()
 
-print(key[(66 - bit)])
+print(key[(69 - bit)])
 for i in range(10):
-	CheckDivExp(d, n, n_, r2, rmod, l, bit, 1, (66 - bit), 8000)
+	CheckDivExp(d, n, n_, r2, rmod, l, bit, 0, (69 - bit), 2000)
 
 end = time.time()
 
