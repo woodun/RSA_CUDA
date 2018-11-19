@@ -41,6 +41,75 @@ def CheckREDC(R,N,N_,T,L):
     else:
         return 0
             
+
+def Exp1(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a relaxed condition, otherwise cannot reach very far bits. Also the non-bothdiv combo can always be reached.
+    
+    s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
+    s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)    
+    _x1_1 = REDC(rmod, n, n_, mes1 * r2, l) 
+    _x1_2 = REDC(rmod, n, n_, mes2 * r2, l)
+    
+    _x2_1 = _x1_1 * _x1_1
+    _x2_2 = _x1_2 * _x1_2
+    s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+    s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+    _x2_1 = REDC(rmod, n, n_, _x2_1, l)
+    _x2_2 = REDC(rmod, n, n_, _x2_2, l)
+    
+    div_count = 0
+     
+    print(s1_1, s1_2, s2_1, s2_2)
+    if s1_1 != s1_2 :
+        div_count+=1
+    if s2_1 != s2_2 :
+        div_count+=1    
+#         if div_count != 1 : #same divergence pattern
+#             return 0
+#         div_count = 0
+    
+    e_b = bits(e)   
+    
+    for i in e_b[1:]:        
+        if i == '0':
+            _x2_1 = _x1_1 * _x2_1
+            s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+            _x2_1 = REDC(rmod, n, n_, _x2_1, l) 
+            _x1_1 = _x1_1 * _x1_1
+            s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
+            _x1_1 = REDC(rmod, n, n_, _x1_1, l) 
+            
+            _x2_2 = _x1_2 * _x2_2
+            s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+            _x2_2 = REDC(rmod, n, n_, _x2_2, l) 
+            _x1_2 = _x1_2 * _x1_2
+            s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
+            _x1_2 = REDC(rmod, n, n_, _x1_2, l)                 
+        else:
+            _x1_1 = _x1_1 * _x2_1
+            s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
+            _x1_1 = REDC(rmod, n, n_, _x1_1, l) 
+            _x2_1 = _x2_1 * _x2_1
+            s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+            _x2_1 = REDC(rmod, n, n_, _x2_1, l)
+            
+            _x1_2 = _x1_2 * _x2_2
+            s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
+            _x1_2 = REDC(rmod, n, n_, _x1_2, l) 
+            _x2_2 = _x2_2 * _x2_2
+            s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+            _x2_2 = REDC(rmod, n, n_, _x2_2, l)        
+            
+        print(s1_1, s1_2, s2_1, s2_2)
+        if s1_1 != s1_2 :
+            div_count+=1
+        if s2_1 != s2_2 :
+            div_count+=1
+#             if div_count != 1 : #same divergence pattern
+#                 return 0
+#             div_count = 0
+            
+    return div_count
+            
             
 def Exp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a relaxed condition, otherwise cannot reach very far bits. Also the non-bothdiv combo can always be reached.
     
@@ -354,7 +423,7 @@ for i in range(1):
     div1 = out1.splitlines()[1]
     print(div1)        
     #print(out1.splitlines()[2])
-
+        
     out2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2000", "nondivpairs_out.txt"])
     sum2 = out2.splitlines()[0]
     print(sum2)

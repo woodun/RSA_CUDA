@@ -30,8 +30,8 @@ __device__ int REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t* t)
 __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1, mpz_t* _x2, mpz_t* tmp, mpz_t* tmp2, int rl, mpz_t r2, mpz_t vn, mpz_t vn_, int* eBits, int eLength, long long int* clockTable, mpz_t* t, int* divTable) {
 
 	__shared__ digit_t s_index[32];
-	__shared__ digit_t con1[2][100];
-	__shared__ digit_t con2[2][100];
+	__shared__ int con1[2][100];
+	__shared__ int con2[2][100];
 
 	long long int t1, t2;
 
@@ -66,6 +66,10 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 //				mpz_print_str_device(&_x2[j]);
 //				printf("\n");
 //			}
+
+//		if(j == 0){
+//			printf("(%)",con1[j][70], con1[j][70], con1[j][70], con1[j][70]);
+//		}
 
 		for(int i = eLength - 2; i >= 0; i--){ //0 - 65 = 67 - 1 //0 - 68 = 70 - 1
 
