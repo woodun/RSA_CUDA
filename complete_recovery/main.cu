@@ -570,12 +570,21 @@ int main (int argc, char *argv[]) {
 
 	long long int diff1 = abs(sum1 - sum2);
 	long long int diff2 = abs(sum2 - sum3);
+	long long int diff3 = sum1 - sum3;
 
-	printf("%lld %lld %lld %lld %lld %f %f\n", sum1, sum2, sum3, diff1, diff2, ((double) diff1) / diff2, ((double) diff2) / diff1);
+	printf("%lld %lld %lld %lld %lld %lld %f %f\n", sum1, sum2, sum3, diff1, diff2, diff3, ((double) diff1) / diff2, ((double) diff2) / diff1);
 
-	if(((double) diff1) / diff2 > 1.3){//bit is 1
+//	if(((double) diff1) / diff2 > 1.3){//bit is 1
+//		printf("bit is 1.\n");
+//	}else if(((double) diff2) / diff1 > 1.3){//bit is 0
+//		printf("bit is 0.\n");
+//	}else{//EOB
+//		printf("end of bits.\n");
+//	}
+
+	if(diff3 > 5000){//bit is 1
 		printf("bit is 1.\n");
-	}else if(((double) diff2) / diff1 > 1.3){//bit is 0
+	}else if(diff3 < -5000){//bit is 0
 		printf("bit is 0.\n");
 	}else{//EOB
 		printf("end of bits.\n");
