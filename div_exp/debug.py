@@ -58,6 +58,8 @@ def Exp1(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a 
     
     div_count = 0
      
+    print("mes1: ", hex(_x1_1), hex(_x2_1))
+    print("mes2: ", hex(_x1_2), hex(_x2_2))
     print(s1_1, s1_2, s2_1, s2_2)
     if s1_1 != s1_2 :
         div_count+=1
@@ -99,6 +101,8 @@ def Exp1(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a 
             s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
             _x2_2 = REDC(rmod, n, n_, _x2_2, l)        
             
+        print("mes1: ", hex(_x1_1), hex(_x2_1))
+        print("mes2: ", hex(_x1_2), hex(_x2_2))
         print(s1_1, s1_2, s2_1, s2_2)
         if s1_1 != s1_2 :
             div_count+=1
@@ -110,7 +114,11 @@ def Exp1(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a 
         
     s1 = CheckREDC(rmod,n,n_,_x1_1,l)
     s2 = CheckREDC(rmod,n,n_,_x1_2,l)
-       
+    _x1_1 = REDC(rmod,n,n_,_x1,l)    
+    _x1_2 = REDC(rmod,n,n_,_x1,l)
+           
+    print("mes1: ", hex(_x1_1))
+    print("mes2: ", hex(_x1_2))
     print(s1, s2)
     if s1 != s2 :
         div_count+=1

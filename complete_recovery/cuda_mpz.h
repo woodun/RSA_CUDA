@@ -376,7 +376,8 @@ __device__ __host__ inline void cuda_mpz_bitwise_and(cuda_mpz_t *dst, cuda_mpz_t
 }
 
 __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_mpz_t *src, int n_bits) {//changes
-  digit_t *digits = src->digits;
+  digit_t *src_digits = src->digits;
+  digit_t *dst_digits = dst->digits;
   unsigned capacity = src->capacity;
 
   int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
@@ -397,13 +398,13 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
   dst->sign = src->sign;
 
   for(int d_index = capacity - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
-	  dst->digits[d_index] = 0;
+	  dst_digits[d_index] = 0;
   }
 
-  dst->digits[rs_digits] = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
+  dst_digits[rs_digits] = src_digits[rs_digits] & ( 0xffffffff >> ls_remainder);
 
   for(int d_index = rs_digits - 1; d_index >= 0; d_index--) {//constant time for specific rl
-	  dst->digits[d_index] = digits[d_index];
+	  dst_digits[d_index] = src_digits[d_index];
   }
 }
 
@@ -725,7 +726,8 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift_eq(cuda_mpz_t *cuda_mpz,
 }
 
 __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mpz_t *src, int n_bits) {//changes
-  digit_t *digits = src->digits;
+  digit_t *src_digits = src->digits;
+  digit_t *dst_digits = dst->digits;
   unsigned capacity = src->capacity;
 
   int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
@@ -743,13 +745,13 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
   dst->sign = src->sign;
 
   for(int d_index = 0; d_index < capacity - 1 - rs_digits; d_index++) {//constant time for specific rl
-	  dst->digits[d_index] = ( digits[d_index + rs_digits] >> rs_remainder ) | ( digits[d_index + rs_digits + 1] << ( LOG2_DIGIT_BASE - rs_remainder ) );
+	  dst_digits[d_index] = ( src_digits[d_index + rs_digits] >> rs_remainder ) | ( src_digits[d_index + rs_digits + 1] << ( LOG2_DIGIT_BASE - rs_remainder ) );
   }
 
-  dst->digits[capacity - 1 - rs_digits] = digits[capacity - 1] >> rs_remainder;
+  dst_digits[capacity - 1 - rs_digits] = src_digits[capacity - 1] >> rs_remainder;
 
   for(int d_index = capacity - rs_digits; d_index <= capacity - 1; d_index++) {//constant time for specific rl
-	  dst->digits[d_index] = 0;
+	  dst_digits[d_index] = 0;
   }
 }
 

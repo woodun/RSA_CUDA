@@ -60,15 +60,24 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 		con2[j][70] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
 		mpz_set( &_x2[j], &t[j]);
 
-//			if(j == 0){
-//				mpz_print_str_device(&_x1[j]);
-//				printf(" ");
-//				mpz_print_str_device(&_x2[j]);
-//				printf("\n");
-//			}
+		if(j == 0){
+			printf("mes1: ");
+			mpz_print_str_device(&_x1[j]);
+			printf(" ");
+			mpz_print_str_device(&_x2[j]);
+			printf("\n");
+		}
+
+		if(j == 1){
+			printf("mes2: ");
+			mpz_print_str_device(&_x1[j]);
+			printf(" ");
+			mpz_print_str_device(&_x2[j]);
+			printf("\n");
+		}
 
 		if(j == 0){
-			printf("(%d %d %d %d)",con1[0][70], con1[1][70], con2[j][70], con2[j][70]);
+			printf("(%d %d %d %d)\n",con1[0][70], con1[1][70], con2[j][70], con2[j][70]);
 		}
 
 		for(int i = eLength - 2; i >= 0; i--){ //0 - 65 = 67 - 1 //0 - 68 = 70 - 1
@@ -100,7 +109,22 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 			}
 
 			if(j == 0){
-				printf("(%d %d %d %d)",con1[0][i], con1[1][i], con2[j][i], con2[j][i]);
+				printf("mes1: ");
+				mpz_print_str_device(&_x1[j]);
+				printf(" ");
+				mpz_print_str_device(&_x2[j]);
+				printf("\n");
+			}
+
+			if(j == 1){
+				printf("mes2: ");
+				mpz_print_str_device(&_x1[j]);
+				printf(" ");
+				mpz_print_str_device(&_x2[j]);
+				printf("\n");
+			}
+			if(j == 0){
+				printf("(%d %d %d %d)\n",con1[0][i], con1[1][i], con2[j][i], con2[j][i]);
 			}
 		}
 
@@ -109,7 +133,18 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 		mpz_set( &_x1[j], &t[j]);
 
 		if(j == 0){
-			printf("(%d %d)",con1[0][69], con1[1][69]);
+			printf("mes1: ");
+			mpz_print_str_device(&_x1[j]);
+			printf("\n");
+		}
+
+		if(j == 1){
+			printf("mes2: ");
+			mpz_print_str_device(&_x1[j]);
+			printf("\n");
+		}
+		if(j == 0){
+			printf("(%d %d)\n",con1[0][69], con1[1][69]);
 		}
 
 		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
