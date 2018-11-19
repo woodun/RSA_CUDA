@@ -41,12 +41,12 @@ def CheckREDC(R,N,N_,T,L):
     else:
         return 0
             
-def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a relaxed condition, otherwise cannot reach very far bits. Also the non-bothdiv combo can always be reached.
+def CheckDivExp(mes1, mes2, e, n, n_, rsquare, rmod, l, check_pre, div_num): # div_num is a relaxed condition, otherwise cannot reach very far bits. Also the non-bothdiv combo can always be reached.
     
-    s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
-    s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)    
-    _x1_1 = REDC(rmod, n, n_, mes1 * r2, l) 
-    _x1_2 = REDC(rmod, n, n_, mes2 * r2, l)
+    s1_1 = CheckREDC(rmod, n, n_, mes1 * rsquare, l)
+    s1_2 = CheckREDC(rmod, n, n_, mes2 * rsquare, l)    
+    _x1_1 = REDC(rmod, n, n_, mes1 * rsquare, l) 
+    _x1_2 = REDC(rmod, n, n_, mes2 * rsquare, l)
     
     _x2_1 = _x1_1 * _x1_1
     _x2_2 = _x1_2 * _x1_2
@@ -171,14 +171,14 @@ def Padding8 (n):
         hex_n = "0" + hex_n;
     return hex_n;
             
-def FindPairs (num, mod, e, n_, r2, rmod, l, f1, f2, f3, f4, check_pre, div_num): 
+def FindPairs (num, mod, e, n_, rsquare, rmod, l, f1, f2, f3, f4, check_pre, div_num): 
     bit1_div_num = num #0 1
     nondiv_num = num #0 0
     bothdiv_num = num #1 1
     bit0_div_num = num #1 0
     while(True):
         r1, r2 = random.randint(2, mod), random.randint(2, mod)
-        div_con = CheckDivExp(r1, r2, e, mod, n_, r2, rmod, l, check_pre, div_num)    
+        div_con = CheckDivExp(r1, r2, e, mod, n_, rsquare, rmod, l, check_pre, div_num)    
         if div_con == 1 and bit1_div_num > 0:                
             f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
             bit1_div_num-=1
@@ -218,11 +218,11 @@ current_bits = 1
 eob = 0
 temp = "0"
 bit_count = 0
-#iter_count = 0
-vote_count = 3
 
-vote_0 = 0 # multiple runs to vote?
-vote_1 = 0
+#iter_count = 0
+# vote_count = 3
+# vote_0 = 0 # multiple runs to vote?
+# vote_1 = 0
 #key = "1011011001001001010011110110010101010111001010110101111000111100001"
 key = "1000100010110110111110111000110000000001011000001000011010101101000101"
 
@@ -311,39 +311,39 @@ while(eob == 0 ):
         print("bit not accepted. current bits: " + bits(current_bits))
         continue
 
-#     if diff5 > 0 : #bit is 1
-#         print("bit accepted: 1")
-#         temp = bits(current_bits) + "1"
-#     else : #bit is 0
-#         print("bit accepted: 0")
-#         temp = bits(current_bits) + "0"
+    if diff5 > 0 : #bit is 1
+        print("bit accepted: 1")
+        temp = bits(current_bits) + "1"
+    else : #bit is 0
+        print("bit accepted: 0")
+        temp = bits(current_bits) + "0"
         
         
-    if vote_1 < vote_count or vote_0 < vote_count :
-      
-        if diff5 > 0 : #bit is 1
-            vote_1+=1
-            print("bit voted: 1")
-        else : #bit is 0
-            vote_0+=1
-            print("bit voted: 0")
-        continue
-    else:        
-          
-        if diff5 > 0 : #bit is 1
-            vote_1+=1
-        else : #bit is 0
-            vote_0+=1
-              
-        if vote_1 > vote_0 : #bit is 1
-            print("bit accepted: 1")
-            temp = bits(current_bits) + "1"
-        else : #bit is 0
-            print("bit accepted: 0")
-            temp = bits(current_bits) + "0"    
- 
-        vote_1=0
-        vote_0=0
+#     if vote_1 < vote_count or vote_0 < vote_count :
+#       
+#         if diff5 > 0 : #bit is 1
+#             vote_1+=1
+#             print("bit voted: 1")
+#         else : #bit is 0
+#             vote_0+=1
+#             print("bit voted: 0")
+#         continue
+#     else:        
+#           
+#         if diff5 > 0 : #bit is 1
+#             vote_1+=1
+#         else : #bit is 0
+#             vote_0+=1
+#               
+#         if vote_1 > vote_0 : #bit is 1
+#             print("bit accepted: 1")
+#             temp = bits(current_bits) + "1"
+#         else : #bit is 0
+#             print("bit accepted: 0")
+#             temp = bits(current_bits) + "0"    
+#  
+#         vote_1=0
+#         vote_0=0
         
 
     bit_count+=1
