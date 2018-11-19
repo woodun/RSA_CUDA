@@ -346,15 +346,12 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, f1, f2, f3, f4, check_pre, div_num,
     bothdiv_num = num #1 1
     bit0_div_num = num #1 0
     while(True):
-        #mes1, mes2 = random.randint(2, mod), random.randint(2, mod)
-        mes1 = 0x2391c1cf910de74353
-        mes2 = 0x2fdc1454a7284fd5d6
+        mes1, mes2 = random.randint(2, mod), random.randint(2, mod)
         div_con = CheckDivExp(mes1, mes2, e, mod, n_, r2, rmod, l, check_pre, div_num)    
         if div_con == 1 and bit1_div_num > 0:                
             f1.write("%s\n%s\n" % (Padding8(mes1), Padding8(mes2) ) )
             bit1_div_sum+=Exp1(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)           
             bit1_div_num-=1
-            break
         if div_con == 2 and nondiv_num > 0:                
             f2.write("%s\n%s\n" % (Padding8(mes1), Padding8(mes2) ) )
             nondiv_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)
