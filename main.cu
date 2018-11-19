@@ -119,7 +119,8 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);
 
 	///////get e
-	char e_input[] = "101";
+	//char e_input[] = "101";
+	char e_input[] = "1000100010110110111110111000110000000001011000001000011010101101000101";
 	int e_bitsLength = (int)strlen(e_input);
 	int* eBits = (int *) malloc(sizeof(int) * e_bitsLength);
 
@@ -140,8 +141,8 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(eBits_d, eBits, sizeof(int) * e_bitsLength, cudaMemcpyHostToDevice);
 
 	///////get d
-	char d_input[] = "1000100010110110111110111000110000000001011000001000011010101101000101";
-	//char d_input[] = "101";
+	//char d_input[] = "1000100010110110111110111000110000000001011000001000011010101101000101";
+	char d_input[] = "101";
 
 	int d_bitsLength = (int)strlen(d_input);
 
