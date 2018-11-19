@@ -77,7 +77,7 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 //
 //		cuda_mpz_set( &_x2[j],  &t[j]);
 
-		printf("debug4\n");
+		//printf("debug4\n");
 
 //		if(j == 0){
 //			cuda_mpz_print_str_device(&_x1[j]);
@@ -88,7 +88,7 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 
 		for(int i = eLength - 2; i >= 0; i--){
 
-			printf("debug5\n");
+			//printf("debug5\n");
 
 			if(eBits[i] == 0){
 				//x2 = _x1 * _x2

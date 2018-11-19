@@ -460,7 +460,7 @@ int main (int argc, char *argv[]) {
 	gmp_randinit_mt(rand_state);
 	gmp_randseed_ui (rand_state, time(NULL));
 
-	printf("debug1\n");
+	//printf("debug1\n");
 
 	while(1){
 
@@ -523,7 +523,7 @@ int main (int argc, char *argv[]) {
 	long long int sum2 = 0;
 	long long int sum3 = 0;
 
-	printf("debug2\n");
+	//printf("debug2\n");
 
 	////////////////////////////////////////////////////////////////converge for bit 0, diverge for bit 1
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize * 4 , cudaMemcpyHostToDevice);
@@ -531,7 +531,7 @@ int main (int argc, char *argv[]) {
 	cudaDeviceSynchronize();
 	cudaMemcpy(clockTable_h, clockTable_d, 4 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 
-	printf("debug3\n");
+	//printf("debug3\n");
 
 	for (long long unsigned q = pairs; q < pairs * 2; q++){
 		sum1 += clockTable_h[q];
