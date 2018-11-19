@@ -443,16 +443,11 @@ for i in range(1):
     #./main bit0divpairs_pre.txt 1000
     out1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "1", "bit1divpairs_out.txt"]) # greater means 1
     
-    print(out1) 
-    break    
-    
     sum1 = out1.splitlines()[0]
     print(sum1)
     div1 = out1.splitlines()[1]
     print(div1)        
-    #print(out1.splitlines()[2])
-    
-    
+    print(out1.splitlines()[2])  
 
     out2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "1", "nondivpairs_out.txt"])
     sum2 = out2.splitlines()[0]
