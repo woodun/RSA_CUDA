@@ -67,9 +67,9 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 //				printf("\n");
 //			}
 
-//		if(j == 0){
-//			printf("(%)",con1[j][70], con1[j][70], con1[j][70], con1[j][70]);
-//		}
+		if(j == 0){
+			printf("(%d %d %d %d)",con1[0][70], con1[1][70], con2[j][70], con2[j][70]);
+		}
 
 		for(int i = eLength - 2; i >= 0; i--){ //0 - 65 = 67 - 1 //0 - 68 = 70 - 1
 
@@ -98,11 +98,19 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 				con2[j][i] = REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]);
 				mpz_set( &_x2[j], &t[j]);
 			}
+
+			if(j == 0){
+				printf("(%d %d %d %d)",con1[0][i], con1[1][i], con2[j][i], con2[j][i]);
+			}
 		}
 
 		//_x1 = REDC(rmod,n,n_,_x1,l)
 		con1[j][69] = REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j]);
 		mpz_set( &_x1[j], &t[j]);
+
+		if(j == 0){
+			printf("(%d %d)",con1[0][69], con1[1][69]);
+		}
 
 		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 

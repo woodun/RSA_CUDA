@@ -107,6 +107,13 @@ def Exp1(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a 
 #             if div_count != 1 : #same divergence pattern
 #                 return 0
 #             div_count = 0
+        
+    s1 = CheckREDC(rmod,n,n_,_x1_1,l)
+    s2 = CheckREDC(rmod,n,n_,_x1_2,l)
+       
+    print(s1, s2)
+    if s1 != s2 :
+        div_count+=1
             
     return div_count
             
@@ -176,6 +183,12 @@ def Exp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a r
 #             if div_count != 1 : #same divergence pattern
 #                 return 0
 #             div_count = 0
+            
+    s1 = CheckREDC(rmod,n,n_,_x1_1,l)
+    s2 = CheckREDC(rmod,n,n_,_x1_2,l)
+       
+    if s1 != s2 :
+        div_count+=1
             
     return div_count
     
@@ -326,7 +339,7 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, f1, f2, f3, f4, check_pre, div_num,
         div_con = CheckDivExp(r1, r2, e, mod, n_, r2, rmod, l, check_pre, div_num)    
         if div_con == 1 and bit1_div_num > 0:                
             f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
-            bit1_div_sum+=Exp(r1, r2, d, mod, n_, r2, rmod, l, check_pre, div_num)
+            bit1_div_sum+=Exp1(r1, r2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             bit1_div_num-=1
         if div_con == 2 and nondiv_num > 0:                
             f2.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
@@ -409,7 +422,7 @@ for i in range(1):
     f2 = open("nondivpairs_pre.txt","w+")
     f3 = open("divpairs_pre.txt","w+")
     f4 = open("bit0divpairs_pre.txt","w+")
-    FindPairs (2000, n, current_bits, n_, r2, rmod, l,  f1, f2, f3, f4, 0, len(bits(current_bits) ), d)
+    FindPairs (1, n, current_bits, n_, r2, rmod, l,  f1, f2, f3, f4, 0, len(bits(current_bits) ), d)
     f1.close()
     f2.close()
     f3.close()
@@ -417,26 +430,28 @@ for i in range(1):
 
     print("#########################################GPU output###########################################")
     #./main bit0divpairs_pre.txt 1000
-    out1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2000", "bit1divpairs_out.txt"]) # greater means 1
+    out1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "1", "bit1divpairs_out.txt"]) # greater means 1
     sum1 = out1.splitlines()[0]
     print(sum1)
     div1 = out1.splitlines()[1]
     print(div1)        
     #print(out1.splitlines()[2])
-        
-    out2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2000", "nondivpairs_out.txt"])
+    
+    break
+
+    out2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "1", "nondivpairs_out.txt"])
     sum2 = out2.splitlines()[0]
     print(sum2)
     div2 = out2.splitlines()[1]
     print(div2)
     
-    out3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2000", "divpairs_out.txt"])
+    out3 = subprocess.check_output(["./main", "divpairs_pre.txt", "1", "divpairs_out.txt"])
     sum3 = out3.splitlines()[0]
     print(sum3)
     div3 = out3.splitlines()[1]
     print(div3)
     
-    out4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2000", "bit0divpairs_out.txt"]) # greater means 0
+    out4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "1", "bit0divpairs_out.txt"]) # greater means 0
     sum4 = out4.splitlines()[0]
     print(sum4)
     div4 = out4.splitlines()[1]
