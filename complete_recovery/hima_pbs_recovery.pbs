@@ -5,6 +5,6 @@
 #PBS -m a
 #PBS -M hwang07@email.wm.edu
 PROG=./main
-ARGS="1000 1"
+ARGS="2000 0"
 cd $PBS_O_WORKDIR
-./main 1000 1 > output1.txt
+./main 2000 0 > output1.txt
