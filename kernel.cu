@@ -47,6 +47,17 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 		mpz_t* n_ = &vn_;
 		int j = blockIdx.x * blockDim.x + threadIdx.x;
 
+		if(j == 0){
+			printf("mes1: ");
+			mpz_print_str_device(&_x1[j]);
+			printf("\n");
+		}
+		if(j == 1){
+			printf("mes2: ");
+			mpz_print_str_device(&_x1[j]);
+			printf("\n");
+		}
+
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
 		mpz_mult(&tmp2[j], &_x1[j], &r2);
 		mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
@@ -62,6 +73,21 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 //			mpz_print_str_device(&_x2[j]);
 //			printf("\n");
 //		}
+
+		if(j == 0){
+			printf("mes1: ");
+			mpz_print_str_device(&_x1[j]);
+			printf(" ");
+			mpz_print_str_device(&_x2[j]);
+			printf("\n");
+		}
+		if(j == 1){
+			printf("mes2: ");
+			mpz_print_str_device(&_x1[j]);
+			printf(" ");
+			mpz_print_str_device(&_x2[j]);
+			printf("\n");
+		}
 
 		for(int i = eLength - 2; i >= 0; i--){
 
@@ -86,10 +112,36 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 				//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
 				mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
 			}
+
+			if(j == 0){
+				printf("mes1: ");
+				mpz_print_str_device(&_x1[j]);
+				printf(" ");
+				mpz_print_str_device(&_x2[j]);
+				printf("\n");
+			}
+			if(j == 1){
+				printf("mes2: ");
+				mpz_print_str_device(&_x1[j]);
+				printf(" ");
+				mpz_print_str_device(&_x2[j]);
+				printf("\n");
+			}
 		}
 
 		//_x1 = REDC(rmod,n,n_,_x1,l)
 		mpz_set( &_x1[j], REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j]) );
+
+		if(j == 0){
+			printf("mes1: ");
+			mpz_print_str_device(&_x1[j]);
+			printf("\n");
+		}
+		if(j == 1){
+			printf("mes2: ");
+			mpz_print_str_device(&_x1[j]);
+			printf("\n");
+		}
 
 		s_index[k] = mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 
