@@ -75,6 +75,8 @@ def Exp1(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a 
     e_b = bits(e)   
     
     for i in e_b[1:]:        
+        
+        print("ebit: ", i)
         if i == '0':
             _x2_1 = _x1_1 * _x2_1
             s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
