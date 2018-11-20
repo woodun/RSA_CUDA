@@ -233,7 +233,7 @@ __host__ inline void cuda_mpz_set_str_host(cuda_mpz_t *cuda_mpz, const char *use
 
   const int bufsize = 1024;
   char buf[bufsize];
-  memcpy(buf, user_str, strlen(user_str) + 1);
+  memcpy(buf, user_str, strlen(user_str));//changes memcpy(buf, user_str, strlen(user_str) + 1);
   buf[bufsize - 1] = (char) 0;
   char *str = &buf[0];
 
