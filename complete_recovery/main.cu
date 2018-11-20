@@ -90,7 +90,7 @@ int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_
 	//for i in e_b[1:]:
 	for(int i = 1; i < eLength; i++){ //big endian
 
-		printf("ebit: %d", eBits[i]);
+		printf("ebit: %d\n", eBits[i]);
 		if(eBits[i] == 0){
 			//_x2_1 = _x1_1 * _x2_1
 			//_x2_2 = _x1_2 * _x2_2
