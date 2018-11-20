@@ -347,6 +347,9 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, check_pre, div_num, d):
     bit0_div_num = num #1 0
     while(True):
         mes1, mes2 = random.randint(2, mod), random.randint(2, mod)
+        print(hex(mes1))
+        print(hex(mes2))
+        break
         div_con = CheckDivExp(mes1, mes2, e, mod, n_, r2, rmod, l, check_pre, div_num)    
         if div_con == 1 and bit1_div_num > 0:
             bit1_div_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)           
@@ -395,7 +398,8 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, check_pre, div_num, d):
           
 time1 = time.time()
 print(time1)    
-random.seed(time1)
+# random.seed(time1)
+random.seed(0)
 p = 32416189867
 q = 32416189909
 n = p * q

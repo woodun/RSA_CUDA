@@ -608,7 +608,8 @@ int main (int argc, char *argv[]) {
 	gmp_randstate_t rand_state;
 	//gmp_randinit_default (rand_state);
 	gmp_randinit_mt(rand_state);
-	gmp_randseed_ui (rand_state, time(NULL));
+	//gmp_randseed_ui (rand_state, time(NULL));
+	gmp_randseed_ui (rand_state, 0);
 
 	//printf("debug1\n");
 
@@ -624,13 +625,15 @@ int main (int argc, char *argv[]) {
 //		char r2_str[] = "0000000035bd98947ef0b97a5e";
 //		cuda_mpz_set_str_host(&r2, r2_str);
 //
-//		char test_str[1024];
-//		printf("%s\n", cuda_mpz_get_str(&r1, test_str, 1024));
-//		printf("%s\n", cuda_mpz_get_str(&r2, test_str, 1024));
+		char test_str[1024];
+		printf("%s\n", cuda_mpz_get_str(&r1, test_str, 1024));
+		printf("%s\n", cuda_mpz_get_str(&r2, test_str, 1024));
+
+		break;
 
 		div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-				&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-				&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 
 		if (div_con == 1 && bit1_div_num < data_num){
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
@@ -639,8 +642,8 @@ int main (int argc, char *argv[]) {
 			bit1_div_num++;
 
 			bit1_div_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-							&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-							&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 		}
 		if (div_con == 2 && nondiv_num < data_num){
 			cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r1);
