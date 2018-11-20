@@ -180,10 +180,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	printf("mes1: ");
 	printf("%s\n", cuda_mpz_get_str(mes1, test_str, 1024));
-	printf("\n");
 	printf("mes2: ");
 	printf("%s\n", cuda_mpz_get_str(mes2, test_str, 1024));
-	printf("\n");
 
 	//mes1 * r2
 	cuda_mpz_mult(tmp2_1, mes1, r2);
@@ -325,11 +323,11 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 		}
 
 		printf("mes1: ");
-		printf("%s %s\n", cuda_mpz_get_str(_x1_1, test_str, 1024), cuda_mpz_get_str(_x2_1, test_str, 1024));
-		printf("\n");
+		printf("%s", cuda_mpz_get_str(_x1_1, test_str, 1024));
+		printf(" %s\n", cuda_mpz_get_str(_x2_1, test_str, 1024));
 		printf("mes2: ");
-		printf("%s %s\n", cuda_mpz_get_str(_x1_2, test_str, 1024), cuda_mpz_get_str(_x2_2, test_str, 1024));
-		printf("\n");
+		printf("%s", cuda_mpz_get_str(_x1_2, test_str, 1024));
+		printf(" %s\n", cuda_mpz_get_str(_x2_2, test_str, 1024));
 	}
 
 	if(div_count != eLength && check_pre == 1){ //total divergence number
