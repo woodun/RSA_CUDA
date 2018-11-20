@@ -685,10 +685,10 @@ int main (int argc, char *argv[]) {
 //		}
 		if (bit1_div_num == data_num && nondiv_num == data_num && bothdiv_num == data_num && bit0_div_num == data_num){
 
-			double sum1 = (double) bit1_div_sum / num;
-			double sum2 = (double) nondiv_sum / num;
-			double sum3 = (double) bothdiv_sum / num;
-			double sum4 = (double) bit0_div_sum / num;
+			double sum1 = (double) bit1_div_sum / pairs;
+			double sum2 = (double) nondiv_sum / pairs;
+			double sum3 = (double) bothdiv_sum / pairs;
+			double sum4 = (double) bit0_div_sum / pairs;
 
 			print("#########################################CPU output###########################################")
 			print("%f\n", sum1)
