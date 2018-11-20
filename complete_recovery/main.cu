@@ -167,7 +167,7 @@ int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_
 		div_count++;
 	}
 
-	printf("%d\n", div_count)
+	printf("%d\n", div_count);
 
 	return div_count;
 }
