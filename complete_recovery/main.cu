@@ -228,11 +228,11 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	cuda_mpz_set( _x2_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
 
 	printf("mes1: ");
-	printf("%s %s\n", cuda_mpz_get_str(_x1_1, test_str, 1024), cuda_mpz_get_str(_x2_1, test_str, 1024));
-	printf("\n");
+	printf("%s", cuda_mpz_get_str(_x1_1, test_str, 1024));
+	printf(" %s\n", cuda_mpz_get_str(_x2_1, test_str, 1024));
 	printf("mes2: ");
-	printf("%s %s\n", cuda_mpz_get_str(_x1_2, test_str, 1024), cuda_mpz_get_str(_x2_2, test_str, 1024));
-	printf("\n");
+	printf("%s", cuda_mpz_get_str(_x1_2, test_str, 1024));
+	printf(" %s\n", cuda_mpz_get_str(_x2_2, test_str, 1024));
 
 	//for i in e_b[1:]:
 	for(int i = 1; i < eLength; i++){ //big endian
