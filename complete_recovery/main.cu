@@ -33,6 +33,13 @@ int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_
 
 	int div_count = 0;
 
+
+	char test_str[1024];
+	printf("mes1: ");
+	printf("%s\n", cuda_mpz_get_str(mes1, test_str, 1024));
+	printf("mes2: ");
+	printf("%s\n", cuda_mpz_get_str(mes2, test_str, 1024));
+
 	//mes1 * r2
 	cuda_mpz_mult(tmp2_1, mes1, r2);
 	//mes2 * r2
@@ -70,6 +77,13 @@ int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_
 	//_x2_2 = REDC(rmod, n, n_, _x2_2, l)
 	cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
 	cuda_mpz_set( _x2_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+
+	printf("mes1: ");
+	printf("%s", cuda_mpz_get_str(_x1_1, test_str, 1024));
+	printf(" %s\n", cuda_mpz_get_str(_x2_1, test_str, 1024));
+	printf("mes2: ");
+	printf("%s", cuda_mpz_get_str(_x1_2, test_str, 1024));
+	printf(" %s\n", cuda_mpz_get_str(_x2_2, test_str, 1024));
 
 	//for i in e_b[1:]:
 	for(int i = 1; i < eLength; i++){ //big endian
@@ -156,12 +170,29 @@ int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_
 			cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
 			cuda_mpz_set( _x2_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
 		}
+
+		printf("mes1: ");
+		printf("%s", cuda_mpz_get_str(_x1_1, test_str, 1024));
+		printf(" %s\n", cuda_mpz_get_str(_x2_1, test_str, 1024));
+		printf("mes2: ");
+		printf("%s", cuda_mpz_get_str(_x1_2, test_str, 1024));
+		printf(" %s\n", cuda_mpz_get_str(_x2_2, test_str, 1024));
 	}
 
     //s1 = CheckREDC(rmod,n,n_,_x1_1,l)
     //s2 = CheckREDC(rmod,n,n_,_x1_2,l)
 	int s1 = CheckREDC(rl, n, n_, _x1_1, tmp_1, t_1);
 	int s2 = CheckREDC(rl, n, n_, _x1_2, tmp_2, t_2);
+
+    //_x1_1 = REDC(rmod,n,n_,_x1_1,l)
+    //_x1_2 = REDC(rmod,n,n_,_x1_2,l)
+	cuda_mpz_set( &_x1_1, REDC(rl, n, n_, &_x1_1, &tmp_1, &t_1) );
+	cuda_mpz_set( &_x1_2, REDC(rl, n, n_, &_x1_2, &tmp_2, &t_2) );
+
+	printf("mes1: ");
+	printf("%s\n", cuda_mpz_get_str(_x1_1, test_str, 1024));
+	printf("mes2: ");
+	printf("%s\n", cuda_mpz_get_str(_x1_2, test_str, 1024));
 
 	if (s1 != s2){
 		div_count++;
