@@ -648,7 +648,7 @@ int main (int argc, char *argv[]) {
 										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
 										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 
-			break
+			break;
 		}
 		if (div_con == 2 && nondiv_num < data_num){
 			cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r1);
