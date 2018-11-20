@@ -160,8 +160,8 @@ int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_
 
     //s1 = CheckREDC(rmod,n,n_,_x1_1,l)
     //s2 = CheckREDC(rmod,n,n_,_x1_2,l)
-	int s1 = CheckREDC(rl, n, n_, &_x1_1[j], &tmp_1[j], &t_1[j]);
-	int s2 = CheckREDC(rl, n, n_, &_x1_2[j], &tmp_2[j], &t_2[j]);
+	int s1 = CheckREDC(rl, n, n_, &_x1_1, &tmp_1, &t_1);
+	int s2 = CheckREDC(rl, n, n_, &_x1_2, &tmp_2, &t_2);
 
 	if (s1 != s2){
 		div_count++;
