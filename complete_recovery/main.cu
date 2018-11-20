@@ -92,7 +92,7 @@ int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_
 			//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
 			//_x2_2 = REDC(rmod, n, n_, _x2_2, l)
 			cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
-			cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+			cuda_mpz_set( _x2_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
 
 			//_x1_1 = _x1_1 * _x1_1
 			//_x1_2 = _x1_2 * _x1_2
