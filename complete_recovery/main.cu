@@ -663,7 +663,7 @@ int main (int argc, char *argv[]) {
 	known_bits[0] = 1;
 	known_bits[1] = 0;
 	known_bits[2] = 1;
-	int known_bits_length = 1;
+	int known_bits_length = 2;
 	int div_con = 0;
 
 	///////gmp init
@@ -709,9 +709,9 @@ int main (int argc, char *argv[]) {
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
 			bit1_div_num++;
 
-			bit1_div_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+//			bit1_div_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+//										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+//										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 		}
 		if (div_con == 2 && nondiv_num < data_num){
 			cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r1);
@@ -719,9 +719,9 @@ int main (int argc, char *argv[]) {
 			cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r2);
 			nondiv_num++;
 
-			nondiv_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+//			nondiv_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+//										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+//										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 
 //			break;
 		}
@@ -731,9 +731,9 @@ int main (int argc, char *argv[]) {
 			cuda_mpz_set( &myMes1_h[bothdiv_num + data_num * 2], &r2);
 			bothdiv_num++;
 
-			bothdiv_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+//			bothdiv_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+//										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+//										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 		}
 		if (div_con == 4 && bit0_div_num < data_num){
 			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r1);
@@ -741,9 +741,9 @@ int main (int argc, char *argv[]) {
 			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r2);
 			bit0_div_num++;
 
-			bit0_div_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+//			bit0_div_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+//										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+//										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 		}
 //		if (div_con == 2 && nondiv_num > 0){
 //			nondiv_num--;
@@ -759,40 +759,40 @@ int main (int argc, char *argv[]) {
 //		}
 		if (bit1_div_num == data_num && nondiv_num == data_num && bothdiv_num == data_num && bit0_div_num == data_num){
 
-			double sum1 = (double) bit1_div_sum / pairs;
-			double sum2 = (double) nondiv_sum / pairs;
-			double sum3 = (double) bothdiv_sum / pairs;
-			double sum4 = (double) bit0_div_sum / pairs;
-
-			printf("#########################################CPU output###########################################\n");
-			printf("%f\n", sum1);
-			printf("%f\n", sum2);
-			printf("%f\n", sum3);
-			printf("%f\n", sum4);
-
-			double diff1 = sum1 - sum2; // close to zero means 0, greater than zero means 1
-			double diff2 = sum4 - sum2; // close to zero means 1, greater than zero means 0
-			double mean1 = (diff1 + diff2) / 2;
-			printf("%f %f %f\n",diff1,diff2,mean1);
-
-			double diff3 = sum1 - sum3; // close to zero means 1, smaller than zero means 0
-			double diff4 = sum4 - sum3; // close to zero means 0, smaller than zero means 1
-			double mean2 = (diff3 + diff4) / 2;
-			printf("%f %f %f\n", diff3,diff4, mean2);
-
-			double val1 = mean1 + mean2;
-			double sign1 = mean1 * mean2;
-			printf("%f %f\n", val1, sign1);
-
-			double diff5 = sum1 - sum4; // greater means 1
-			double diff6 = sum3 - sum2; // must be greater
-			printf("%f %f\n",diff5,diff6);
+//			double sum1 = (double) bit1_div_sum / pairs;
+//			double sum2 = (double) nondiv_sum / pairs;
+//			double sum3 = (double) bothdiv_sum / pairs;
+//			double sum4 = (double) bit0_div_sum / pairs;
+//
+//			printf("#########################################CPU output###########################################\n");
+//			printf("%f\n", sum1);
+//			printf("%f\n", sum2);
+//			printf("%f\n", sum3);
+//			printf("%f\n", sum4);
+//
+//			double diff1 = sum1 - sum2; // close to zero means 0, greater than zero means 1
+//			double diff2 = sum4 - sum2; // close to zero means 1, greater than zero means 0
+//			double mean1 = (diff1 + diff2) / 2;
+//			printf("%f %f %f\n",diff1,diff2,mean1);
+//
+//			double diff3 = sum1 - sum3; // close to zero means 1, smaller than zero means 0
+//			double diff4 = sum4 - sum3; // close to zero means 0, smaller than zero means 1
+//			double mean2 = (diff3 + diff4) / 2;
+//			printf("%f %f %f\n", diff3,diff4, mean2);
+//
+//			double val1 = mean1 + mean2;
+//			double sign1 = mean1 * mean2;
+//			printf("%f %f\n", val1, sign1);
+//
+//			double diff5 = sum1 - sum4; // greater means 1
+//			double diff6 = sum3 - sum2; // must be greater
+//			printf("%f %f\n",diff5,diff6);
 
 			break;
 		}
 	}
 
-	exit(0);
+//	exit(0);
 
 	long long int sum1 = 0;
 	long long int sum2 = 0;
