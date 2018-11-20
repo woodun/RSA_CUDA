@@ -176,6 +176,15 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	int div_count = 0;
 
+	char test_str[1024];
+
+	printf("mes1: ");
+	printf("%s\n", cuda_mpz_get_str(mes1, test_str, 1024));
+	printf("\n");
+	printf("mes2: ");
+	printf("%s\n", cuda_mpz_get_str(mes2, test_str, 1024));
+	printf("\n");
+
 	//mes1 * r2
 	cuda_mpz_mult(tmp2_1, mes1, r2);
 	//mes2 * r2
@@ -186,7 +195,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	int s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 	int s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-	if (s1_1 != s1_2 && check_pre == 1){
+	if (s1_1 != s1_2){
 //		printf("asd\n");
 //		return 0;
 		div_count++;
@@ -207,7 +216,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	int s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 	int s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-	if (s2_1 != s2_2 && check_pre == 1){
+	if (s2_1 != s2_2){
 //		printf("sdf\n");
 //		return 0;
 		div_count++;
@@ -217,6 +226,13 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	//_x2_2 = REDC(rmod, n, n_, _x2_2, l)
 	cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
 	cuda_mpz_set( _x2_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+
+	printf("mes1: ");
+	printf("%s %s\n", cuda_mpz_get_str(_x1_1, test_str, 1024), cuda_mpz_get_str(_x2_1, test_str, 1024));
+	printf("\n");
+	printf("mes2: ");
+	printf("%s %s\n", cuda_mpz_get_str(_x1_2, test_str, 1024), cuda_mpz_get_str(_x2_2, test_str, 1024));
+	printf("\n");
 
 	//for i in e_b[1:]:
 	for(int i = 1; i < eLength; i++){ //big endian
@@ -232,7 +248,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s2_1 != s2_2 && check_pre == 1){
+			if (s2_1 != s2_2){
 //				return 0;
 				div_count++;
 			}
@@ -254,7 +270,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s1_1 != s1_2 && check_pre == 1){
+			if (s1_1 != s1_2){
 //				return 0;
 				div_count++;
 			}
@@ -274,7 +290,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s1_1 != s1_2 && check_pre == 1){
+			if (s1_1 != s1_2){
 //				return 0;
 				div_count++;
 			}
@@ -297,7 +313,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
 			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s2_1 != s2_2 && check_pre == 1){
+			if (s2_1 != s2_2){
 //				return 0;
 				div_count++;
 			}
@@ -307,6 +323,13 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
 			cuda_mpz_set( _x2_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
 		}
+
+		printf("mes1: ");
+		printf("%s %s\n", cuda_mpz_get_str(_x1_1, test_str, 1024), cuda_mpz_get_str(_x2_1, test_str, 1024));
+		printf("\n");
+		printf("mes2: ");
+		printf("%s %s\n", cuda_mpz_get_str(_x1_2, test_str, 1024), cuda_mpz_get_str(_x2_2, test_str, 1024));
+		printf("\n");
 	}
 
 	if(div_count != eLength && check_pre == 1){ //total divergence number

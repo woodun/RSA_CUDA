@@ -206,6 +206,9 @@ def Exp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a r
     
 def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a relaxed condition, otherwise cannot reach very far bits. Also the non-bothdiv combo can always be reached.
     
+    print("mes1: ", hex(mes1))
+    print("mes2: ", hex(mes2))
+    
     s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
     s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)    
     _x1_1 = REDC(rmod, n, n_, mes1 * r2, l) 
@@ -217,6 +220,9 @@ def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_nu
     s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
     _x2_1 = REDC(rmod, n, n_, _x2_1, l)
     _x2_2 = REDC(rmod, n, n_, _x2_2, l)
+    
+    print("mes1: ", hex(_x1_1), hex(_x2_1))
+    print("mes2: ", hex(_x1_2), hex(_x2_2))
     
     div_count = 0
      
@@ -269,6 +275,8 @@ def CheckDivExp(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_nu
 #             if div_count != 1 : #same divergence pattern
 #                 return 0
 #             div_count = 0
+        print("mes1: ", hex(_x1_1), hex(_x2_1))
+        print("mes2: ", hex(_x1_2), hex(_x2_2))
             
     if check_pre == 1 and div_count != div_num : #total divergence number
         return 0
@@ -362,6 +370,7 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, check_pre, div_num, d):
             print(2)
             print(hex(mes1))
             print(hex(mes2))
+            break
         if div_con == 3 and bothdiv_num > 0:
             bothdiv_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             bothdiv_num-=1
