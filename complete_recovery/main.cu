@@ -661,9 +661,10 @@ int main (int argc, char *argv[]) {
 	long check_pre = strtol(argv[2], NULL, 10);
 	int known_bits[2048];
 	known_bits[0] = 1;
-	known_bits[1] = 0;
-	known_bits[2] = 1;
-	int known_bits_length = 2;
+	//known_bits[1] = 0;
+	//known_bits[2] = 1;
+	int known_bits_length = 1;
+	int total_bits_length = 67;
 	int div_con = 0;
 
 	///////gmp init
@@ -682,187 +683,211 @@ int main (int argc, char *argv[]) {
 	//gmp_randseed_ui (rand_state, 0);
 
 	//printf("debug1\n");
+	while(known_bits_length < total_bits_length - 1){
 
-	while(1){
+		bit1_div_num = 0;
+		nondiv_num = 0;
+		bothdiv_num = 0;
+		bit0_div_num = 0;
 
-		mpz_urandomm (rand_num, rand_state, mod);
-		cuda_mpz_set_gmp(&r1, rand_num);
-		mpz_urandomm (rand_num, rand_state, mod);
-		cuda_mpz_set_gmp(&r2, rand_num);
+		while(1){
 
-//		char r1_str[] = "00000000167a024204f7c1bd89";
-//		cuda_mpz_set_str_host(&r1, r1_str);
-//		char r2_str[] = "0000000088133287637ebdcdb";
-//		cuda_mpz_set_str_host(&r2, r2_str);
-//
-//		char test_str[1024];
-//		printf("%s\n", cuda_mpz_get_str(&r1, test_str, 1024));
-//		printf("%s\n", cuda_mpz_get_str(&r2, test_str, 1024));
+			mpz_urandomm (rand_num, rand_state, mod);
+			cuda_mpz_set_gmp(&r1, rand_num);
+			mpz_urandomm (rand_num, rand_state, mod);
+			cuda_mpz_set_gmp(&r2, rand_num);
 
-		div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+	//		char r1_str[] = "00000000167a024204f7c1bd89";
+	//		cuda_mpz_set_str_host(&r1, r1_str);
+	//		char r2_str[] = "0000000088133287637ebdcdb";
+	//		cuda_mpz_set_str_host(&r2, r2_str);
+	//
+	//		char test_str[1024];
+	//		printf("%s\n", cuda_mpz_get_str(&r1, test_str, 1024));
+	//		printf("%s\n", cuda_mpz_get_str(&r2, test_str, 1024));
 
-		if (div_con == 1 && bit1_div_num < data_num){
-			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
-			bit1_div_num++;
-			cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
-			bit1_div_num++;
+			div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+											&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+											&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 
-//			bit1_div_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-//										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-//										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+			if (div_con == 1 && bit1_div_num < data_num){
+				cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
+				bit1_div_num++;
+				cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
+				bit1_div_num++;
+
+	//			bit1_div_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+	//										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+	//										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+			}
+			if (div_con == 2 && nondiv_num < data_num){
+				cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r1);
+				nondiv_num++;
+				cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r2);
+				nondiv_num++;
+
+	//			nondiv_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+	//										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+	//										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+
+	//			break;
+			}
+			if (div_con == 3 && bothdiv_num < data_num){
+				cuda_mpz_set( &myMes1_h[bothdiv_num + data_num * 2], &r1);
+				bothdiv_num++;
+				cuda_mpz_set( &myMes1_h[bothdiv_num + data_num * 2], &r2);
+				bothdiv_num++;
+
+	//			bothdiv_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+	//										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+	//										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+			}
+			if (div_con == 4 && bit0_div_num < data_num){
+				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r1);
+				bit0_div_num++;
+				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r2);
+				bit0_div_num++;
+
+	//			bit0_div_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+	//										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+	//										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+			}
+	//		if (div_con == 2 && nondiv_num > 0){
+	//			nondiv_num--;
+	//			cuda_mpz_set( &myMes2_h[nondiv_num], &r2);
+	//			nondiv_num--;
+	//			cuda_mpz_set( &myMes2_h[nondiv_num], &r1);
+	//		}
+	//		if (div_con == 3 && bit0_div_num > 0){
+	//			bit0_div_num--;
+	//			cuda_mpz_set( &myMes3_h[bit0_div_num], &r2);
+	//			bit0_div_num--;
+	//			cuda_mpz_set( &myMes3_h[bit0_div_num], &r1);
+	//		}
+			if (bit1_div_num == data_num && nondiv_num == data_num && bothdiv_num == data_num && bit0_div_num == data_num){
+
+	//			double sum1 = (double) bit1_div_sum / pairs;
+	//			double sum2 = (double) nondiv_sum / pairs;
+	//			double sum3 = (double) bothdiv_sum / pairs;
+	//			double sum4 = (double) bit0_div_sum / pairs;
+	//
+	//			printf("#########################################CPU output###########################################\n");
+	//			printf("%f\n", sum1);
+	//			printf("%f\n", sum2);
+	//			printf("%f\n", sum3);
+	//			printf("%f\n", sum4);
+	//
+	//			double diff1 = sum1 - sum2; // close to zero means 0, greater than zero means 1
+	//			double diff2 = sum4 - sum2; // close to zero means 1, greater than zero means 0
+	//			double mean1 = (diff1 + diff2) / 2;
+	//			printf("%f %f %f\n",diff1,diff2,mean1);
+	//
+	//			double diff3 = sum1 - sum3; // close to zero means 1, smaller than zero means 0
+	//			double diff4 = sum4 - sum3; // close to zero means 0, smaller than zero means 1
+	//			double mean2 = (diff3 + diff4) / 2;
+	//			printf("%f %f %f\n", diff3,diff4, mean2);
+	//
+	//			double val1 = mean1 + mean2;
+	//			double sign1 = mean1 * mean2;
+	//			printf("%f %f\n", val1, sign1);
+	//
+	//			double diff5 = sum1 - sum4; // greater means 1
+	//			double diff6 = sum3 - sum2; // must be greater
+	//			printf("%f %f\n",diff5,diff6);
+
+				break;
+			}
 		}
-		if (div_con == 2 && nondiv_num < data_num){
-			cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r1);
-			nondiv_num++;
-			cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r2);
-			nondiv_num++;
 
-//			nondiv_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-//										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-//										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+	//	exit(0);
 
-//			break;
+		long long int sum1 = 0;
+		long long int sum2 = 0;
+		long long int sum3 = 0;
+		long long int sum4 = 0;
+
+		//printf("debug2\n");
+
+		////////////////////////////////////////////////////////////////converge for bit 0, diverge for bit 1
+		cudaMemcpy(myMes1_d, myMes1_h, mesSize * 4 , cudaMemcpyHostToDevice);
+		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs * 4, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+		cudaDeviceSynchronize();
+		cudaMemcpy(clockTable_h, clockTable_d, 4 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
+
+		//printf("debug3\n");
+
+		for (long long unsigned q = 0; q < pairs * 1; q++){
+			sum1 += clockTable_h[q];
 		}
-		if (div_con == 3 && bothdiv_num < data_num){
-			cuda_mpz_set( &myMes1_h[bothdiv_num + data_num * 2], &r1);
-			bothdiv_num++;
-			cuda_mpz_set( &myMes1_h[bothdiv_num + data_num * 2], &r2);
-			bothdiv_num++;
-
-//			bothdiv_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-//										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-//										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+		sum1 = sum1 / pairs;
+		for (long long unsigned q = pairs * 1; q < pairs * 2; q++){
+			sum2 += clockTable_h[q];
 		}
-		if (div_con == 4 && bit0_div_num < data_num){
-			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r1);
-			bit0_div_num++;
-			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r2);
-			bit0_div_num++;
-
-//			bit0_div_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-//										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-//										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+		sum2 = sum2 / pairs;
+		for (long long unsigned q = pairs * 2; q < pairs * 3; q++){
+			sum3 += clockTable_h[q];
 		}
-//		if (div_con == 2 && nondiv_num > 0){
-//			nondiv_num--;
-//			cuda_mpz_set( &myMes2_h[nondiv_num], &r2);
-//			nondiv_num--;
-//			cuda_mpz_set( &myMes2_h[nondiv_num], &r1);
-//		}
-//		if (div_con == 3 && bit0_div_num > 0){
-//			bit0_div_num--;
-//			cuda_mpz_set( &myMes3_h[bit0_div_num], &r2);
-//			bit0_div_num--;
-//			cuda_mpz_set( &myMes3_h[bit0_div_num], &r1);
-//		}
-		if (bit1_div_num == data_num && nondiv_num == data_num && bothdiv_num == data_num && bit0_div_num == data_num){
-
-//			double sum1 = (double) bit1_div_sum / pairs;
-//			double sum2 = (double) nondiv_sum / pairs;
-//			double sum3 = (double) bothdiv_sum / pairs;
-//			double sum4 = (double) bit0_div_sum / pairs;
-//
-//			printf("#########################################CPU output###########################################\n");
-//			printf("%f\n", sum1);
-//			printf("%f\n", sum2);
-//			printf("%f\n", sum3);
-//			printf("%f\n", sum4);
-//
-//			double diff1 = sum1 - sum2; // close to zero means 0, greater than zero means 1
-//			double diff2 = sum4 - sum2; // close to zero means 1, greater than zero means 0
-//			double mean1 = (diff1 + diff2) / 2;
-//			printf("%f %f %f\n",diff1,diff2,mean1);
-//
-//			double diff3 = sum1 - sum3; // close to zero means 1, smaller than zero means 0
-//			double diff4 = sum4 - sum3; // close to zero means 0, smaller than zero means 1
-//			double mean2 = (diff3 + diff4) / 2;
-//			printf("%f %f %f\n", diff3,diff4, mean2);
-//
-//			double val1 = mean1 + mean2;
-//			double sign1 = mean1 * mean2;
-//			printf("%f %f\n", val1, sign1);
-//
-//			double diff5 = sum1 - sum4; // greater means 1
-//			double diff6 = sum3 - sum2; // must be greater
-//			printf("%f %f\n",diff5,diff6);
-
-			break;
+		sum3 = sum3 / pairs;
+		for (long long unsigned q = pairs * 3; q < pairs * 4; q++){
+			sum4 += clockTable_h[q];
 		}
-	}
+		sum4 = sum4 / pairs;
 
-//	exit(0);
+	//	////////////////////////////////////////////////////////////////converge for bit 0 and converge for bit 1
+	//	cudaMemcpy(myMes1_d, myMes2_h, mesSize, cudaMemcpyHostToDevice);
+	//	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+	//	cudaDeviceSynchronize();
+	//	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
+	//
+	//	for (long long unsigned q = 0; q < pairs; q++){
+	//		sum2 += clockTable_h[q];
+	//	}
+	//	sum2 = sum2 / pairs;
+	//
+	//	////////////////////////////////////////////////////////////////diverge for bit 0 and converge for bit 1
+	//	cudaMemcpy(myMes1_d, myMes3_h, mesSize, cudaMemcpyHostToDevice);
+	//	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+	//	cudaDeviceSynchronize();
+	//	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
+	//
+	//	for (long long unsigned q = 0; q < pairs; q++){
+	//		sum3 += clockTable_h[q];
+	//	}
+	//	sum3 = sum3 / pairs;
 
-	long long int sum1 = 0;
-	long long int sum2 = 0;
-	long long int sum3 = 0;
+		long long int diff1 = abs(sum1 - sum2);
+		long long int diff2 = abs(sum2 - sum4);
+		long long int diff3 = sum1 - sum4;
 
-	//printf("debug2\n");
+		printf("%lld %lld %lld %lld %lld %lld %f %f\n", sum1, sum2, sum3, diff1, diff2, diff3, ((double) diff1) / diff2, ((double) diff2) / diff1);
 
-	////////////////////////////////////////////////////////////////converge for bit 0, diverge for bit 1
-	cudaMemcpy(myMes1_d, myMes1_h, mesSize * 4 , cudaMemcpyHostToDevice);
-	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs * 4, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
-	cudaDeviceSynchronize();
-	cudaMemcpy(clockTable_h, clockTable_d, 4 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
+	//	if(((double) diff1) / diff2 > 1.3){//bit is 1
+	//		printf("bit is 1.\n");
+	//	}else if(((double) diff2) / diff1 > 1.3){//bit is 0
+	//		printf("bit is 0.\n");
+	//	}else{//EOB
+	//		printf("end of bits.\n");
+	//	}
 
-	//printf("debug3\n");
+		if(diff3 > 5000){//bit is 1
+			known_bits[known_bits_length] = 1;
+			printf("bit is 1.\n");
+		}else if(diff3 < -5000){//bit is 0
 
-	for (long long unsigned q = pairs; q < pairs * 2; q++){
-		sum1 += clockTable_h[q];
-	}
-	sum1 = sum1 / pairs;
-	for (long long unsigned q = pairs * 2; q < pairs * 3; q++){
-		sum2 += clockTable_h[q];
-	}
-	sum2 = sum2 / pairs;
-	for (long long unsigned q = pairs * 3; q < pairs * 4; q++){
-		sum3 += clockTable_h[q];
-	}
-	sum3 = sum3 / pairs;
+			known_bits[known_bits_length] = 0;
+			printf("bit is 0.\n");
+		}else{//EOB
+			//printf("end of bits.\n");
+			printf("bit not accepted.\n");
+			continue;
+		}
 
-//	////////////////////////////////////////////////////////////////converge for bit 0 and converge for bit 1
-//	cudaMemcpy(myMes1_d, myMes2_h, mesSize, cudaMemcpyHostToDevice);
-//	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
-//	cudaDeviceSynchronize();
-//	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
-//
-//	for (long long unsigned q = 0; q < pairs; q++){
-//		sum2 += clockTable_h[q];
-//	}
-//	sum2 = sum2 / pairs;
-//
-//	////////////////////////////////////////////////////////////////diverge for bit 0 and converge for bit 1
-//	cudaMemcpy(myMes1_d, myMes3_h, mesSize, cudaMemcpyHostToDevice);
-//	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
-//	cudaDeviceSynchronize();
-//	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
-//
-//	for (long long unsigned q = 0; q < pairs; q++){
-//		sum3 += clockTable_h[q];
-//	}
-//	sum3 = sum3 / pairs;
+		known_bits_length++;
 
-	long long int diff1 = abs(sum1 - sum2);
-	long long int diff2 = abs(sum2 - sum3);
-	long long int diff3 = sum1 - sum3;
-
-	printf("%lld %lld %lld %lld %lld %lld %f %f\n", sum1, sum2, sum3, diff1, diff2, diff3, ((double) diff1) / diff2, ((double) diff2) / diff1);
-
-//	if(((double) diff1) / diff2 > 1.3){//bit is 1
-//		printf("bit is 1.\n");
-//	}else if(((double) diff2) / diff1 > 1.3){//bit is 0
-//		printf("bit is 0.\n");
-//	}else{//EOB
-//		printf("end of bits.\n");
-//	}
-
-	if(diff3 > 5000){//bit is 1
-		printf("bit is 1.\n");
-	}else if(diff3 < -5000){//bit is 0
-		printf("bit is 0.\n");
-	}else{//EOB
-		printf("end of bits.\n");
+		printf("current bits: ");
+		for(int i = 0; i < known_bits_length; i++){
+			printf("%d", known_bits[known_bits_length]);
+		}
 	}
 
 	///////gmp clear
