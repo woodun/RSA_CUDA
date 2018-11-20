@@ -167,6 +167,8 @@ int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_
 		div_count++;
 	}
 
+	printf("%d\n", div_count)
+
 	return div_count;
 }
 
@@ -176,8 +178,7 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	int div_count = 0;
 
-	char test_str[1024];
-
+//	char test_str[1024];
 //	printf("mes1: ");
 //	printf("%s\n", cuda_mpz_get_str(mes1, test_str, 1024));
 //	printf("mes2: ");
@@ -641,14 +642,14 @@ int main (int argc, char *argv[]) {
 		mpz_urandomm (rand_num, rand_state, mod);
 		cuda_mpz_set_gmp(&r2, rand_num);
 
-//		char r1_str[] = "00000000167a024204f7c1bd89";
-//		cuda_mpz_set_str_host(&r1, r1_str);
-//		char r2_str[] = "0000000088133287637ebdcdb";
-//		cuda_mpz_set_str_host(&r2, r2_str);
-//
-//		char test_str[1024];
-//		printf("%s\n", cuda_mpz_get_str(&r1, test_str, 1024));
-//		printf("%s\n", cuda_mpz_get_str(&r2, test_str, 1024));
+		char r1_str[] = "00000000167a024204f7c1bd89";
+		cuda_mpz_set_str_host(&r1, r1_str);
+		char r2_str[] = "0000000088133287637ebdcdb";
+		cuda_mpz_set_str_host(&r2, r2_str);
+
+		char test_str[1024];
+		printf("%s\n", cuda_mpz_get_str(&r1, test_str, 1024));
+		printf("%s\n", cuda_mpz_get_str(&r2, test_str, 1024));
 
 		div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
 										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
@@ -673,6 +674,8 @@ int main (int argc, char *argv[]) {
 			nondiv_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
 										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
 										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+
+			break;
 		}
 		if (div_con == 3 && bothdiv_num < data_num){
 			cuda_mpz_set( &myMes1_h[bothdiv_num + data_num * 2], &r1);

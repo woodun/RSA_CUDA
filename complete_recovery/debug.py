@@ -125,6 +125,8 @@ def Exp1(mes1, mes2, e, n, n_, r2, rmod, l, check_pre, div_num): # div_num is a 
     print(s1, s2)
     if s1 != s2 :
         div_count+=1
+        
+    print(div_count)
             
     return div_count
             
@@ -365,7 +367,7 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, check_pre, div_num, d):
             print(hex(mes2))
             #break
         if div_con == 2 and nondiv_num > 0:
-            nondiv_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)
+            nondiv_sum+=Exp1(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             nondiv_num-=1
             print(2)
             print(hex(mes1))
