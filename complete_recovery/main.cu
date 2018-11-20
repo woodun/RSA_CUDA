@@ -27,6 +27,149 @@ int CheckREDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* 
 	}
 }
 
+int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_t* _x1_1, cuda_mpz_t* _x1_2, cuda_mpz_t* _x2_1, cuda_mpz_t* _x2_2,
+		cuda_mpz_t* _x1_1_temp, cuda_mpz_t* _x1_2_temp, cuda_mpz_t* _x2_1_temp, cuda_mpz_t* _x2_2_temp,
+		cuda_mpz_t* tmp_1, cuda_mpz_t* tmp_2, cuda_mpz_t* tmp2_1, cuda_mpz_t* tmp2_2, int rl, cuda_mpz_t* r2, cuda_mpz_t* n, cuda_mpz_t* n_,  cuda_mpz_t* t_1, cuda_mpz_t* t_2, long check_pre){
+
+	int div_count = 0;
+
+	//mes1 * r2
+	cuda_mpz_mult(tmp2_1, mes1, r2);
+	//mes2 * r2
+	cuda_mpz_mult(tmp2_2, mes2, r2);
+
+	//s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
+	//s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)
+	int s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
+	int s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+
+	if (s1_1 != s1_2){
+		div_count++;
+	}
+
+	//_x1_1 = REDC(rmod, n, n_, mes1 * r2, l)
+	//_x1_2 = REDC(rmod, n, n_, mes2 * r2, l)
+	cuda_mpz_set( _x1_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
+	cuda_mpz_set( _x1_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+
+	//_x2_1 = _x1_1 * _x1_1
+	//_x2_2 = _x1_2 * _x1_2
+	cuda_mpz_mult(tmp2_1, _x1_1, t_1);
+	cuda_mpz_mult(tmp2_2, _x1_2, t_2);
+
+	//s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+	//s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+	int s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
+	int s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+
+	if (s2_1 != s2_2){
+		div_count++;
+	}
+
+	//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
+	//_x2_2 = REDC(rmod, n, n_, _x2_2, l)
+	cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
+	cuda_mpz_set( _x2_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+
+	//for i in e_b[1:]:
+	for(int i = 1; i < eLength; i++){ //big endian
+
+		if(eBits[i] == 0){
+			//_x2_1 = _x1_1 * _x2_1
+			//_x2_2 = _x1_2 * _x2_2
+			cuda_mpz_mult(tmp2_1, _x1_1, _x2_1);
+			cuda_mpz_mult(tmp2_2, _x1_2, _x2_2);
+
+			//s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+			//s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+			s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
+			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+
+			if (s2_1 != s2_2){
+				div_count++;
+			}
+
+			//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
+			//_x2_2 = REDC(rmod, n, n_, _x2_2, l)
+			cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
+			cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+
+			//_x1_1 = _x1_1 * _x1_1
+			//_x1_2 = _x1_2 * _x1_2
+			cuda_mpz_set( tmp_1, _x1_1);
+			cuda_mpz_mult(tmp2_1, _x1_1, tmp_1);
+			cuda_mpz_set( tmp_2, _x1_2);
+			cuda_mpz_mult(tmp2_2, _x1_2, tmp_2);
+
+			//s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
+			//s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
+			s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
+			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+
+			if (s1_1 != s1_2){
+				div_count++;
+			}
+
+			//_x1_1 = REDC(rmod, n, n_, _x1_1, l)
+			//_x1_2 = REDC(rmod, n, n_, _x1_2, l)
+			cuda_mpz_set( _x1_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
+			cuda_mpz_set( _x1_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+		} else{
+			//_x1_1 = _x1_1 * _x2_1
+			//_x1_2 = _x1_2 * _x2_2
+			cuda_mpz_mult(tmp2_1, _x1_1, _x2_1);
+			cuda_mpz_mult(tmp2_2, _x1_2, _x2_2);
+
+			//s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
+			//s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
+			s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
+			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+
+			if (s1_1 != s1_2){
+				div_count++;
+			}
+
+			//_x1_1 = REDC(rmod, n, n_, _x1_1, l)
+			//_x1_2 = REDC(rmod, n, n_, _x1_2, l)
+			cuda_mpz_set( _x1_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
+			cuda_mpz_set( _x1_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+
+			//_x2_1 = _x2_1 * _x2_1
+			//_x2_2 = _x2_2 * _x2_2
+			cuda_mpz_set( tmp_1, _x2_1);
+			cuda_mpz_mult(tmp2_1, _x2_1, tmp_1);
+			cuda_mpz_set( tmp_2, _x2_2);
+			cuda_mpz_mult(tmp2_2, _x2_2, tmp_2);
+
+
+			//s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
+			//s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
+			s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
+			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+
+			if (s2_1 != s2_2){
+				div_count++;
+			}
+
+			//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
+			//_x2_2 = REDC(rmod, n, n_, _x2_2, l)
+			cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
+			cuda_mpz_set( _x2_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+		}
+	}
+
+    //s1 = CheckREDC(rmod,n,n_,_x1_1,l)
+    //s2 = CheckREDC(rmod,n,n_,_x1_2,l)
+	int s1 = CheckREDC(rl, n, n_, &_x1_1[j], &tmp_1[j], &t_1[j]);
+	int s2 = CheckREDC(rl, n, n_, &_x1_2[j], &tmp_2[j], &t_2[j]);
+
+	if (s1 != s2){
+		div_count++;
+	}
+
+	return div_count;
+}
+
 int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_t* _x1_1, cuda_mpz_t* _x1_2, cuda_mpz_t* _x2_1, cuda_mpz_t* _x2_2,
 		cuda_mpz_t* _x1_1_temp, cuda_mpz_t* _x1_2_temp, cuda_mpz_t* _x2_1_temp, cuda_mpz_t* _x2_2_temp,
 		cuda_mpz_t* tmp_1, cuda_mpz_t* tmp_2, cuda_mpz_t* tmp2_1, cuda_mpz_t* tmp2_2, int rl, cuda_mpz_t* r2, cuda_mpz_t* n, cuda_mpz_t* n_,  cuda_mpz_t* t_1, cuda_mpz_t* t_2, long check_pre){
@@ -414,7 +557,13 @@ int main (int argc, char *argv[]) {
 	///////gen_pairs variables
 	int	bit1_div_num = 0;
 	int nondiv_num = 0;
+	int bothdiv_num = 0;
 	int	bit0_div_num = 0;
+
+	int bit1_div_sum = 0; //0 1
+    int nondiv_sum = 0; //0 0
+    int bothdiv_sum = 0; //1 1
+    int bit0_div_sum = 0; //1 0
 
 	cuda_mpz_t r1, r2;
 	cuda_mpz_t _x1_1, _x1_2, _x2_1, _x2_2;
@@ -483,24 +632,44 @@ int main (int argc, char *argv[]) {
 				&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 
 		if (div_con == 1 && bit1_div_num < data_num){
-			cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
-			cuda_mpz_set( &myMes1_h[bit1_div_num + data_num], &r1);
-			bit1_div_num++;
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
-			cuda_mpz_set( &myMes1_h[bit1_div_num + data_num], &r2);
 			bit1_div_num++;
+			cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
+			bit1_div_num++;
+
+			bit1_div_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+							&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+							&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 		}
 		if (div_con == 2 && nondiv_num < data_num){
-			cuda_mpz_set( &myMes1_h[nondiv_num + data_num * 2], &r1);
+			cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r1);
 			nondiv_num++;
-			cuda_mpz_set( &myMes1_h[nondiv_num + data_num * 2], &r2);
+			cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r2);
 			nondiv_num++;
+
+			nondiv_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+		}
+		if (div_con == 3 && bothdiv_num < data_num){
+			cuda_mpz_set( &myMes1_h[bothdiv_num + data_num * 2], &r1);
+			bothdiv_num++;
+			cuda_mpz_set( &myMes1_h[bothdiv_num + data_num * 2], &r2);
+			bothdiv_num++;
+
+			bothdiv_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 		}
 		if (div_con == 4 && bit0_div_num < data_num){
 			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r1);
 			bit0_div_num++;
 			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r2);
 			bit0_div_num++;
+
+			bit0_div_sum+=Exp(&r1, &r2, dBits, d_bitsLength, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 		}
 //		if (div_con == 2 && nondiv_num > 0){
 //			nondiv_num--;
@@ -514,10 +683,42 @@ int main (int argc, char *argv[]) {
 //			bit0_div_num--;
 //			cuda_mpz_set( &myMes3_h[bit0_div_num], &r1);
 //		}
-		if (bit1_div_num == data_num && nondiv_num == data_num && bit0_div_num == data_num){
+		if (bit1_div_num == data_num && nondiv_num == data_num && bothdiv_num == data_num && bit0_div_num == data_num){
+
+			double sum1 = (double) bit1_div_sum / num;
+			double sum2 = (double) nondiv_sum / num;
+			double sum3 = (double) bothdiv_sum / num;
+			double sum4 = (double) bit0_div_sum / num;
+
+			print("#########################################CPU output###########################################")
+			print("%f\n", sum1)
+			print("%f\n", sum2)
+			print("%f\n", sum3)
+			print("%f\n", sum4)
+
+			double diff1 = sum1 - sum2; // close to zero means 0, greater than zero means 1
+			double diff2 = sum4 - sum2; // close to zero means 1, greater than zero means 0
+			double mean1 = (diff1 + diff2) / 2;
+			print("%f %f %f\n",diff1,diff2,mean1);
+
+			double diff3 = sum1 - sum3; // close to zero means 1, smaller than zero means 0
+			double diff4 = sum4 - sum3; // close to zero means 0, smaller than zero means 1
+			double mean2 = (diff3 + diff4) / 2;
+			print("%f %f %f\n", diff3,diff4, mean2);
+
+			double val1 = mean1 + mean2;
+			double sign1 = mean1 * mean2;
+			print("%f %f\n", val1, sign1);
+
+			double diff5 = sum1 - sum4; // greater means 1
+			double diff6 = sum3 - sum2; // must be greater
+			print("%f %f\n",diff5,diff6);
+
 			break;
 		}
 	}
+
+	exit(0);
 
 	long long int sum1 = 0;
 	long long int sum2 = 0;
