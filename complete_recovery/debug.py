@@ -352,19 +352,28 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, check_pre, div_num, d):
         if div_con == 1 and bit1_div_num > 0:
             bit1_div_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)           
             bit1_div_num-=1
+            print(1)
             print(hex(mes1))
             print(hex(mes2))
             #break
         if div_con == 2 and nondiv_num > 0:
             nondiv_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             nondiv_num-=1
+            print(2)
+            print(hex(mes1))
+            print(hex(mes2))
         if div_con == 3 and bothdiv_num > 0:
             bothdiv_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             bothdiv_num-=1
+            print(3)
+            print(hex(mes1))
+            print(hex(mes2))
         if div_con == 4 and bit0_div_num > 0:
             bit0_div_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             bit0_div_num-=1
-   
+            print(4)
+            print(hex(mes1))
+            print(hex(mes2))
         if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0 and bothdiv_num == 0: # all               
             sum1 = bit1_div_sum / num
             sum2 = nondiv_sum / num
