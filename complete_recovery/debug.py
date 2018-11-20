@@ -347,13 +347,14 @@ def FindPairs (num, mod, e, n_, r2, rmod, l, check_pre, div_num, d):
     bit0_div_num = num #1 0
     while(True):
         mes1, mes2 = random.randint(2, mod), random.randint(2, mod)
-        print(hex(mes1))
-        print(hex(mes2))
-        break
+
         div_con = CheckDivExp(mes1, mes2, e, mod, n_, r2, rmod, l, check_pre, div_num)    
         if div_con == 1 and bit1_div_num > 0:
             bit1_div_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)           
             bit1_div_num-=1
+            print(hex(mes1))
+            print(hex(mes2))
+            #break
         if div_con == 2 and nondiv_num > 0:
             nondiv_sum+=Exp(mes1, mes2, d, mod, n_, r2, rmod, l, check_pre, div_num)
             nondiv_num-=1
@@ -427,8 +428,8 @@ bit_count = 0
 key = "1011011001001001010011110110010101010111001010110101111000111100001"
 #key = "1000100010110110111110111000110000000001011000001000011010101101000101"
 # int(sys.argv[1])
-for i in range(10):    
-    FindPairs (2000, n, current_bits, n_, r2, rmod, l, 0, len(bits(current_bits) ), _d)
+for i in range(1):    
+    FindPairs (1, n, current_bits, n_, r2, rmod, l, 0, len(bits(current_bits) ), _d)
 
 
 
