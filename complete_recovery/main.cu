@@ -592,7 +592,7 @@ int main (int argc, char *argv[]) {
 	known_bits[0] = 1;
 	known_bits[1] = 0;
 	known_bits[2] = 1;
-	int known_bits_length = 2;
+	int known_bits_length = 1;
 	int div_con = 0;
 
 	///////gmp init
@@ -690,7 +690,7 @@ int main (int argc, char *argv[]) {
 			double sum3 = (double) bothdiv_sum / pairs;
 			double sum4 = (double) bit0_div_sum / pairs;
 
-			printf("#########################################CPU output###########################################");
+			printf("#########################################CPU output###########################################\n");
 			printf("%f\n", sum1);
 			printf("%f\n", sum2);
 			printf("%f\n", sum3);
