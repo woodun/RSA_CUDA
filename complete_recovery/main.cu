@@ -631,10 +631,10 @@ int main (int argc, char *argv[]) {
 	int bothdiv_num = 0;
 	int	bit0_div_num = 0;
 
-	int bit1_div_sum = 0; //0 1
-    int nondiv_sum = 0; //0 0
-    int bothdiv_sum = 0; //1 1
-    int bit0_div_sum = 0; //1 0
+//	int bit1_div_sum = 0; //0 1
+//    int nondiv_sum = 0; //0 0
+//    int bothdiv_sum = 0; //1 1
+//    int bit0_div_sum = 0; //1 0
 
 	cuda_mpz_t r1, r2;
 	cuda_mpz_t _x1_1, _x1_2, _x2_1, _x2_2;
