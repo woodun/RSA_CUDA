@@ -660,7 +660,7 @@ int main (int argc, char *argv[]) {
 
 	long check_pre = strtol(argv[2], NULL, 10);
 	int known_bits[2048];
-	known_bits[0] = 1;
+	known_bits[0] = 1;//first bit is always 1
 	//known_bits[1] = 0;
 	//known_bits[2] = 1;
 	int known_bits_length = 1;
@@ -683,6 +683,13 @@ int main (int argc, char *argv[]) {
 	//gmp_randseed_ui (rand_state, 0);
 
 	//printf("debug1\n");
+
+	printf("current bits: ");
+	for(int i = 0; i < known_bits_length; i++){
+		printf("%d", known_bits[i]);
+	}
+	printf("\n");
+
 	while(known_bits_length < total_bits_length - 1){
 
 		bit1_div_num = 0;
@@ -886,9 +893,21 @@ int main (int argc, char *argv[]) {
 
 		printf("current bits: ");
 		for(int i = 0; i < known_bits_length; i++){
-			printf("%d", known_bits[known_bits_length]);
+			printf("%d", known_bits[i]);
 		}
+		printf("\n");
 	}
+
+	known_bits[known_bits_length] = 1;//last bit is always 1
+	printf("bit is 1.\n");
+
+	known_bits_length++;
+
+	printf("current bits: ");
+	for(int i = 0; i < known_bits_length; i++){
+		printf("%d", known_bits[i]);
+	}
+	printf("\n");
 
 	///////gmp clear
 	gmp_randclear (rand_state);
