@@ -663,7 +663,7 @@ int main (int argc, char *argv[]) {
 	known_bits[0] = 1;
 	known_bits[1] = 0;
 	known_bits[2] = 1;
-	int known_bits_length = 2;
+	int known_bits_length = 1;
 	int div_con = 0;
 
 	///////gmp init
