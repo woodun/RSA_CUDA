@@ -629,8 +629,6 @@ int main (int argc, char *argv[]) {
 		printf("%s\n", cuda_mpz_get_str(&r1, test_str, 1024));
 		printf("%s\n", cuda_mpz_get_str(&r2, test_str, 1024));
 
-		break;
-
 		div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
 										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
 										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
