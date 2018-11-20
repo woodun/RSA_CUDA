@@ -142,6 +142,7 @@ def CheckDivExp(mes1, mes2, e, n, n_, rsquare, rmod, l, check_pre, div_num): # d
     _x2_2 = _x2_2 * _x2_2
     d1_s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
     
+    # we do not use (1 1)(0 0) because it's never gonna happen
     if (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2): #diverge for bit 0 (1 0) or (0 1)
         if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #diverge for bit 0, diverge for bit 1 (1 0) or (0 1)
 #             print ("debug3\n")
