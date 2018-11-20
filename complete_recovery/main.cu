@@ -85,6 +85,8 @@ int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_
 	printf("%s", cuda_mpz_get_str(_x1_2, test_str, 1024));
 	printf(" %s\n", cuda_mpz_get_str(_x2_2, test_str, 1024));
 
+	printf("%d %d %d %d\n", s1_1, s1_2, s2_1, s2_2)
+
 	//for i in e_b[1:]:
 	for(int i = 1; i < eLength; i++){ //big endian
 
@@ -177,6 +179,8 @@ int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_
 		printf("mes2: ");
 		printf("%s", cuda_mpz_get_str(_x1_2, test_str, 1024));
 		printf(" %s\n", cuda_mpz_get_str(_x2_2, test_str, 1024));
+
+		printf("%d %d %d %d\n", s1_1, s1_2, s2_1, s2_2);
 	}
 
     //s1 = CheckREDC(rmod,n,n_,_x1_1,l)
@@ -193,6 +197,8 @@ int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_
 	printf("%s\n", cuda_mpz_get_str(_x1_1, test_str, 1024));
 	printf("mes2: ");
 	printf("%s\n", cuda_mpz_get_str(_x1_2, test_str, 1024));
+
+	printf("%d %d\n", s1, s2);
 
 	if (s1 != s2){
 		div_count++;
