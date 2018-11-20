@@ -690,29 +690,29 @@ int main (int argc, char *argv[]) {
 			double sum3 = (double) bothdiv_sum / pairs;
 			double sum4 = (double) bit0_div_sum / pairs;
 
-			print("#########################################CPU output###########################################")
-			print("%f\n", sum1)
-			print("%f\n", sum2)
-			print("%f\n", sum3)
-			print("%f\n", sum4)
+			printf("#########################################CPU output###########################################");
+			printf("%f\n", sum1);
+			printf("%f\n", sum2);
+			printf("%f\n", sum3);
+			printf("%f\n", sum4);
 
 			double diff1 = sum1 - sum2; // close to zero means 0, greater than zero means 1
 			double diff2 = sum4 - sum2; // close to zero means 1, greater than zero means 0
 			double mean1 = (diff1 + diff2) / 2;
-			print("%f %f %f\n",diff1,diff2,mean1);
+			printf("%f %f %f\n",diff1,diff2,mean1);
 
 			double diff3 = sum1 - sum3; // close to zero means 1, smaller than zero means 0
 			double diff4 = sum4 - sum3; // close to zero means 0, smaller than zero means 1
 			double mean2 = (diff3 + diff4) / 2;
-			print("%f %f %f\n", diff3,diff4, mean2);
+			printf("%f %f %f\n", diff3,diff4, mean2);
 
 			double val1 = mean1 + mean2;
 			double sign1 = mean1 * mean2;
-			print("%f %f\n", val1, sign1);
+			printf("%f %f\n", val1, sign1);
 
 			double diff5 = sum1 - sum4; // greater means 1
 			double diff6 = sum3 - sum2; // must be greater
-			print("%f %f\n",diff5,diff6);
+			printf("%f %f\n",diff5,diff6);
 
 			break;
 		}
