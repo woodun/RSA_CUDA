@@ -564,17 +564,29 @@ int main (int argc, char *argv[]) {
 	int* dBits_d;
 	cudaMalloc((void **) &dBits_d, sizeof(int) * d_bitsLength);
 
-	int d_iterator = d_bitsLength - 1;
-	while ( d_iterator > 0){
-        if( d_input[d_bitsLength - 1 - d_iterator] == '1'){//little endian
+//	int d_iterator = d_bitsLength - 1;
+//	while ( d_iterator > 0){
+//        if( d_input[d_bitsLength - 1 - d_iterator] == '1'){//little endian
+//            dBits[d_iterator] = 1;
+//        }
+//        else{
+//            dBits[d_iterator] = 0;
+//        }
+//        d_iterator--;
+//	}
+//	dBits[d_iterator] = 1;
+
+	int d_iterator = 0;
+	while ( d_iterator < d_bitsLength){
+        if( d_input[d_iterator] == '1'){//little endian
             dBits[d_iterator] = 1;
         }
         else{
             dBits[d_iterator] = 0;
         }
-        d_iterator--;
+        d_iterator++;
 	}
-	dBits[d_iterator] = 1;
+
 	cudaMemcpy(dBits_d, dBits, sizeof(int) * d_bitsLength, cudaMemcpyHostToDevice);
 
 	///////device memory
