@@ -186,8 +186,8 @@ int Exp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_
 
     //_x1_1 = REDC(rmod,n,n_,_x1_1,l)
     //_x1_2 = REDC(rmod,n,n_,_x1_2,l)
-	cuda_mpz_set( &_x1_1, REDC(rl, n, n_, &_x1_1, &tmp_1, &t_1) );
-	cuda_mpz_set( &_x1_2, REDC(rl, n, n_, &_x1_2, &tmp_2, &t_2) );
+	cuda_mpz_set( _x1_1, REDC(rl, n, n_, _x1_1, tmp_1, t_1) );
+	cuda_mpz_set( _x1_2, REDC(rl, n, n_, _x1_2, tmp_2, t_2) );
 
 	printf("mes1: ");
 	printf("%s\n", cuda_mpz_get_str(_x1_1, test_str, 1024));
