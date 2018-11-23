@@ -428,7 +428,6 @@ int main (int argc, char *argv[]) {
 	//known_bits[1] = 0;
 	//known_bits[2] = 1;
 	int known_bits_length = 1;
-	int total_bits_length = 67;
 	//int total_bits_length = 3;
 	int div_con = 0;
 
@@ -455,7 +454,7 @@ int main (int argc, char *argv[]) {
 	}
 	printf("\n");
 
-	while(known_bits_length < total_bits_length - 1){
+	while(known_bits_length < d_bitsLength - 1){
 
 		bit1_div_num = 0;
 		nondiv_num = 0;
