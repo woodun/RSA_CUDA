@@ -308,8 +308,8 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_set_str_host(&h_r2, r2_input);
 
 	///////get e
-	//char e_input[] = "101";
-	char e_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
+	char e_input[] = "101";
+	//char e_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
 
 	int e_bitsLength = (int)strlen(e_input);
 	int* eBits = (int *) malloc(sizeof(int) * e_bitsLength);
@@ -331,9 +331,9 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(eBits_d, eBits, sizeof(int) * e_bitsLength, cudaMemcpyHostToDevice);
 
 	///////get d
-	//char d_input[] = "1011011001001001010011110110010101010111001010110101111000111100001"; //big endian
-	//char d_input[] = "1000100010110110111110111000110000000001011000001000011010101101000101"; //big endian
-	char d_input[] = "101";
+	//char d_input[] = "1011011001001001010011110110010101010111001010110101111000111100001"; //big endian 67 bits
+	char d_input[] = "1000100010110110111110111000110000000001011000001000011010101101000101"; //big endian 70 bits
+	//char d_input[] = "101";
 
 	int d_bitsLength = (int)strlen(d_input);
 
@@ -429,6 +429,7 @@ int main (int argc, char *argv[]) {
 	//known_bits[2] = 1;
 	int known_bits_length = 1;
 	int total_bits_length = 67;
+	//int total_bits_length = 3;
 	int div_con = 0;
 
 	///////gmp init
@@ -564,18 +565,20 @@ int main (int argc, char *argv[]) {
 			printf("%d", known_bits[i]);
 		}
 		printf("\n");
+
+		break;
 	}
 
-	known_bits[known_bits_length] = 1;//last bit is always 1
-	printf("bit is 1.\n");
-
-	known_bits_length++;
-
-	printf("current bits: ");
-	for(int i = 0; i < known_bits_length; i++){
-		printf("%d", known_bits[i]);
-	}
-	printf("\n");
+//	known_bits[known_bits_length] = 1;//last bit is always 1
+//	printf("bit is 1.\n");
+//
+//	known_bits_length++;
+//
+//	printf("current bits: ");
+//	for(int i = 0; i < known_bits_length; i++){
+//		printf("%d", known_bits[i]);
+//	}
+//	printf("\n");
 
 	///////gmp clear
 	gmp_randclear (rand_state);

@@ -108,7 +108,7 @@ __device__ __host__ inline void cuda_mpz_init(cuda_mpz_t *cuda_mpz) {
 __device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
   unsigned i;
 
-  #pragma unroll//changes
+  //#pragma unroll//changes
   for (i = 0; i < DIGITS_CAPACITY; i++) {// changes
     digit_t d = (i < DIGITS_CAPACITY) ? from->digits[i] : 0;//changes
     to->digits[i] = d;
