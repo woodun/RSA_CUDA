@@ -518,7 +518,7 @@ int main (int argc, char *argv[]) {
 
 		struct timespec ts2;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
-		printf("%llu ", time_diff(ts1, ts2));/////////////////////////////////time
+		printf("%llu\n", time_diff(ts1, ts2));/////////////////////////////////time
 
 		cudaMemcpy(clockTable_h, clockTable_d, 4 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 
