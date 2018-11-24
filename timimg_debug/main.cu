@@ -6,8 +6,10 @@
 #include "cuda_mpz.h"
 #include <gmp.h>
 
+#define RL 70
+
 //nvprof --print-gpu-trace --log-file prof1.txt ./main 1000 1 > nvprof.txt
-int CheckREDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){
+int CheckREDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){
 
 	//m = ((T & R) * N_) & R
 	cuda_mpz_bitwise_truncate(t, T, RL);
@@ -29,7 +31,7 @@ int CheckREDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* 
 
 int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_t* _x1_1, cuda_mpz_t* _x1_2, cuda_mpz_t* _x2_1, cuda_mpz_t* _x2_2,
 		cuda_mpz_t* _x1_1_temp, cuda_mpz_t* _x1_2_temp, cuda_mpz_t* _x2_1_temp, cuda_mpz_t* _x2_2_temp,
-		cuda_mpz_t* tmp_1, cuda_mpz_t* tmp_2, cuda_mpz_t* tmp2_1, cuda_mpz_t* tmp2_2, int rl, cuda_mpz_t* r2, cuda_mpz_t* n, cuda_mpz_t* n_,  cuda_mpz_t* t_1, cuda_mpz_t* t_2, long check_pre){
+		cuda_mpz_t* tmp_1, cuda_mpz_t* tmp_2, cuda_mpz_t* tmp2_1, cuda_mpz_t* tmp2_2, cuda_mpz_t* r2, cuda_mpz_t* n, cuda_mpz_t* n_,  cuda_mpz_t* t_1, cuda_mpz_t* t_2, long check_pre){
 
 	int div_count = 0;
 
@@ -40,8 +42,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	//s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
 	//s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)
-	int s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
-	int s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+	int s1_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
+	int s1_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 
 	if (s1_1 != s1_2){
 		div_count++;
@@ -49,8 +51,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	//_x1_1 = REDC(rmod, n, n_, mes1 * r2, l)
 	//_x1_2 = REDC(rmod, n, n_, mes2 * r2, l)
-	cuda_mpz_set( _x1_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
-	cuda_mpz_set( _x1_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+	cuda_mpz_set( _x1_1, REDC( n, n_, tmp2_1, tmp_1, t_1) );
+	cuda_mpz_set( _x1_2, REDC( n, n_, tmp2_2, tmp_2, t_2) );
 
 	//_x2_1 = _x1_1 * _x1_1
 	//_x2_2 = _x1_2 * _x1_2
@@ -59,8 +61,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	//s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
 	//s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
-	int s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
-	int s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+	int s2_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
+	int s2_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 
 	if (s2_1 != s2_2){
 		div_count++;
@@ -68,8 +70,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
 	//_x2_2 = REDC(rmod, n, n_, _x2_2, l)
-	cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
-	cuda_mpz_set( _x2_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+	cuda_mpz_set( _x2_1, REDC( n, n_, tmp2_1, tmp_1, t_1) );
+	cuda_mpz_set( _x2_2, REDC( n, n_, tmp2_2, tmp_2, t_2) );
 
 	//for i in e_b[1:]:
 	for(int i = 1; i < eLength; i++){ //big endian
@@ -82,8 +84,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 			//s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
 			//s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
-			s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
-			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+			s2_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
+			s2_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 
 			if (s2_1 != s2_2){
 //				return 0;
@@ -92,8 +94,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 			//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
 			//_x2_2 = REDC(rmod, n, n_, _x2_2, l)
-			cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
-			cuda_mpz_set( _x2_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+			cuda_mpz_set( _x2_1, REDC( n, n_, tmp2_1, tmp_1, t_1) );
+			cuda_mpz_set( _x2_2, REDC( n, n_, tmp2_2, tmp_2, t_2) );
 
 			//_x1_1 = _x1_1 * _x1_1
 			//_x1_2 = _x1_2 * _x1_2
@@ -104,8 +106,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 			//s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
 			//s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
-			s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
-			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+			s1_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
+			s1_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 
 			if (s1_1 != s1_2){
 //				return 0;
@@ -114,8 +116,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 			//_x1_1 = REDC(rmod, n, n_, _x1_1, l)
 			//_x1_2 = REDC(rmod, n, n_, _x1_2, l)
-			cuda_mpz_set( _x1_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
-			cuda_mpz_set( _x1_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+			cuda_mpz_set( _x1_1, REDC( n, n_, tmp2_1, tmp_1, t_1) );
+			cuda_mpz_set( _x1_2, REDC( n, n_, tmp2_2, tmp_2, t_2) );
 		} else{
 			//_x1_1 = _x1_1 * _x2_1
 			//_x1_2 = _x1_2 * _x2_2
@@ -124,8 +126,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 			//s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
 			//s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
-			s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
-			s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+			s1_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
+			s1_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 
 			if (s1_1 != s1_2){
 //				return 0;
@@ -134,8 +136,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 			//_x1_1 = REDC(rmod, n, n_, _x1_1, l)
 			//_x1_2 = REDC(rmod, n, n_, _x1_2, l)
-			cuda_mpz_set( _x1_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
-			cuda_mpz_set( _x1_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+			cuda_mpz_set( _x1_1, REDC( n, n_, tmp2_1, tmp_1, t_1) );
+			cuda_mpz_set( _x1_2, REDC( n, n_, tmp2_2, tmp_2, t_2) );
 
 			//_x2_1 = _x2_1 * _x2_1
 			//_x2_2 = _x2_2 * _x2_2
@@ -147,8 +149,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 			//s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
 			//s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
-			s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
-			s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+			s2_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
+			s2_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 
 			if (s2_1 != s2_2){
 //				return 0;
@@ -157,8 +159,8 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 			//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
 			//_x2_2 = REDC(rmod, n, n_, _x2_2, l)
-			cuda_mpz_set( _x2_1, REDC(rl, n, n_, tmp2_1, tmp_1, t_1) );
-			cuda_mpz_set( _x2_2, REDC(rl, n, n_, tmp2_2, tmp_2, t_2) );
+			cuda_mpz_set( _x2_1, REDC( n, n_, tmp2_1, tmp_1, t_1) );
+			cuda_mpz_set( _x2_2, REDC( n, n_, tmp2_2, tmp_2, t_2) );
 		}
 	}
 
@@ -179,22 +181,22 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	//_x2_1 = _x1_1 * _x2_1
 	cuda_mpz_mult(tmp2_1, _x1_1, _x2_1);
 	//d0_s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
-	int d0_s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
+	int d0_s2_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
 	//_x1_1 = _x1_1 * _x1_1
 	cuda_mpz_set( tmp_1, _x1_1);
 	cuda_mpz_mult(tmp2_1, _x1_1, tmp_1);
 	//d0_s1_1 = CheckREDC(rmod, n, n_, _x1_1 ,l)
-	int d0_s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
+	int d0_s1_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
 
 	//_x2_2 = _x1_2 * _x2_2
 	cuda_mpz_mult(tmp2_2, _x1_2, _x2_2);
 	//d0_s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
-	int d0_s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+	int d0_s2_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 	//_x1_2 = _x1_2 * _x1_2
 	cuda_mpz_set( tmp_2, _x1_2);
 	cuda_mpz_mult(tmp2_2, _x1_2, tmp_2);
 	//d0_s1_2 = CheckREDC(rmod, n, n_, _x1_2 ,l)
-	int d0_s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+	int d0_s1_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 
 	//simulate exp bit 1
 	//_x1_1 = _x1_1_temp
@@ -209,22 +211,22 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	//_x1_1 = _x1_1 * _x2_1
 	cuda_mpz_mult(tmp2_1, _x1_1, _x2_1);
 	//d1_s1_1 = CheckREDC(rmod, n, n_, _x1_1, l)
-	int d1_s1_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
+	int d1_s1_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
 	//_x2_1 = _x2_1 * _x2_1
 	cuda_mpz_set( tmp_1, _x2_1);
 	cuda_mpz_mult(tmp2_1, _x2_1, tmp_1);
 	//d1_s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
-	int d1_s2_1 = CheckREDC(rl, n, n_, tmp2_1, tmp_1, t_1);
+	int d1_s2_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
 
 	//_x1_2 = _x1_2 * _x2_2
 	cuda_mpz_mult(tmp2_2, _x1_2, _x2_2);
 	//d1_s1_2 = CheckREDC(rmod, n, n_, _x1_2, l)
-	int d1_s1_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+	int d1_s1_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 	//_x2_2 = _x2_2 * _x2_2
 	cuda_mpz_set( tmp_2, _x2_2);
 	cuda_mpz_mult(tmp2_2, _x2_2, tmp_2);
 	//d1_s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
-	int d1_s2_2 = CheckREDC(rl, n, n_, tmp2_2, tmp_2, t_2);
+	int d1_s2_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 
 	if ( (d0_s1_1 != d0_s1_2 && d0_s2_1 == d0_s2_2) || (d0_s1_1 == d0_s1_2 && d0_s2_1 != d0_s2_2) ){ //diverge for bit 0 (1 0) or (0 1)
 		if ( (d1_s1_1 != d1_s1_2 && d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 && d1_s2_1 != d1_s2_2) ){ //diverge for bit 0, diverge for bit 1 (1 0) or (0 1)
@@ -289,7 +291,7 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_t h_n;
 	cuda_mpz_t h_n_;
 	cuda_mpz_t h_r2;
-	int rl = 70;
+//	int rl = 70;
 
 //	cuda_mpz_init(&h_n);
 //	cuda_mpz_init(&h_n_);
@@ -470,7 +472,7 @@ int main (int argc, char *argv[]) {
 
 			div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
 											&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-											&tmp_1, &tmp_2, &tmp2_1, &tmp2_2, rl, &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+											&tmp_1, &tmp_2, &tmp2_1, &tmp2_2,  &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 
 			if (div_con == 1 && bit1_div_num < data_num){
 				cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
@@ -512,7 +514,7 @@ int main (int argc, char *argv[]) {
 		struct timespec ts1;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
 
-		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs * 4, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d);/////////////////////////////////////////kernel
+		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs * 4, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d);/////////////////////////////////////////kernel
 		cudaDeviceSynchronize();
 
 		struct timespec ts2;/////////////////////////////////time
