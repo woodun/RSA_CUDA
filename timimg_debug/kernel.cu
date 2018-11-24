@@ -35,7 +35,7 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 	__shared__ cuda_mpz_t _x1[2];
 	__shared__ cuda_mpz_t _x2[2];
 
-	//__shared__ digit_t s_index[32];
+	__shared__ digit_t s_index[32];
 
 	long long int t1, t2;
 	long long int sum1 = 0;
@@ -50,12 +50,11 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 	for(long long unsigned iter1 = 0; iter1 < pairs * 4; ++iter1){
 
 		cuda_mpz_set(&_x1[k], &mes1[2 * iter1 + k]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
-		//s_index[k] = cuda_mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 
+		s_index[k] = cuda_mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 		t1 = clock64();//beginning of necessary instructions within the kernel
 
 		int j = blockIdx.x * blockDim.x + threadIdx.x;
-
 
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
 		cuda_mpz_mult(&tmp2[j], &_x1[j], &r2);
@@ -125,8 +124,7 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 		//_x1 = REDC(rmod,n,n_,_x1,l)
 		cuda_mpz_set( &_x1[j], REDC(n, n_, &_x1[j], &tmp[j], &t[j]) );
 
-		//s_index[k] = cuda_mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
-
+		s_index[k] = cuda_mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 		t2 = clock64();//end of necessary kernel instructions
 
 //		printf("combo_num: %lld, iter1: %u, iter2: %u\n", combo_num, iter1, iter2);
