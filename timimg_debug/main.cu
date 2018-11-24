@@ -589,11 +589,11 @@ int main (int argc, char *argv[]) {
 	cudaFree(eBits_d);
 	cudaFree(dBits_d);
 	cudaFree(myMes1_d);
-	cudaFree(tmp);
-	cudaFree(tmp2);
-	cudaFree(d_t);
-	cudaFree(_x1_cuda_mpz);
-	cudaFree(_x2_cuda_mpz);
+//	cudaFree(tmp);
+//	cudaFree(tmp2);
+//	cudaFree(d_t);
+//	cudaFree(_x1_cuda_mpz);
+//	cudaFree(_x2_cuda_mpz);
 
 	////////free host
 	free(clockTable_h);
