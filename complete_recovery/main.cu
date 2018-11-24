@@ -576,7 +576,7 @@ int main (int argc, char *argv[]) {
 
 //	int d_iterator = 0;
 //	while ( d_iterator < d_bitsLength){
-//        if( d_input[d_iterator] == '1'){//little endian
+//        if( d_input[d_iterator] == '1'){//big endian
 //            dBits[d_iterator] = 1;
 //        }
 //        else{
