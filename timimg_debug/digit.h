@@ -17,7 +17,7 @@
 #define DIGITS_CAPACITY     8 //changes: make enough space for large input
 #define MOD_LOG2_DIGIT_BASE     31 //changes
 #define LOG2_LOG2_DIGIT_BASE 5 //changes
-#define HALF_DIGITS_CAPACITY     4 //changes: make enough space for large input
+#define RL 70
 
 typedef unsigned digit_t;
 

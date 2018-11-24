@@ -11,14 +11,14 @@
 int CheckREDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){
 
 	//m = ((T & R) * N_) & R
-	cuda_mpz_bitwise_truncate(t, T, RL);
+	cuda_mpz_bitwise_truncate(t, T);
 	cuda_mpz_mult(tmp, N_, t);
-	cuda_mpz_bitwise_truncate_eq(tmp, RL);
+	cuda_mpz_bitwise_truncate_eq(tmp);
 
 	//t = (T + m*N) >> L
 	cuda_mpz_mult(t, tmp , N);
 	cuda_mpz_add(tmp, T, t);
-	cuda_mpz_bitwise_rshift(t, tmp, RL);
+	cuda_mpz_bitwise_rshift(t, tmp);
 
 	if (cuda_mpz_gte(t , N)){
 		return 1;

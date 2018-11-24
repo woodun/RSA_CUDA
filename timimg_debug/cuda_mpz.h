@@ -109,7 +109,7 @@ __device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
   unsigned i;
 
   #pragma unroll
-  for (i = 0; i < HALF_DIGITS_CAPACITY; i++) {// changes
+  for (i = 0; i < DIGITS_CAPACITY; i++) {// changes
 //    digit_t d = (i < DIGITS_CAPACITY) ? from->digits[i] : 0;//changes
 //    to->digits[i] = d;
     to->digits[i] = from->digits[i];
@@ -326,9 +326,9 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 
   /* If both are negative, treate them as positive and negate the result */
   if (cuda_mpz_is_negative(op1) && cuda_mpz_is_negative(op2)) {
-    digits_add(dst->digits, HALF_DIGITS_CAPACITY,
-               op1->digits, HALF_DIGITS_CAPACITY,
-               op2->digits, HALF_DIGITS_CAPACITY);//changes ////todo: using real length here?
+    digits_add(dst->digits, DIGITS_CAPACITY,
+               op1->digits, DIGITS_CAPACITY,
+               op2->digits, DIGITS_CAPACITY);//changes ////todo: using real length here?
     dst->sign = MPZ_NEGATIVE;
   }
   /* one or neither are negative */
@@ -339,9 +339,9 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
     if (cuda_mpz_is_negative(op1)) digits_complement(op1->digits, DIGITS_CAPACITY);
     if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, DIGITS_CAPACITY); // changes
 
-    carry_out = digits_add(dst->digits, HALF_DIGITS_CAPACITY,
-                           op1->digits, HALF_DIGITS_CAPACITY,
-                           op2->digits, HALF_DIGITS_CAPACITY); // changes
+    carry_out = digits_add(dst->digits, DIGITS_CAPACITY,
+                           op1->digits, DIGITS_CAPACITY,
+                           op2->digits, DIGITS_CAPACITY); // changes
 
     /* If there is no carryout, the result is negative */
     if (carry_out == 0 && (cuda_mpz_is_negative(op1) || cuda_mpz_is_negative(op2))) {
@@ -383,14 +383,14 @@ __device__ __host__ inline void cuda_mpz_bitwise_and(cuda_mpz_t *dst, cuda_mpz_t
   digits_bitwise_and(dst->digits, DIGITS_CAPACITY, op1->digits, DIGITS_CAPACITY, op2->digits, DIGITS_CAPACITY);
 }
 
-__device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_mpz_t *src, int n_bits) {//changes
+__device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_mpz_t *src) {//changes
   digit_t *src_digits = src->digits;
   digit_t *dst_digits = dst->digits;
   //unsigned capacity = src->capacity;
 
-  int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
+  int rs_digits = RL >> LOG2_LOG2_DIGIT_BASE;
   //int ls_digits = capacity - rs_digits - 1;
-  int ls_remainder = LOG2_DIGIT_BASE - ( n_bits & MOD_LOG2_DIGIT_BASE );
+  int ls_remainder = LOG2_DIGIT_BASE - ( RL & MOD_LOG2_DIGIT_BASE );
   //int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
 
   /*
@@ -418,13 +418,13 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
   }
 }
 
-__device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mpz, int n_bits) {//changes
+__device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mpz) {//changes
   digit_t *digits = cuda_mpz->digits;
   //unsigned capacity = cuda_mpz->capacity;
 
-  int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
+  int rs_digits = RL >> LOG2_LOG2_DIGIT_BASE;
   //int ls_digits = capacity - rs_digits - 1;
-  int ls_remainder = LOG2_DIGIT_BASE - ( n_bits & MOD_LOG2_DIGIT_BASE );
+  int ls_remainder = LOG2_DIGIT_BASE - ( RL & MOD_LOG2_DIGIT_BASE );
   //int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
 
   /*
@@ -449,8 +449,8 @@ __device__ __host__ inline void cuda_mpz_addeq(cuda_mpz_t *op1, cuda_mpz_t *op2)
 
   /* If both are negative, treate them as positive and negate the result */
   if (cuda_mpz_is_negative(op1) && cuda_mpz_is_negative(op2)) {
-    digits_addeq(op1->digits,HALF_DIGITS_CAPACITY,
-               op2->digits, HALF_DIGITS_CAPACITY);
+    digits_addeq(op1->digits,DIGITS_CAPACITY,
+               op2->digits, DIGITS_CAPACITY);
     op1->sign = MPZ_NEGATIVE;
   }
   /* one or neither are negative */
@@ -461,8 +461,8 @@ __device__ __host__ inline void cuda_mpz_addeq(cuda_mpz_t *op1, cuda_mpz_t *op2)
     if (cuda_mpz_is_negative(op1)) digits_complement(op1->digits, DIGITS_CAPACITY);
     if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, DIGITS_CAPACITY);
 
-    carry_out = digits_addeq(op1->digits, HALF_DIGITS_CAPACITY,
-                             op2->digits, HALF_DIGITS_CAPACITY);
+    carry_out = digits_addeq(op1->digits, DIGITS_CAPACITY,
+                             op2->digits, DIGITS_CAPACITY);
 
     /* If there is no carryout, the result is negative */
     if (carry_out == 0 && (cuda_mpz_is_negative(op1) || cuda_mpz_is_negative(op2))) {
@@ -712,12 +712,12 @@ __device__ __host__ inline void cuda_mpz_bit_rshift(cuda_mpz_t *cuda_mpz, int n_
   for(int i=0;i<n_bits;i++) bits_rshift(cuda_mpz->digits, DIGITS_CAPACITY);
 }
 
-__device__ __host__ inline void cuda_mpz_bitwise_rshift_eq(cuda_mpz_t *cuda_mpz, int n_bits) {//changes
+__device__ __host__ inline void cuda_mpz_bitwise_rshift_eq(cuda_mpz_t *cuda_mpz) {//changes
   digit_t *digits = cuda_mpz->digits;
   //unsigned capacity = cuda_mpz->capacity;
 
-  int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
-  int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
+  int rs_digits = RL >> LOG2_LOG2_DIGIT_BASE;
+  int rs_remainder = RL & MOD_LOG2_DIGIT_BASE;
 
   /*
   if(rs_digits >= capacity - 1){//this will not happen in the rsa, but in the general case should be added.
@@ -741,13 +741,13 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift_eq(cuda_mpz_t *cuda_mpz,
   }
 }
 
-__device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mpz_t *src, int n_bits) {//changes
+__device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mpz_t *src) {//changes
   digit_t *src_digits = src->digits;
   digit_t *dst_digits = dst->digits;
   //unsigned capacity = src->capacity;
 
-  int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
-  int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
+  int rs_digits = RL >> LOG2_LOG2_DIGIT_BASE;
+  int rs_remainder = RL & MOD_LOG2_DIGIT_BASE;
 
   /*
   if(rs_digits >= capacity - 1){//this will not happen in the rsa, but in the general case should be added.
