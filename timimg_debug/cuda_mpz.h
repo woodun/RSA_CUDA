@@ -109,9 +109,10 @@ __device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
   unsigned i;
 
   #pragma unroll
-  for (i = 0; i < DIGITS_CAPACITY; i++) {// changes
-    digit_t d = (i < DIGITS_CAPACITY) ? from->digits[i] : 0;//changes
-    to->digits[i] = d;
+  for (i = 0; i < HALF_DIGITS_CAPACITY; i++) {// changes
+//    digit_t d = (i < DIGITS_CAPACITY) ? from->digits[i] : 0;//changes
+//    to->digits[i] = d;
+    to->digits[i] = from->digits[i];
   }
 
   to->sign = from->sign;
@@ -325,9 +326,9 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 
   /* If both are negative, treate them as positive and negate the result */
   if (cuda_mpz_is_negative(op1) && cuda_mpz_is_negative(op2)) {
-    digits_add(dst->digits, DIGITS_CAPACITY,
-               op1->digits, DIGITS_CAPACITY,
-               op2->digits, DIGITS_CAPACITY);//changes ////todo: using real length here?
+    digits_add(dst->digits, HALF_DIGITS_CAPACITY,
+               op1->digits, HALF_DIGITS_CAPACITY,
+               op2->digits, HALF_DIGITS_CAPACITY);//changes ////todo: using real length here?
     dst->sign = MPZ_NEGATIVE;
   }
   /* one or neither are negative */
@@ -338,9 +339,9 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
     if (cuda_mpz_is_negative(op1)) digits_complement(op1->digits, DIGITS_CAPACITY);
     if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, DIGITS_CAPACITY); // changes
 
-    carry_out = digits_add(dst->digits, DIGITS_CAPACITY,
-                           op1->digits, DIGITS_CAPACITY,
-                           op2->digits, DIGITS_CAPACITY); // changes
+    carry_out = digits_add(dst->digits, HALF_DIGITS_CAPACITY,
+                           op1->digits, HALF_DIGITS_CAPACITY,
+                           op2->digits, HALF_DIGITS_CAPACITY); // changes
 
     /* If there is no carryout, the result is negative */
     if (carry_out == 0 && (cuda_mpz_is_negative(op1) || cuda_mpz_is_negative(op2))) {
@@ -448,8 +449,8 @@ __device__ __host__ inline void cuda_mpz_addeq(cuda_mpz_t *op1, cuda_mpz_t *op2)
 
   /* If both are negative, treate them as positive and negate the result */
   if (cuda_mpz_is_negative(op1) && cuda_mpz_is_negative(op2)) {
-    digits_addeq(op1->digits,DIGITS_CAPACITY,
-               op2->digits, DIGITS_CAPACITY);
+    digits_addeq(op1->digits,HALF_DIGITS_CAPACITY,
+               op2->digits, HALF_DIGITS_CAPACITY);
     op1->sign = MPZ_NEGATIVE;
   }
   /* one or neither are negative */
@@ -460,8 +461,8 @@ __device__ __host__ inline void cuda_mpz_addeq(cuda_mpz_t *op1, cuda_mpz_t *op2)
     if (cuda_mpz_is_negative(op1)) digits_complement(op1->digits, DIGITS_CAPACITY);
     if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, DIGITS_CAPACITY);
 
-    carry_out = digits_addeq(op1->digits, DIGITS_CAPACITY,
-                             op2->digits, DIGITS_CAPACITY);
+    carry_out = digits_addeq(op1->digits, HALF_DIGITS_CAPACITY,
+                             op2->digits, HALF_DIGITS_CAPACITY);
 
     /* If there is no carryout, the result is negative */
     if (carry_out == 0 && (cuda_mpz_is_negative(op1) || cuda_mpz_is_negative(op2))) {

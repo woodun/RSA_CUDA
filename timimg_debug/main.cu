@@ -270,7 +270,7 @@ long long unsigned time_diff(timespec start, timespec end){
 	return time_interval_s + time_interval_ns;
 }
 
-//L1 enabled. (-keep -Xptxas -dlcm=ca --optimize 0)  ///enable optimization, enable unroll, add bit length in mpz (only for bit changing ops, others use constant iterations and unroll), use shared memory for everything (meanwhile avoid intialization)?
+//L1 enabled. (-keep -Xptxas -dlcm=ca --optimize 0)
 int main (int argc, char *argv[]) {
 
 	///////input control
