@@ -27,7 +27,13 @@ __device__ __host__ cuda_mpz_t* REDC(int RL, cuda_mpz_t* N, cuda_mpz_t* N_, cuda
 	}
 }
 
-__global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t* _x1, cuda_mpz_t* _x2, cuda_mpz_t* tmp, cuda_mpz_t* tmp2, int rl, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength, long long int* clockTable, cuda_mpz_t* t) {
+__global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, int rl, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength, long long int* clockTable) {
+
+	__shared__ cuda_mpz_t tmp[2];
+	__shared__ cuda_mpz_t tmp2[2];
+	__shared__ cuda_mpz_t t[2];
+	__shared__ cuda_mpz_t _x1[2];
+	__shared__ cuda_mpz_t _x2[2];
 
 	__shared__ digit_t s_index[32];
 

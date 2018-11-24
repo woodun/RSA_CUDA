@@ -360,17 +360,17 @@ int main (int argc, char *argv[]) {
 	unsigned varSize = sizeof(cuda_mpz_t) * thread_num;
 
 	long long int *clockTable_d;
-	cuda_mpz_t *tmp;
-	cuda_mpz_t *tmp2;
-	cuda_mpz_t *d_t;
-	cuda_mpz_t *_x1_cuda_mpz;
-	cuda_mpz_t *_x2_cuda_mpz;
+//	cuda_mpz_t *tmp;
+//	cuda_mpz_t *tmp2;
+//	cuda_mpz_t *d_t;
+//	cuda_mpz_t *_x1_cuda_mpz;
+//	cuda_mpz_t *_x2_cuda_mpz;
 	cudaMalloc((void **) &clockTable_d, 4 * pairs * sizeof(long long int));
-	cudaMalloc((void **) &tmp, varSize);
-	cudaMalloc((void **) &tmp2, varSize);
-	cudaMalloc((void **) &d_t, varSize);
-	cudaMalloc((void **) &_x2_cuda_mpz, varSize);
-	cudaMalloc((void **) &_x1_cuda_mpz, varSize);
+//	cudaMalloc((void **) &tmp, varSize);
+//	cudaMalloc((void **) &tmp2, varSize);
+//	cudaMalloc((void **) &d_t, varSize);
+//	cudaMalloc((void **) &_x2_cuda_mpz, varSize);
+//	cudaMalloc((void **) &_x1_cuda_mpz, varSize);
 
 	////////////////////////////////////////////////////////////////initialize
 	//init<<<1, thread_num>>>(_x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, d_t);
