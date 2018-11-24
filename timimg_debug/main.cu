@@ -544,10 +544,10 @@ int main (int argc, char *argv[]) {
 
 		printf("%lld %lld %lld %lld %lld %lld %f %f\n", sum1, sum2, sum3, diff1, diff2, diff3, ((double) diff1) / diff2, ((double) diff2) / diff1);
 
-		if(diff3 > 5000){//bit is 1
+		if(diff3 > 2000){//bit is 1
 			known_bits[known_bits_length] = 1;
 			printf("bit is 1.\n");
-		}else if(diff3 < -5000){//bit is 0
+		}else if(diff3 < -2000){//bit is 0
 
 			known_bits[known_bits_length] = 0;
 			printf("bit is 0.\n");
