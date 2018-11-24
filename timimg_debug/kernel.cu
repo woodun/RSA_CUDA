@@ -29,17 +29,11 @@ __device__ __host__ inline cuda_mpz_t* REDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_
 
 __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength, long long int* clockTable) {
 
-//	__shared__ cuda_mpz_t tmp[2];
-//	__shared__ cuda_mpz_t tmp2[2];
-//	__shared__ cuda_mpz_t t[2];
-//	__shared__ cuda_mpz_t _x1[2];
-//	__shared__ cuda_mpz_t _x2[2];
-
-	cuda_mpz_t tmp;
-	cuda_mpz_t tmp2;
-	cuda_mpz_t t;
-	cuda_mpz_t _x1;
-	cuda_mpz_t _x2;
+	__shared__ cuda_mpz_t tmp[2];
+	__shared__ cuda_mpz_t tmp2[2];
+	__shared__ cuda_mpz_t t[2];
+	__shared__ cuda_mpz_t _x1[2];
+	__shared__ cuda_mpz_t _x2[2];
 
 	__shared__ digit_t s_index[32];
 
@@ -55,48 +49,48 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
 	for(long long unsigned iter1 = 0; iter1 < pairs * 4; ++iter1){
 
-		cuda_mpz_set(&_x1, &mes1[2 * iter1 + k]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
+		cuda_mpz_set(&_x1[k], &mes1[2 * iter1 + k]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 
-		s_index[k] = cuda_mpz_get_last_digit(&_x1);//make a dependency to make sure previous store is finished.
+		s_index[k] = cuda_mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 		t1 = clock64();//beginning of necessary instructions within the kernel
 
 		int j = blockIdx.x * blockDim.x + threadIdx.x;
 
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
-		cuda_mpz_mult(&tmp2, &_x1, &r2);
-		cuda_mpz_set( &_x1, REDC(n, n_, &tmp2, &tmp, &t) );
+		cuda_mpz_mult(&tmp2[j], &_x1[j], &r2);
+		cuda_mpz_set( &_x1[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
-//		s_index[k] = cuda_mpz_get_last_digit(&_x1);//make a dependency to make sure previous store is finished.
+//		s_index[k] = cuda_mpz_get_last_digit(&_x1[j]);//make a dependency to make sure previous store is finished.
 //		t3 = clock64();//beginning of necessary instructions within the kernel
 
 		//x2 = _x1 * _x1
-		cuda_mpz_mult(&tmp2, &_x1, &t);
+		cuda_mpz_mult(&tmp2[j], &_x1[j], &t[j]);
 
-//		s_index[k] = cuda_mpz_get_last_digit(&tmp2);//make a dependency to make sure previous store is finished.
+//		s_index[k] = cuda_mpz_get_last_digit(&tmp2[j]);//make a dependency to make sure previous store is finished.
 //		t4 = clock64();//beginning of necessary instructions within the kernel
 //		printf("%lld\n", t4 - t3);
 
 		//_x2 = REDC(rmod,n,n_,_x2,l)
-		cuda_mpz_set( &_x2, REDC(n, n_, &tmp2, &tmp, &t) );
+		cuda_mpz_set( &_x2[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
 
-//		s_index[k] = cuda_mpz_get_last_digit(&tmp2);//make a dependency to make sure previous store is finished.
+//		s_index[k] = cuda_mpz_get_last_digit(&tmp2[j]);//make a dependency to make sure previous store is finished.
 //		t3 = clock64();//beginning of necessary instructions within the kernel
 //
-//		REDC(n, n_, &tmp2, &tmp, &t);
+//		REDC(n, n_, &tmp2[j], &tmp[j], &t[j]);
 //
-//		s_index[k] = cuda_mpz_get_last_digit(&t);//make a dependency to make sure previous store is finished.
+//		s_index[k] = cuda_mpz_get_last_digit(&t[j]);//make a dependency to make sure previous store is finished.
 //		t4 = clock64();//beginning of necessary instructions within the kernel
 //		printf("%lld\n", t4 - t3);
 //
-//		cuda_mpz_set( &_x2,  &t);
+//		cuda_mpz_set( &_x2[j],  &t[j]);
 
 		//printf("debug4\n");
 
 //		if(j == 0){
-//			cuda_mpz_print_str_device(&_x1);
+//			cuda_mpz_print_str_device(&_x1[j]);
 //			printf(" ");
-//			cuda_mpz_print_str_device(&_x2);
+//			cuda_mpz_print_str_device(&_x2[j]);
 //			printf("\n");
 //		}
 
@@ -106,31 +100,31 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 
 			if(eBits[i] == 0){
 				//x2 = _x1 * _x2
-				cuda_mpz_mult(&tmp2, &_x1, &_x2);
+				cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
 				//_x2 = REDC(rmod,n,n_,_x2,l)
-				cuda_mpz_set( &_x2, REDC(n, n_, &tmp2, &tmp, &t) );
+				cuda_mpz_set( &_x2[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 				//_x1 = _x1 * _x1
-				cuda_mpz_set( &tmp, &_x1);
-				cuda_mpz_mult(&tmp2, &_x1, &tmp);
+				cuda_mpz_set( &tmp[j], &_x1[j]);
+				cuda_mpz_mult(&tmp2[j], &_x1[j], &tmp[j]);
 				//_x1 = REDC(rmod,n,n_,_x1,l)
-				cuda_mpz_set( &_x1, REDC(n, n_, &tmp2, &tmp, &t) );
+				cuda_mpz_set( &_x1[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 			} else {
 				//_x1 = _x1 * _x2
-				cuda_mpz_mult(&tmp2, &_x1, &_x2);
+				cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
 				//_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
-				cuda_mpz_set( &_x1, REDC(n, n_, &tmp2, &tmp, &t) );
+				cuda_mpz_set( &_x1[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 				//_x2 = _x2 * _x2
-				cuda_mpz_set( &tmp, &_x2);
-				cuda_mpz_mult(&tmp2, &_x2, &tmp);
+				cuda_mpz_set( &tmp[j], &_x2[j]);
+				cuda_mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
 				//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
-				cuda_mpz_set( &_x2, REDC(n, n_, &tmp2, &tmp, &t) );
+				cuda_mpz_set( &_x2[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 			}
 		}
 
 		//_x1 = REDC(rmod,n,n_,_x1,l)
-		cuda_mpz_set( &_x1, REDC(n, n_, &_x1, &tmp, &t) );
+		cuda_mpz_set( &_x1[j], REDC(n, n_, &_x1[j], &tmp[j], &t[j]) );
 
-		s_index[k] = cuda_mpz_get_last_digit(&_x1);//make a dependency to make sure previous store is finished.
+		s_index[k] = cuda_mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 		t2 = clock64();//end of necessary kernel instructions
 
 //		printf("combo_num: %lld, iter1: %u, iter2: %u\n", combo_num, iter1, iter2);
