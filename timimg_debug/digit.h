@@ -17,6 +17,7 @@
 #define DIGITS_CAPACITY     8 //changes: make enough space for large input
 #define MOD_LOG2_DIGIT_BASE     31 //changes
 #define LOG2_LOG2_DIGIT_BASE 5 //changes
+#define HALF_DIGITS_CAPACITY     4 //changes: make enough space for large input
 
 typedef unsigned digit_t;
 
@@ -25,6 +26,7 @@ __device__ __host__ inline void digits_print(digit_t *digits,
   unsigned i;
 
   printf("{ ");
+  #pragma unroll
   for (i = 0; i < num_digits; i++) {
     printf("%x", digits[i]);
     if (i < num_digits - 1) printf(", ");
@@ -39,7 +41,7 @@ __device__ __host__ inline void digits_print(digit_t *digits,
 __device__ __host__ inline int digits_is_zero(digit_t *digits,
                                        unsigned num_digits) {
   unsigned i;
-
+  #pragma unroll
   for (i = 0; i < num_digits; i++) {
     if (digits[i] != 0) return false;
   }
@@ -74,6 +76,7 @@ __device__ __host__ inline int bits_is_zero(digit_t *digits,
   unsigned i, j;
   unsigned bit_index = bit_offset % LOG2_DIGIT_BASE;
 
+  #pragma unroll
   for (i = bit_offset / LOG2_DIGIT_BASE; i < DIGITS_CAPACITY; i++) {
     digit_t d = digits[i];
 
@@ -82,6 +85,7 @@ __device__ __host__ inline int bits_is_zero(digit_t *digits,
      * not 0 (the first bit we need to check is in the middle of the digit),
      * then we have to manually check each bit. */
     if (i == bit_offset && 0 != bit_index) {
+      #pragma unroll
       for (j = 0; j < LOG2_DIGIT_BASE; j++) {
         if (bit_at(d, j) != 0) return false;
       }
@@ -98,6 +102,7 @@ __device__ __host__ inline int bits_is_zero(digit_t *digits,
 
 __device__ __host__ inline void digits_set_zero(digit_t digits[DIGITS_CAPACITY]) {
   unsigned i;
+  #pragma unroll
   for (i = 0; i < DIGITS_CAPACITY; i++) digits[i] = 0;
 }
 
@@ -107,6 +112,7 @@ __device__ __host__ inline void digits_set_lui(digit_t digits[DIGITS_CAPACITY],
   unsigned long long Z = (unsigned long long) z;
 
   i = 0;
+  #pragma unroll
   for (i = 0; i < DIGITS_CAPACITY; i++) {
     digits[i] = (digit_t) (Z % DIGIT_BASE);
     Z /= DIGIT_BASE; //FIXME
@@ -120,6 +126,7 @@ __device__ __host__ inline void digits_set_llui(digit_t digits[DIGITS_CAPACITY],
   unsigned long long Z = (unsigned long long) z;
 
   i = 0;
+  #pragma unroll
   for (i = 0; i < DIGITS_CAPACITY; i++) {
     digits[i] = (digit_t) (Z % DIGIT_BASE);
     Z /= DIGIT_BASE; //FIXME
@@ -131,6 +138,7 @@ __device__ __host__ inline void digits_set_ui(digit_t digits[DIGITS_CAPACITY],
                                         unsigned z) {
   digits[0] = z;
   unsigned i;
+  #pragma unroll
   for (i = 1; i < DIGITS_CAPACITY; i++) {
     digits[i] = (digit_t) 0;
   }
@@ -151,6 +159,7 @@ __device__ __host__ inline unsigned digits_count(digit_t digits[DIGITS_CAPACITY]
   unsigned count = 0;
   int i;
 
+  #pragma unroll
   for (i = DIGITS_CAPACITY - 1; i >= 0; i--) {
     digit_t d = digits[i];
 
@@ -182,6 +191,7 @@ __device__ __host__ inline int digits_compare(digit_t *digits1, unsigned num_d1,
   int i;
 
   /* Iterate backwards so that we look at the most significant digits first */
+  #pragma unroll
   for (i = max_digits - 1; i >= 0; i--) {
     digit_t d1 = ((unsigned) i < num_d1) ? digits1[i] : 0;
     digit_t d2 = ((unsigned) i < num_d2) ? digits2[i] : 0;
@@ -202,6 +212,7 @@ __device__ __host__ inline int digits_equal_one(digit_t *digits, unsigned capaci
   }
 
   unsigned i;
+  #pragma unroll
   for (i = 1; i < DIGITS_CAPACITY; i ++) {
     if (digits[i] != 0) {
       return false;
@@ -218,6 +229,7 @@ __device__ __host__ inline int digits_gt_one(digit_t *digits, unsigned capacity)
     return true;
   }
   unsigned i;
+  #pragma unroll
   for (i = 1; i < DIGITS_CAPACITY; i ++) {
     if (digits[i] != 0) {
       return true;
@@ -299,7 +311,7 @@ __device__ __host__ inline digit_t digits_add_across(digit_t *digits,
 __device__ __host__ inline void digits_copy(digit_t to[DIGITS_CAPACITY],
                                      digit_t from[DIGITS_CAPACITY]) {
   unsigned i;
-
+  #pragma unroll
   for (i = 0; i < DIGITS_CAPACITY; i++) {
     to[i] = from[i];
   }
@@ -318,6 +330,7 @@ __device__ __host__ inline void digits_complement(digit_t *digits, unsigned num_
   unsigned i;
 
   // Complement each digit by subtracting it from BASE-1
+  #pragma unroll
   for (i = 0; i < num_digits; i++) {
     digits[i] = (digit_t) ((DIGIT_BASE - 1) - digits[i]);
   }
@@ -337,6 +350,7 @@ __device__ __host__ inline digit_t digits_add(digit_t *sum, unsigned sum_num_dig
   digit_t carry = 0;
   unsigned i;
 
+  #pragma unroll
   for (i = 0; i < sum_num_digits; i++) {
     digit_t a = (i < op1_num_digits) ? op1[i] : 0;
     digit_t b = (i < op2_num_digits) ? op2[i] : 0;
@@ -357,6 +371,7 @@ __device__ __host__ inline void digits_bitwise_and(digit_t *sum, unsigned sum_nu
                                        digit_t *op1, unsigned op1_num_digits,
                                        digit_t *op2, unsigned op2_num_digits) {//changes
 
+  #pragma unroll
   for (unsigned i = 0; i < sum_num_digits; i++) {
     digit_t a = (i < op1_num_digits) ? op1[i] : 0;
     digit_t b = (i < op2_num_digits) ? op2[i] : 0;
@@ -372,6 +387,7 @@ __device__ __host__ inline digit_t digits_addeq(
   digit_t carry = 0;
   unsigned i;
 
+  #pragma unroll
   for (i = 0; i < op1_num_digits; i++) {
     digit_t a = (i < op1_num_digits) ? op1[i] : 0;
     digit_t b = (i < op2_num_digits) ? op2[i] : 0;
@@ -389,11 +405,13 @@ __device__ __host__ inline void digits_mult_u(digit_t product[DIGITS_CAPACITY],
   unsigned num_digits = DIGITS_CAPACITY/2;
 
   /* zero out product */
+  #pragma unroll
   for (i = 0; i < 2*num_digits; i++) {
     product[i] = 0;
   }
 
   i = 0;
+  #pragma unroll
   for (j = 0; j < num_digits; j++) {
     unsigned k = i + j;
     digit_t carry = 0;
@@ -426,6 +444,7 @@ __device__ __host__ inline void long_multiplication(digit_t *product,
   unsigned i, j;
 
   /* zero out product */
+  #pragma unroll
   for (i = 0; i < 2*num_digits; i++) {
     if (i < num_digits) {
       is_op1_zero = (is_op1_zero) && (op1[i] == 0);
@@ -433,6 +452,7 @@ __device__ __host__ inline void long_multiplication(digit_t *product,
     }
     product[i] = 0;
   }
+  #pragma unroll
   for (; i < DIGITS_CAPACITY; i ++) {
     product[i] = 0;
   }
@@ -440,7 +460,9 @@ __device__ __host__ inline void long_multiplication(digit_t *product,
   /* if either of the operands are zero, then their product is zero */
   if (is_op1_zero || is_op2_zero) return;
 
+  #pragma unroll
   for (i = 0; i < num_digits; i++) {
+	#pragma unroll
     for (j = 0; j < num_digits; j++) {
       unsigned k = i + j;
       digit_t carry = 0;
@@ -477,9 +499,11 @@ __device__ __host__ inline void digits_rshift(digit_t *digits, unsigned capacity
                                               unsigned shift_amount) {
   int i;
 
+  #pragma unroll
   for (i = DIGITS_CAPACITY - shift_amount - 1; i >= 0; i--) {
     digits[i + shift_amount] = digits[i];
   }
+  #pragma unroll
   for (i = 0; i < (int) shift_amount; i++) {
     digits[i] = 0;
   }
@@ -489,6 +513,7 @@ __device__ __host__ inline void bits_lshift(digit_t *digits, unsigned capacity) 
   unsigned d_index = 0;
   unsigned shift_out = 0;
 
+  #pragma unroll
   for (d_index = 0; d_index < DIGITS_CAPACITY; d_index++) {
     digit_t d = digits[d_index];
     digits[d_index] = shift_out | (d << 1);
@@ -502,6 +527,7 @@ __device__ __host__ inline void bits_rshift(digit_t *digits, unsigned capacity) 
 
   //printf("[0x%x] [0x%x] [0x%x] [0x%x]\n", digits[3], digits[2], digits[1], digits[0]);
 
+  #pragma unroll
   for (d_index = DIGITS_CAPACITY - 1; ; d_index--) {
     //printf("%d --------\n", d_index);
     digit_t d = digits[d_index];

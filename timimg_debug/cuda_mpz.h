@@ -108,7 +108,7 @@ __device__ __host__ inline void cuda_mpz_init(cuda_mpz_t *cuda_mpz) {
 __device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
   unsigned i;
 
-  //#pragma unroll//changes
+  #pragma unroll
   for (i = 0; i < DIGITS_CAPACITY; i++) {// changes
     digit_t d = (i < DIGITS_CAPACITY) ? from->digits[i] : 0;//changes
     to->digits[i] = d;
@@ -126,6 +126,7 @@ __device__ __host__ inline void cuda_mpz_set_gmp(cuda_mpz_t *to, mpz_t from) {//
   /////////////////////////////////////////////////////todo: also copy length from from
   int src_size = from->_mp_size * 2;
 
+  #pragma unroll
   for (i = 0; i < src_size; i++) {
 	if((i & 1) == 0 ){
 		to->digits[i] = (digit_t) (from->_mp_d[i/2] & 0xffffffff );
@@ -134,6 +135,7 @@ __device__ __host__ inline void cuda_mpz_set_gmp(cuda_mpz_t *to, mpz_t from) {//
 	}
   }
 
+  #pragma unroll
   for (i = src_size; i < DIGITS_CAPACITY; i++) {
     to->digits[i] = 0;
   }
@@ -178,6 +180,7 @@ __device__ __host__ inline void cuda_mpz_set_str(cuda_mpz_t *cuda_mpz, const cha
   unsigned i;
   int is_zero;
 
+  #pragma unroll
   for (i = 0; i < DIGITS_CAPACITY; i++) cuda_mpz->digits[i] = 0;
 
   const int bufsize = 1024;
@@ -231,6 +234,7 @@ __host__ inline void cuda_mpz_set_str_host(cuda_mpz_t *cuda_mpz, const char *use
   unsigned i;
   int is_zero;
 
+  #pragma unroll
   for (i = 0; i < DIGITS_CAPACITY; i++) cuda_mpz->digits[i] = 0;//changes
 
   const int bufsize = 1024;
@@ -255,6 +259,7 @@ __host__ inline void cuda_mpz_set_str_host(cuda_mpz_t *cuda_mpz, const char *use
   digits_set_zero(cuda_mpz->digits);
 
   is_zero = true;
+  #pragma unroll
   for (i = 0; i < num_digits; i ++) {
     str[len - i * char_per_digit] = (char) 0;
     char *start = str + (int) max(len - (i + 1) * char_per_digit, 0);
@@ -399,7 +404,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
 
   dst->sign = src->sign;
 
-  //pragma unroll
+  #pragma unroll
   for(int d_index = DIGITS_CAPACITY - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
 	  dst_digits[d_index] = 0;
   }
@@ -431,7 +436,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
   }
   */
 
-  //pragma unroll
+  #pragma unroll
   for(int d_index = DIGITS_CAPACITY - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
 	digits[d_index] = 0;
   }
@@ -621,7 +626,7 @@ __host__ inline char* cuda_mpz_get_str(cuda_mpz_t *cuda_mpz, char *str, int bufs
     str_index = 1;
   }
 
-  //pragma unroll
+  #pragma unroll
   for (i = DIGITS_CAPACITY - 1; i >= 0; i--) {
     unsigned digit = cuda_mpz->digits[i];
 
@@ -657,7 +662,7 @@ __device__ inline void cuda_mpz_print_str_device(cuda_mpz_t *cuda_mpz) {//change
 	  printf("-");
   }
 
-  //pragma unroll
+  #pragma unroll
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
     unsigned digit = cuda_mpz->digits[i];
 
@@ -702,6 +707,7 @@ __device__ __host__ inline void cuda_mpz_bit_lshift(cuda_mpz_t *cuda_mpz) {
 }
 
 __device__ __host__ inline void cuda_mpz_bit_rshift(cuda_mpz_t *cuda_mpz, int n_bits) {
+  #pragma unroll
   for(int i=0;i<n_bits;i++) bits_rshift(cuda_mpz->digits, DIGITS_CAPACITY);
 }
 
@@ -721,14 +727,14 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift_eq(cuda_mpz_t *cuda_mpz,
   }
   */
 
-  //#pragma unroll
+  #pragma unroll
   for(int d_index = 0; d_index < DIGITS_CAPACITY - 1 - rs_digits; d_index++) {//constant time for specific rl
 	digits[d_index] = ( digits[d_index + rs_digits] >> rs_remainder ) | ( digits[d_index + rs_digits + 1] << ( LOG2_DIGIT_BASE - rs_remainder ) );
   }
 
   digits[DIGITS_CAPACITY - 1 - rs_digits] = digits[DIGITS_CAPACITY - 1] >> rs_remainder;
 
-  //#pragma unroll
+  #pragma unroll
   for(int d_index = DIGITS_CAPACITY - rs_digits; d_index <= DIGITS_CAPACITY - 1; d_index++) {//constant time for specific rl
   	digits[d_index] = 0;
   }
@@ -753,13 +759,14 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
 
   dst->sign = src->sign;
 
-  //#pragma unroll
+  #pragma unroll
   for(int d_index = 0; d_index < DIGITS_CAPACITY - 1 - rs_digits; d_index++) {//constant time for specific rl
 	  dst_digits[d_index] = ( src_digits[d_index + rs_digits] >> rs_remainder ) | ( src_digits[d_index + rs_digits + 1] << ( LOG2_DIGIT_BASE - rs_remainder ) );
   }
 
   dst_digits[DIGITS_CAPACITY - 1 - rs_digits] = src_digits[DIGITS_CAPACITY - 1] >> rs_remainder;
 
+  #pragma unroll
   for(int d_index = DIGITS_CAPACITY - rs_digits; d_index <= DIGITS_CAPACITY - 1; d_index++) {//constant time for specific rl
 	  dst_digits[d_index] = 0;
   }
@@ -772,7 +779,7 @@ __device__ __host__ inline digit_t cuda_mpz_get_last_digit(cuda_mpz_t *cuda_mpz)
 __device__ __host__ inline int cuda_mpz_is_zero(cuda_mpz_t *cuda_mpz) {
   unsigned d_index = 0;
 
-  //#pragma unroll
+  #pragma unroll
   for (d_index = 0; d_index < DIGITS_CAPACITY; d_index++) {
     //printf("d: %d\n", cuda_mpz->digits[d_index]);
     if(cuda_mpz->digits[d_index] != 0) return 0;
@@ -798,6 +805,7 @@ __device__ __host__ inline void cuda_mpz_div(cuda_mpz_t *q, cuda_mpz_t *r, cuda_
 
   if (cuda_mpz_gt(n, d)) {
 
+	#pragma unroll
     for (i = num_bits - 1; i >= 0; i--) {
       unsigned n_i;
 
@@ -869,6 +877,7 @@ __device__ __inline__ void cuda_mpz_gcd_tmp(cuda_mpz_t *gcd, cuda_mpz_t *op1, cu
   cuda_mpz_set(a, (compare > 0) ? op1 : op2);
   cuda_mpz_set(b, (compare > 0) ? op2 : op1);
 
+  #pragma unroll
   while (!digits_is_zero(b->digits, DIGITS_CAPACITY)) {
     cuda_mpz_div(quo, mod, a, b);
     cuda_mpz_set(a, b);
@@ -917,6 +926,7 @@ __device__ __inline__ void cuda_mpz_powmod_tmp(cuda_mpz_t *result, cuda_mpz_t *b
   cuda_mpz_div(tmp2, b, tmp1, mod);
 
   iteration = 0;
+  #pragma unroll
   while (!bits_is_zero(exp->digits, DIGITS_CAPACITY, iteration)) {
     // if (binary_exp is odd)
     if (digits_bit_at(exp->digits, iteration) == 1) {
@@ -958,6 +968,7 @@ __device__ __inline__ void cuda_mpz_pow(cuda_mpz_t *result, cuda_mpz_t *base, un
 
   // result = 1
   cuda_mpz_set_ui(result, 1);
+  #pragma unroll
   for (i = 0; i < exponent; i++) {
     // result *= base
     cuda_mpz_mult(&tmp, result, base);
