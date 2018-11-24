@@ -60,9 +60,9 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 
 		t1 = clock64();//beginning of necessary instructions within the kernel
 
+		int j = blockIdx.x * blockDim.x + threadIdx.x;
 		cuda_mpz_t* n = &vn[j];
 		cuda_mpz_t* n_ = &vn_[j];
-		int j = blockIdx.x * blockDim.x + threadIdx.x;
 
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
 		cuda_mpz_mult(&tmp2[j], &_x1[j], &r2[j]);
