@@ -512,7 +512,7 @@ int main (int argc, char *argv[]) {
 		struct timespec ts1;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
 
-		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs * 4, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs * 4, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d);/////////////////////////////////////////kernel
 		cudaDeviceSynchronize();
 
 		struct timespec ts2;/////////////////////////////////time
