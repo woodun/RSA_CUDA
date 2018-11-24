@@ -285,7 +285,7 @@ int main (int argc, char *argv[]) {
 
 	///////host memory
 	long long int *clockTable_h;
-	clockTable_h = (long long int*) malloc( 4 * pairs * sizeof(long long int));
+	clockTable_h = (long long int*) malloc( 4 * sizeof(long long int));
 
 	cuda_mpz_t h_n;
 	cuda_mpz_t h_n_;
@@ -366,7 +366,7 @@ int main (int argc, char *argv[]) {
 //	cuda_mpz_t *d_t;
 //	cuda_mpz_t *_x1_cuda_mpz;
 //	cuda_mpz_t *_x2_cuda_mpz;
-	cudaMalloc((void **) &clockTable_d, 4 * pairs * sizeof(long long int));
+	cudaMalloc((void **) &clockTable_d, 4 * sizeof(long long int));
 //	cudaMalloc((void **) &tmp, varSize);
 //	cudaMalloc((void **) &tmp2, varSize);
 //	cudaMalloc((void **) &d_t, varSize);
@@ -513,37 +513,29 @@ int main (int argc, char *argv[]) {
 		struct timespec ts1;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
 
-		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs * 4, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d);/////////////////////////////////////////kernel
+		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d);/////////////////////////////////////////kernel
 		cudaDeviceSynchronize();
 
 		struct timespec ts2;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
 		printf("%llu\n", time_diff(ts1, ts2));/////////////////////////////////time
 
-		cudaMemcpy(clockTable_h, clockTable_d, 4 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
+		cudaMemcpy(clockTable_h, clockTable_d, 4 * sizeof(long long int), cudaMemcpyDeviceToHost);
 
-		for (long long unsigned q = 0; q < pairs * 1; q++){
-			sum1 += clockTable_h[q];
-		}
+		sum1 = clockTable_h[0];
 		sum1 = sum1 / pairs;
-		for (long long unsigned q = pairs * 1; q < pairs * 2; q++){
-			sum2 += clockTable_h[q];
-		}
+		sum2 = clockTable_h[1] - clockTable_h[0];
 		sum2 = sum2 / pairs;
-		for (long long unsigned q = pairs * 2; q < pairs * 3; q++){
-			sum3 += clockTable_h[q];
-		}
+		sum3 = clockTable_h[2] - clockTable_h[1];
 		sum3 = sum3 / pairs;
-		for (long long unsigned q = pairs * 3; q < pairs * 4; q++){
-			sum4 += clockTable_h[q];
-		}
+		sum4 = clockTable_h[3] - clockTable_h[2];
 		sum4 = sum4 / pairs;
 
 		long long int diff1 = abs(sum1 - sum2);
 		long long int diff2 = abs(sum2 - sum4);
 		long long int diff3 = sum1 - sum4;
 
-		printf("%lld %lld %lld %lld %lld %lld %f %f\n", sum1, sum2, sum3, diff1, diff2, diff3, ((double) diff1) / diff2, ((double) diff2) / diff1);
+		printf("%lld %lld %lld %lld %lld %lld %lld %f %f\n", sum1, sum2, sum3, sum4, diff1, diff2, diff3, ((double) diff1) / diff2, ((double) diff2) / diff1);
 
 		if(diff3 > 2000){//bit is 1
 			known_bits[known_bits_length] = 1;

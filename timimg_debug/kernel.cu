@@ -39,12 +39,13 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 	__shared__ digit_t s_index[32];
 
 	long long int t1, t2;
+	long long int sum1 = 0;
 	//long long int t3, t4;
 
 	int k = blockIdx.x * blockDim.x + threadIdx.x;
 
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
-	for(long long unsigned iter1 = 0; iter1 < pairs; iter1++){
+	for(long long unsigned iter1 = 0; iter1 < pairs * 4; iter1++){
 
 		cuda_mpz_set(&_x1[k], &mes1[2 * iter1 + k]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 		s_index[k] = cuda_mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
@@ -129,8 +130,26 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 
 //		printf("combo_num: %lld, iter1: %u, iter2: %u\n", combo_num, iter1, iter2);
 
-		if( j == 1){
-			clockTable[iter1] = t2 - t1;
+		sum1 +=  t2 - t1;
+		if (iter1 == pairs - 1){
+			if( j == 1){
+				clockTable[0] = sum1;
+			}
+		}
+		if (iter1 == 2 * pairs - 1){
+			if( j == 1){
+				clockTable[1] = sum1;
+			}
+		}
+		if (iter1 == 3 * pairs - 1){
+			if( j == 1){
+				clockTable[2] = sum1;
+			}
+		}
+		if (iter1 == 4 * pairs - 1){
+			if( j == 1){
+				clockTable[3] = sum1;
+			}
 		}
 	}
 }
