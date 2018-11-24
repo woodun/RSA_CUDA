@@ -27,16 +27,13 @@ __device__ __host__ inline cuda_mpz_t* REDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_
 	}
 }
 
-__global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t r2_in, cuda_mpz_t vn_in, cuda_mpz_t vn__in, int* eBits, int eLength, long long int* clockTable) {
+__global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength, long long int* clockTable) {
 
 	__shared__ cuda_mpz_t tmp[2];
 	__shared__ cuda_mpz_t tmp2[2];
 	__shared__ cuda_mpz_t t[2];
 	__shared__ cuda_mpz_t _x1[2];
 	__shared__ cuda_mpz_t _x2[2];
-	__shared__ cuda_mpz_t r2[2];
-	__shared__ cuda_mpz_t vn[2];
-	__shared__ cuda_mpz_t vn_[2];
 
 	//__shared__ digit_t s_index[32];
 
@@ -46,11 +43,8 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 
 	int k = blockIdx.x * blockDim.x + threadIdx.x;
 
-	/////////////////////initialization
-	cuda_mpz_set(&r2[k], &r2_in);
-	cuda_mpz_set(&vn[k], &vn_in);
-	cuda_mpz_set(&vn_[k], &vn__in);
-
+	cuda_mpz_t* n = &vn;
+	cuda_mpz_t* n_ = &vn_;
 
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
 	for(long long unsigned iter1 = 0; iter1 < pairs * 4; ++iter1){
@@ -61,11 +55,10 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 		t1 = clock64();//beginning of necessary instructions within the kernel
 
 		int j = blockIdx.x * blockDim.x + threadIdx.x;
-		cuda_mpz_t* n = &vn[j];
-		cuda_mpz_t* n_ = &vn_[j];
+
 
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
-		cuda_mpz_mult(&tmp2[j], &_x1[j], &r2[j]);
+		cuda_mpz_mult(&tmp2[j], &_x1[j], &r2);
 		cuda_mpz_set( &_x1[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
 //		s_index[k] = cuda_mpz_get_last_digit(&_x1[j]);//make a dependency to make sure previous store is finished.
