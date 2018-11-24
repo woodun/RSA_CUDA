@@ -358,7 +358,7 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(dBits_d, dBits, sizeof(int) * d_bitsLength, cudaMemcpyHostToDevice);
 
 	///////device memory
-	unsigned varSize = sizeof(cuda_mpz_t) * thread_num;
+	//unsigned varSize = sizeof(cuda_mpz_t) * thread_num;
 
 	long long int *clockTable_d;
 //	cuda_mpz_t *tmp;
