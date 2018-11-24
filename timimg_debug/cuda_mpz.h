@@ -509,7 +509,7 @@ __device__ __host__ inline void cuda_mpz_subeq(cuda_mpz_t *op1, cuda_mpz_t *op2)
 __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
   unsigned op1_digit_count = digits_count(op1->digits);
   unsigned op2_digit_count = digits_count(op2->digits);
-  //unsigned capacity = max(op1_digit_count, op2_digit_count);
+  unsigned capacity = max(op1_digit_count, op2_digit_count);
 
 //  /* In multiplication, if the operand with the most digits has D digits,
 //   * then the result of the addition will have at most 2D digits. */
@@ -524,7 +524,7 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
    * number of digits in each cuda_mpz_t struct. This is done because the
    * multiplication code has some assumptions and optimizations (e.g.
    * op1 and op2 to have the same number of digits) */
-  digits_mult(dst->digits, op1->digits, op2->digits, DIGITS_CAPACITY, DIGITS_CAPACITY);
+  digits_mult(dst->digits, op1->digits, op2->digits, capacity, DIGITS_CAPACITY);
 
   /* Compute the sign of the product */
   dst->sign = (op1->sign == op2->sign) ? MPZ_NONNEGATIVE : MPZ_NEGATIVE;
