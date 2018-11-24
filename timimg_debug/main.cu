@@ -291,9 +291,9 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_t h_r2;
 	int rl = 70;
 
-	cuda_mpz_init(&h_n);
-	cuda_mpz_init(&h_n_);
-	cuda_mpz_init(&h_r2);
+//	cuda_mpz_init(&h_n);
+//	cuda_mpz_init(&h_n_);
+//	cuda_mpz_init(&h_r2);
 
 	///////get n
 	char n_input[] = "00000038f6e8cfba55dd0e47";
@@ -373,8 +373,8 @@ int main (int argc, char *argv[]) {
 	cudaMalloc((void **) &_x1_cuda_mpz, varSize);
 
 	////////////////////////////////////////////////////////////////initialize
-	init<<<1, thread_num>>>(_x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, d_t);
-	cudaDeviceSynchronize();
+	//init<<<1, thread_num>>>(_x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, d_t);
+	//cudaDeviceSynchronize();
 
 	///////get Messages
 	long long unsigned mesSize = sizeof(cuda_mpz_t) * data_num;
@@ -385,11 +385,11 @@ int main (int argc, char *argv[]) {
 	//cuda_mpz_t *myMes3_h;
 	//myMes3_h = (cuda_mpz_t*) malloc (mesSize); //CPU list diverge for bit 0 and converge for bit 1
 
-	for(long long unsigned i = 0; i < data_num * 4; i++){
-		cuda_mpz_init(&myMes1_h[i]);
-		//cuda_mpz_init(&myMes2_h[i]);
-		//cuda_mpz_init(&myMes3_h[i]);
-	}
+//	for(long long unsigned i = 0; i < data_num * 4; i++){
+//		cuda_mpz_init(&myMes1_h[i]);
+//		//cuda_mpz_init(&myMes2_h[i]);
+//		//cuda_mpz_init(&myMes3_h[i]);
+//	}
 
 	cuda_mpz_t *myMes1_d;
 	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize * 4); //GPU
@@ -405,22 +405,22 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_t _x1_1_temp, _x1_2_temp, _x2_1_temp, _x2_2_temp;
 	cuda_mpz_t tmp_1, tmp_2, tmp2_1, tmp2_2, t_1, t_2;
 
-	cuda_mpz_init(&r1);
-	cuda_mpz_init(&r2);
-	cuda_mpz_init(&_x1_1);
-	cuda_mpz_init(&_x1_2);
-	cuda_mpz_init(&_x2_1);
-	cuda_mpz_init(&_x2_2);
-	cuda_mpz_init(&_x1_1_temp);
-	cuda_mpz_init(&_x1_2_temp);
-	cuda_mpz_init(&_x2_1_temp);
-	cuda_mpz_init(&_x2_2_temp);
-	cuda_mpz_init(&tmp_1);
-	cuda_mpz_init(&tmp_2);
-	cuda_mpz_init(&tmp2_1);
-	cuda_mpz_init(&tmp2_2);
-	cuda_mpz_init(&t_1);
-	cuda_mpz_init(&t_2);
+//	cuda_mpz_init(&r1);
+//	cuda_mpz_init(&r2);
+//	cuda_mpz_init(&_x1_1);
+//	cuda_mpz_init(&_x1_2);
+//	cuda_mpz_init(&_x2_1);
+//	cuda_mpz_init(&_x2_2);
+//	cuda_mpz_init(&_x1_1_temp);
+//	cuda_mpz_init(&_x1_2_temp);
+//	cuda_mpz_init(&_x2_1_temp);
+//	cuda_mpz_init(&_x2_2_temp);
+//	cuda_mpz_init(&tmp_1);
+//	cuda_mpz_init(&tmp_2);
+//	cuda_mpz_init(&tmp2_1);
+//	cuda_mpz_init(&tmp2_2);
+//	cuda_mpz_init(&t_1);
+//	cuda_mpz_init(&t_2);
 
 	long check_pre = strtol(argv[2], NULL, 10);
 	int known_bits[2048];

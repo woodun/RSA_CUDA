@@ -123,6 +123,7 @@ __device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
 __device__ __host__ inline void cuda_mpz_set_gmp(cuda_mpz_t *to, mpz_t from) {//changes
   unsigned i;
 
+  /////////////////////////////////////////////////////todo: also copy length from from
   int src_size = from->_mp_size * 2;
 
   for (i = 0; i < src_size; i++) {
@@ -299,21 +300,21 @@ __device__ __host__ inline void cuda_mpz_destroy(cuda_mpz_t *cuda_mpz) {
  * @warning Assumes dst != op1 != op2
  */
 __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
-#ifdef __CUDACC__
-  unsigned op1_digit_count = digits_count(op1->digits);
-  unsigned op2_digit_count = digits_count(op2->digits);
-
-  /* In addition, if the operand with the most digits has D digits, then
-   * the result of the addition will have at most D + 1 digits. */
-  unsigned capacity = max(op1_digit_count, op2_digit_count) + 1;
-
-  /* Make sure all of the cuda_mpz structs have enough memory to hold all of
-   * the digits. We will be doing 10's complement so everyone needs to
-   * have enough digits. */
-  CHECK_MEM(dst, capacity);
-  CHECK_MEM(op1, capacity);
-  CHECK_MEM(op2, capacity);
-#endif
+//#ifdef __CUDACC__
+//  unsigned op1_digit_count = digits_count(op1->digits);
+//  unsigned op2_digit_count = digits_count(op2->digits);
+//
+//  /* In addition, if the operand with the most digits has D digits, then
+//   * the result of the addition will have at most D + 1 digits. */
+//  unsigned capacity = max(op1_digit_count, op2_digit_count) + 1;
+//
+//  /* Make sure all of the cuda_mpz structs have enough memory to hold all of
+//   * the digits. We will be doing 10's complement so everyone needs to
+//   * have enough digits. */
+//  CHECK_MEM(dst, capacity);
+//  CHECK_MEM(op1, capacity);
+//  CHECK_MEM(op2, capacity);
+//#endif //changes
 
   digits_set_zero(dst->digits);
 
@@ -329,16 +330,16 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
     digit_t carry_out;
 
     /* Perform 10's complement on negative numbers before adding */
-    if (cuda_mpz_is_negative(op1)) digits_complement(op1->digits, op1->capacity);
-    if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, op2->capacity);
+    if (cuda_mpz_is_negative(op1)) digits_complement(op1->digits, DIGITS_CAPACITY);
+    if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, DIGITS_CAPACITY); // changes
 
-    carry_out = digits_add(dst->digits, dst->capacity,
-                           op1->digits, op1->capacity,
-                           op2->digits, op2->capacity);
+    carry_out = digits_add(dst->digits, DIGITS_CAPACITY,
+                           op1->digits, DIGITS_CAPACITY,
+                           op2->digits, DIGITS_CAPACITY); // changes
 
     /* If there is no carryout, the result is negative */
     if (carry_out == 0 && (cuda_mpz_is_negative(op1) || cuda_mpz_is_negative(op2))) {
-      digits_complement(dst->digits, dst->capacity);
+      digits_complement(dst->digits, DIGITS_CAPACITY);// changes
       dst->sign = MPZ_NEGATIVE;
     }
     /* Otherwise, the result is non-negative */
@@ -347,8 +348,8 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
     }
 
     /* Undo the 10s complement after adding */
-    if (cuda_mpz_is_negative(op1)) digits_complement(op1->digits, op1->capacity);
-    if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, op2->capacity);
+    if (cuda_mpz_is_negative(op1)) digits_complement(op1->digits, DIGITS_CAPACITY);
+    if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, DIGITS_CAPACITY);
   }
 
   CHECK_SIGN(op1);
@@ -357,12 +358,12 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 }
 
 __device__ __host__ inline void cuda_mpz_bitwise_and(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {//changes
-#ifdef __CUDACC__
-  unsigned op1_digit_count = digits_count(op1->digits);
-  unsigned op2_digit_count = digits_count(op2->digits);
-
-  unsigned capacity = min(op1_digit_count, op2_digit_count);
-#endif
+//#ifdef __CUDACC__
+//  unsigned op1_digit_count = digits_count(op1->digits);
+//  unsigned op2_digit_count = digits_count(op2->digits);
+//
+//  unsigned capacity = min(op1_digit_count, op2_digit_count);
+//#endif
 
   digits_set_zero(dst->digits);
 
@@ -373,13 +374,13 @@ __device__ __host__ inline void cuda_mpz_bitwise_and(cuda_mpz_t *dst, cuda_mpz_t
   }
   */
 
-  digits_bitwise_and(dst->digits, dst->capacity, op1->digits, op1->capacity, op2->digits, op2->capacity);
+  digits_bitwise_and(dst->digits, DIGITS_CAPACITY, op1->digits, DIGITS_CAPACITY, op2->digits, DIGITS_CAPACITY);
 }
 
 __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_mpz_t *src, int n_bits) {//changes
   digit_t *src_digits = src->digits;
   digit_t *dst_digits = dst->digits;
-  unsigned capacity = src->capacity;
+  //unsigned capacity = src->capacity;
 
   int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
   //int ls_digits = capacity - rs_digits - 1;
@@ -398,12 +399,14 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
 
   dst->sign = src->sign;
 
-  for(int d_index = capacity - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
+  //pragma unroll
+  for(int d_index = DIGITS_CAPACITY - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
 	  dst_digits[d_index] = 0;
   }
 
   dst_digits[rs_digits] = src_digits[rs_digits] & ( 0xffffffff >> ls_remainder);
 
+  //pragma unroll
   for(int d_index = rs_digits - 1; d_index >= 0; d_index--) {//constant time for specific rl
 	  dst_digits[d_index] = src_digits[d_index];
   }
@@ -411,7 +414,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
 
 __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mpz, int n_bits) {//changes
   digit_t *digits = cuda_mpz->digits;
-  unsigned capacity = cuda_mpz->capacity;
+  //unsigned capacity = cuda_mpz->capacity;
 
   int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
   //int ls_digits = capacity - rs_digits - 1;
@@ -428,7 +431,8 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
   }
   */
 
-  for(int d_index = capacity - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
+  //pragma unroll
+  for(int d_index = DIGITS_CAPACITY - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
 	digits[d_index] = 0;
   }
 
@@ -439,8 +443,8 @@ __device__ __host__ inline void cuda_mpz_addeq(cuda_mpz_t *op1, cuda_mpz_t *op2)
 
   /* If both are negative, treate them as positive and negate the result */
   if (cuda_mpz_is_negative(op1) && cuda_mpz_is_negative(op2)) {
-    digits_addeq(op1->digits, op1->capacity,
-               op2->digits, op2->capacity);
+    digits_addeq(op1->digits,DIGITS_CAPACITY,
+               op2->digits, DIGITS_CAPACITY);
     op1->sign = MPZ_NEGATIVE;
   }
   /* one or neither are negative */
@@ -448,15 +452,15 @@ __device__ __host__ inline void cuda_mpz_addeq(cuda_mpz_t *op1, cuda_mpz_t *op2)
     digit_t carry_out;
 
     /* Perform 10's complement on negative numbers before adding */
-    if (cuda_mpz_is_negative(op1)) digits_complement(op1->digits, op1->capacity);
-    if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, op2->capacity);
+    if (cuda_mpz_is_negative(op1)) digits_complement(op1->digits, DIGITS_CAPACITY);
+    if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, DIGITS_CAPACITY);
 
-    carry_out = digits_addeq(op1->digits, op1->capacity,
-                             op2->digits, op2->capacity);
+    carry_out = digits_addeq(op1->digits, DIGITS_CAPACITY,
+                             op2->digits, DIGITS_CAPACITY);
 
     /* If there is no carryout, the result is negative */
     if (carry_out == 0 && (cuda_mpz_is_negative(op1) || cuda_mpz_is_negative(op2))) {
-      digits_complement(op1->digits, op1->capacity);
+      digits_complement(op1->digits, DIGITS_CAPACITY);
       op1->sign = MPZ_NEGATIVE;
     }
     /* Otherwise, the result is non-negative */
@@ -465,7 +469,7 @@ __device__ __host__ inline void cuda_mpz_addeq(cuda_mpz_t *op1, cuda_mpz_t *op2)
     }
 
     /* Undo the 10s complement after adding */
-    if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, op2->capacity);
+    if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, DIGITS_CAPACITY);
   }
 
   CHECK_SIGN(op1);
@@ -505,13 +509,13 @@ __device__ __host__ inline void cuda_mpz_subeq(cuda_mpz_t *op1, cuda_mpz_t *op2)
 __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
   unsigned op1_digit_count = digits_count(op1->digits);
   unsigned op2_digit_count = digits_count(op2->digits);
-  unsigned capacity = max(op1_digit_count, op2_digit_count);
+  //unsigned capacity = max(op1_digit_count, op2_digit_count);
 
-  /* In multiplication, if the operand with the most digits has D digits,
-   * then the result of the addition will have at most 2D digits. */
-  CHECK_MEM(dst, 2*capacity);
-  CHECK_MEM(op1,   capacity);
-  CHECK_MEM(op2,   capacity);
+//  /* In multiplication, if the operand with the most digits has D digits,
+//   * then the result of the addition will have at most 2D digits. */
+//  CHECK_MEM(dst, 2*capacity);
+//  CHECK_MEM(op1,   capacity);
+//  CHECK_MEM(op2,   capacity); // changes
 
   /* Done by long_multiplication */
   /* digits_set_zero(dst->digits); */
@@ -520,11 +524,11 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
    * number of digits in each cuda_mpz_t struct. This is done because the
    * multiplication code has some assumptions and optimizations (e.g.
    * op1 and op2 to have the same number of digits) */
-  digits_mult(dst->digits, op1->digits, op2->digits, capacity, dst->capacity);
+  digits_mult(dst->digits, op1->digits, op2->digits, DIGITS_CAPACITY, DIGITS_CAPACITY);
 
   /* Compute the sign of the product */
   dst->sign = (op1->sign == op2->sign) ? MPZ_NONNEGATIVE : MPZ_NEGATIVE;
-  if (MPZ_NEGATIVE == dst->sign && digits_is_zero(dst->digits, dst->capacity)) {
+  if (MPZ_NEGATIVE == dst->sign && digits_is_zero(dst->digits, DIGITS_CAPACITY)) {
     dst->sign = MPZ_NONNEGATIVE;
   }
 
@@ -553,7 +557,7 @@ __device__ __host__ inline int cuda_mpz_compare(cuda_mpz_t *a, cuda_mpz_t *b) {
   if (MPZ_NEGATIVE == b->sign && MPZ_NONNEGATIVE == a->sign) return MPZ_GREATER;
 
   /* At this point we know they have the same sign */
-  cmp = digits_compare(a->digits, a->capacity, b->digits, b->capacity);
+  cmp = digits_compare(a->digits, DIGITS_CAPACITY, b->digits, DIGITS_CAPACITY);
   negative = cuda_mpz_is_negative(a);
 
   if (cmp == 0) return MPZ_EQUAL;
@@ -575,7 +579,7 @@ __device__ __host__ inline int cuda_mpz_equal_one(cuda_mpz_t *a) {
   if (MPZ_NEGATIVE == a->sign) {
     return false;
   }
-  return digits_equal_one(a->digits, a->capacity);
+  return digits_equal_one(a->digits, DIGITS_CAPACITY);
 }
 /** @brief Return true if a < b */
 __device__ __host__ inline int cuda_mpz_lt(cuda_mpz_t *a, cuda_mpz_t *b) {
@@ -594,7 +598,7 @@ __device__ __host__ inline int cuda_mpz_gt_one(cuda_mpz_t *a) {
   if (MPZ_NEGATIVE == a->sign) {
     return false;
   }
-  return digits_gt_one(a->digits, a->capacity);
+  return digits_gt_one(a->digits, DIGITS_CAPACITY);
 }
 /** @brief Return true if a >= b */
 __device__ __host__ inline int cuda_mpz_gte(cuda_mpz_t *a, cuda_mpz_t *b) {
@@ -617,7 +621,8 @@ __host__ inline char* cuda_mpz_get_str(cuda_mpz_t *cuda_mpz, char *str, int bufs
     str_index = 1;
   }
 
-  for (i = cuda_mpz->capacity - 1; i >= 0; i--) {
+  //pragma unroll
+  for (i = DIGITS_CAPACITY - 1; i >= 0; i--) {
     unsigned digit = cuda_mpz->digits[i];
 
     if (digit != 0 || print_zeroes) {
@@ -652,7 +657,8 @@ __device__ inline void cuda_mpz_print_str_device(cuda_mpz_t *cuda_mpz) {//change
 	  printf("-");
   }
 
-  for (int i = cuda_mpz->capacity - 1; i >= 0; i--) {
+  //pragma unroll
+  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
     unsigned digit = cuda_mpz->digits[i];
 
     if (digit != 0 || print_zeroes) {
@@ -682,26 +688,26 @@ __host__ __device__ inline void cuda_mpz_set_bit(cuda_mpz_t *cuda_mpz, unsigned 
   digits_set_bit(cuda_mpz->digits, bit_offset, bit);
 
   if (MPZ_NEGATIVE == cuda_mpz->sign && bit == 0 &&
-      digits_is_zero(cuda_mpz->digits, cuda_mpz->capacity)) {
+      digits_is_zero(cuda_mpz->digits, DIGITS_CAPACITY)) {
     cuda_mpz->sign = MPZ_NONNEGATIVE;
   }
 }
 
 __device__ __host__ inline void cuda_mpz_bit_lshift(cuda_mpz_t *cuda_mpz) {
-  bits_lshift(cuda_mpz->digits, cuda_mpz->capacity);
+  bits_lshift(cuda_mpz->digits, DIGITS_CAPACITY);
 
-  if (MPZ_NEGATIVE == cuda_mpz->sign && digits_is_zero(cuda_mpz->digits, cuda_mpz->capacity)) {
+  if (MPZ_NEGATIVE == cuda_mpz->sign && digits_is_zero(cuda_mpz->digits, DIGITS_CAPACITY)) {
     cuda_mpz->sign = MPZ_NONNEGATIVE;
   }
 }
 
 __device__ __host__ inline void cuda_mpz_bit_rshift(cuda_mpz_t *cuda_mpz, int n_bits) {
-  for(int i=0;i<n_bits;i++) bits_rshift(cuda_mpz->digits, cuda_mpz->capacity);
+  for(int i=0;i<n_bits;i++) bits_rshift(cuda_mpz->digits, DIGITS_CAPACITY);
 }
 
 __device__ __host__ inline void cuda_mpz_bitwise_rshift_eq(cuda_mpz_t *cuda_mpz, int n_bits) {//changes
   digit_t *digits = cuda_mpz->digits;
-  unsigned capacity = cuda_mpz->capacity;
+  //unsigned capacity = cuda_mpz->capacity;
 
   int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
   int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
@@ -715,13 +721,15 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift_eq(cuda_mpz_t *cuda_mpz,
   }
   */
 
-  for(int d_index = 0; d_index < capacity - 1 - rs_digits; d_index++) {//constant time for specific rl
+  //#pragma unroll
+  for(int d_index = 0; d_index < DIGITS_CAPACITY - 1 - rs_digits; d_index++) {//constant time for specific rl
 	digits[d_index] = ( digits[d_index + rs_digits] >> rs_remainder ) | ( digits[d_index + rs_digits + 1] << ( LOG2_DIGIT_BASE - rs_remainder ) );
   }
 
-  digits[capacity - 1 - rs_digits] = digits[capacity - 1] >> rs_remainder;
+  digits[DIGITS_CAPACITY - 1 - rs_digits] = digits[DIGITS_CAPACITY - 1] >> rs_remainder;
 
-  for(int d_index = capacity - rs_digits; d_index <= capacity - 1; d_index++) {//constant time for specific rl
+  //#pragma unroll
+  for(int d_index = DIGITS_CAPACITY - rs_digits; d_index <= DIGITS_CAPACITY - 1; d_index++) {//constant time for specific rl
   	digits[d_index] = 0;
   }
 }
@@ -729,7 +737,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift_eq(cuda_mpz_t *cuda_mpz,
 __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mpz_t *src, int n_bits) {//changes
   digit_t *src_digits = src->digits;
   digit_t *dst_digits = dst->digits;
-  unsigned capacity = src->capacity;
+  //unsigned capacity = src->capacity;
 
   int rs_digits = n_bits >> LOG2_LOG2_DIGIT_BASE;
   int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
@@ -745,13 +753,14 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
 
   dst->sign = src->sign;
 
-  for(int d_index = 0; d_index < capacity - 1 - rs_digits; d_index++) {//constant time for specific rl
+  //#pragma unroll
+  for(int d_index = 0; d_index < DIGITS_CAPACITY - 1 - rs_digits; d_index++) {//constant time for specific rl
 	  dst_digits[d_index] = ( src_digits[d_index + rs_digits] >> rs_remainder ) | ( src_digits[d_index + rs_digits + 1] << ( LOG2_DIGIT_BASE - rs_remainder ) );
   }
 
-  dst_digits[capacity - 1 - rs_digits] = src_digits[capacity - 1] >> rs_remainder;
+  dst_digits[DIGITS_CAPACITY - 1 - rs_digits] = src_digits[DIGITS_CAPACITY - 1] >> rs_remainder;
 
-  for(int d_index = capacity - rs_digits; d_index <= capacity - 1; d_index++) {//constant time for specific rl
+  for(int d_index = DIGITS_CAPACITY - rs_digits; d_index <= DIGITS_CAPACITY - 1; d_index++) {//constant time for specific rl
 	  dst_digits[d_index] = 0;
   }
 }
@@ -762,7 +771,9 @@ __device__ __host__ inline digit_t cuda_mpz_get_last_digit(cuda_mpz_t *cuda_mpz)
 
 __device__ __host__ inline int cuda_mpz_is_zero(cuda_mpz_t *cuda_mpz) {
   unsigned d_index = 0;
-  for (d_index = 0; d_index < cuda_mpz->capacity; d_index++) {
+
+  //#pragma unroll
+  for (d_index = 0; d_index < DIGITS_CAPACITY; d_index++) {
     //printf("d: %d\n", cuda_mpz->digits[d_index]);
     if(cuda_mpz->digits[d_index] != 0) return 0;
   }
@@ -812,7 +823,7 @@ __device__ __host__ inline void cuda_mpz_div(cuda_mpz_t *q, cuda_mpz_t *r, cuda_
 
     /* Compute the sign of the division */
     q->sign = (nsign == dsign) ? MPZ_NONNEGATIVE : MPZ_NEGATIVE;
-    if (MPZ_NEGATIVE == q->sign && digits_is_zero(q->digits, q->capacity)) {
+    if (MPZ_NEGATIVE == q->sign && digits_is_zero(q->digits, DIGITS_CAPACITY)) {
       q->sign = MPZ_NONNEGATIVE;
     }
   }
@@ -858,7 +869,7 @@ __device__ __inline__ void cuda_mpz_gcd_tmp(cuda_mpz_t *gcd, cuda_mpz_t *op1, cu
   cuda_mpz_set(a, (compare > 0) ? op1 : op2);
   cuda_mpz_set(b, (compare > 0) ? op2 : op1);
 
-  while (!digits_is_zero(b->digits, b->capacity)) {
+  while (!digits_is_zero(b->digits, DIGITS_CAPACITY)) {
     cuda_mpz_div(quo, mod, a, b);
     cuda_mpz_set(a, b);
     cuda_mpz_set(b, mod);
@@ -906,7 +917,7 @@ __device__ __inline__ void cuda_mpz_powmod_tmp(cuda_mpz_t *result, cuda_mpz_t *b
   cuda_mpz_div(tmp2, b, tmp1, mod);
 
   iteration = 0;
-  while (!bits_is_zero(exp->digits, exp->capacity, iteration)) {
+  while (!bits_is_zero(exp->digits, DIGITS_CAPACITY, iteration)) {
     // if (binary_exp is odd)
     if (digits_bit_at(exp->digits, iteration) == 1) {
       // result = (result * base) % mod
@@ -961,12 +972,12 @@ __device__ __inline__ void cuda_mpz_addeq_i(cuda_mpz_t *a, int i) {
   if (0 == i) return;
 
   if (i < 0) {
-    digits_complement(a->digits, a->capacity);
-    digits_add_across(a->digits, a->capacity, -i);
-    digits_complement(a->digits, a->capacity);
+    digits_complement(a->digits, DIGITS_CAPACITY);
+    digits_add_across(a->digits, DIGITS_CAPACITY, -i);
+    digits_complement(a->digits, DIGITS_CAPACITY);
   }
   else {
-    digits_add_across(a->digits, a->capacity, i);
+    digits_add_across(a->digits, DIGITS_CAPACITY, i);
   }
 }
 

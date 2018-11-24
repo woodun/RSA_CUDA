@@ -74,7 +74,7 @@ __device__ __host__ inline int bits_is_zero(digit_t *digits,
   unsigned i, j;
   unsigned bit_index = bit_offset % LOG2_DIGIT_BASE;
 
-  for (i = bit_offset / LOG2_DIGIT_BASE; i < capacity; i++) {
+  for (i = bit_offset / LOG2_DIGIT_BASE; i < DIGITS_CAPACITY; i++) {
     digit_t d = digits[i];
 
     /* If the digit index (i) is equal to the bit_offset (in other words,
@@ -202,7 +202,7 @@ __device__ __host__ inline int digits_equal_one(digit_t *digits, unsigned capaci
   }
 
   unsigned i;
-  for (i = 1; i < capacity; i ++) {
+  for (i = 1; i < DIGITS_CAPACITY; i ++) {
     if (digits[i] != 0) {
       return false;
     }
@@ -218,7 +218,7 @@ __device__ __host__ inline int digits_gt_one(digit_t *digits, unsigned capacity)
     return true;
   }
   unsigned i;
-  for (i = 1; i < capacity; i ++) {
+  for (i = 1; i < DIGITS_CAPACITY; i ++) {
     if (digits[i] != 0) {
       return true;
     }
@@ -433,7 +433,7 @@ __device__ __host__ inline void long_multiplication(digit_t *product,
     }
     product[i] = 0;
   }
-  for (; i < prod_capacity; i ++) {
+  for (; i < DIGITS_CAPACITY; i ++) {
     product[i] = 0;
   }
 
@@ -477,7 +477,7 @@ __device__ __host__ inline void digits_rshift(digit_t *digits, unsigned capacity
                                               unsigned shift_amount) {
   int i;
 
-  for (i = capacity - shift_amount - 1; i >= 0; i--) {
+  for (i = DIGITS_CAPACITY - shift_amount - 1; i >= 0; i--) {
     digits[i + shift_amount] = digits[i];
   }
   for (i = 0; i < (int) shift_amount; i++) {
@@ -489,7 +489,7 @@ __device__ __host__ inline void bits_lshift(digit_t *digits, unsigned capacity) 
   unsigned d_index = 0;
   unsigned shift_out = 0;
 
-  for (d_index = 0; d_index < capacity; d_index++) {
+  for (d_index = 0; d_index < DIGITS_CAPACITY; d_index++) {
     digit_t d = digits[d_index];
     digits[d_index] = shift_out | (d << 1);
     shift_out = 1 & bit_at(d, LOG2_DIGIT_BASE - 1);
@@ -502,7 +502,7 @@ __device__ __host__ inline void bits_rshift(digit_t *digits, unsigned capacity) 
 
   //printf("[0x%x] [0x%x] [0x%x] [0x%x]\n", digits[3], digits[2], digits[1], digits[0]);
 
-  for (d_index = capacity - 1; ; d_index--) {
+  for (d_index = DIGITS_CAPACITY - 1; ; d_index--) {
     //printf("%d --------\n", d_index);
     digit_t d = digits[d_index];
     //printf("index: %d, d: 0x%x\n", d_index, d);
