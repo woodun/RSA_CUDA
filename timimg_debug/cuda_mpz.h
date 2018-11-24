@@ -352,9 +352,9 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
     if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, DIGITS_CAPACITY);
   }
 
-  CHECK_SIGN(op1);
-  CHECK_SIGN(op2);
-  CHECK_SIGN(dst);
+//  CHECK_SIGN(op1);
+//  CHECK_SIGN(op2);
+//  CHECK_SIGN(dst);
 }
 
 __device__ __host__ inline void cuda_mpz_bitwise_and(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {//changes
@@ -472,8 +472,8 @@ __device__ __host__ inline void cuda_mpz_addeq(cuda_mpz_t *op1, cuda_mpz_t *op2)
     if (cuda_mpz_is_negative(op2)) digits_complement(op2->digits, DIGITS_CAPACITY);
   }
 
-  CHECK_SIGN(op1);
-  CHECK_SIGN(op2);
+//  CHECK_SIGN(op1);
+//  CHECK_SIGN(op2);
 }
 
 /**
@@ -532,9 +532,9 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
     dst->sign = MPZ_NONNEGATIVE;
   }
 
-  CHECK_SIGN(op1);
-  CHECK_SIGN(op2);
-  CHECK_SIGN(dst);
+//  CHECK_SIGN(op1);
+//  CHECK_SIGN(op2);
+//  CHECK_SIGN(dst);
 }
 
 /**
@@ -837,10 +837,10 @@ __device__ __host__ inline void cuda_mpz_div(cuda_mpz_t *q, cuda_mpz_t *r, cuda_
   n->sign = nsign;
   d->sign = dsign;
 
-  CHECK_SIGN(q);
-  CHECK_SIGN(r);
-  CHECK_SIGN(n);
-  CHECK_SIGN(d);
+//  CHECK_SIGN(q);
+//  CHECK_SIGN(r);
+//  CHECK_SIGN(n);
+//  CHECK_SIGN(d);
 }
 
 /**
@@ -990,7 +990,7 @@ __device__ __inline__ void cuda_mpz_mult_u(cuda_mpz_t *result, cuda_mpz_t *a, un
   result->sign = a->sign;
   if (0 == i) result->sign = MPZ_NONNEGATIVE;
 
-  CHECK_SIGN(result);
+//  CHECK_SIGN(result);
 }
 
 #endif /* __418_MPZ_H__ */
