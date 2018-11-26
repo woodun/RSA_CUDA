@@ -141,6 +141,7 @@ __device__ __host__ inline digit_t digits_add_across(digit_t *digits, unsigned n
   unsigned i = 0;
   unsigned long long value;
 
+  #pragma unroll
   while (carry != 0 && i < num_digits) {
     value = ((unsigned long long) digits[i]) + ((unsigned long long) carry);
     carry  = (digit_t) (value >> LOG2_DIGIT_BASE);
@@ -352,7 +353,6 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
 
 __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
   unsigned capacity = max(op1->words, op2->words);
-  for (int i = 0; i < capacity; i++) dst->digits[i] = 0;
 
   digit_t carry = 0;
   digit_t a;
@@ -368,9 +368,11 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
     dst->digits[i] = (digit_t) (value & MOD_DIGIT_BASE);
   }
 
-  unsigned word_count = capacity;
+  unsigned word_count;
   if(value != 0){
-	  word_count++;
+	  word_count = capacity + 1;
+  }else{
+	  word_count = capacity;
   }
 
   #pragma unroll
@@ -398,68 +400,67 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
-__device__ __host__ inline void digits_complement(digit_t *digits, unsigned num_digits) {
-
-  // Complement each digit by subtracting it from BASE-1
-  for (unsigned i = 0; i < num_digits; i++) {
-    digits[i] = (digit_t) ((DIGIT_BASE - 1) - digits[i]);
-  }
-
-  // Add 1
-  digits_add_across(digits, num_digits, 1);
-}
-
 __device__ __host__ inline void cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
+	unsigned capacity = max(op1->words, op2->words);
 
-    digits_complement(op2->digits, op2->capacity);
+	// Complement each digit by subtracting it from BASE-1
+	#pragma unroll
+	for (unsigned i = 0; i < capacity; i++) {
+		dst->digits[i] = (digit_t) ((DIGIT_BASE - 1) - op2->digits[i]);
+	}
 
-    unsigned capacity = max(op1->words, op2->words);
-    for (int i = 0; i < capacity; i++) dst->digits[i] = 0;
+	// Add 1
+	digits_add_across(digits, capacity, 1);
+
+	#pragma unroll
+	for (int i = capacity; i < dst->words; i++) {
+	//for (int i = word_count; i < DIGITS_CAPACITY; i ++) {
+		  dst->digits[i] = 0;
+	}
 
     digit_t carry = 0;
     digit_t a;
     digit_t b;
     unsigned long long value;
+    unsigned tmp;
+    digit_t top_digit = 0;
+    int word_count = -1;
 
-    for (unsigned i = 0; i < capacity + 1; i++) {
+    for (unsigned i = 0; i < capacity; i++) {
       a = (i < op1->words) ? op1->digits[i] : 0;
-      b = (i < op2->words) ? op2->digits[i] : 0;
+      b = (i < op2->words) ? dst->digits[i] : 0;
 
       value = ((unsigned long long) a) + ((unsigned long long) b) + ((unsigned long long) carry);
       carry  = (digit_t) (value >> LOG2_DIGIT_BASE);
-      dst->digits[i] = (digit_t) (value & MOD_DIGIT_BASE);
+
+      tmp = (digit_t) (value & MOD_DIGIT_BASE);
+      dst->digits[i] = tmp;
+      if(tmp != 0){
+    	  word_count = i;
+    	  top_digit = tmp;
+      }
     }
 
-    unsigned word_count = capacity;
-    if(value != 0){
-  	  word_count++;
+    if(carry != 1){////////in RSA it must be positive number
+    	printf("error! negative!\n");//check
     }
 
-    #pragma unroll
-    for (int i = word_count; i < dst->words; i++) {
-    //for (int i = word_count; i < DIGITS_CAPACITY; i ++) {
-    	  dst->digits[i] = 0;
-    }
-
-    unsigned total_bit_count = max(op1->bits, op2->bits);
-    unsigned top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
-    if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1){
-  	  total_bit_count++;
-    }
-
-    top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
-    if(dst->digits[word_count - 1] == 0 || dst->digits[word_count] != 0){//check
-  	  printf("error!\n");
-    }
-    if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1 ){
-  	  printf("error!\n");//check
-    }
-
+    word_count++;
     dst->words = word_count;
-    dst->bits = total_bit_count;
-    //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 
-    //////digits_complement(op2->digits, op2->capacity);//////todo: make add addeq, how complement work?
+//    if(word_count == 0){//////should not happen in RSA
+//    	dst->bits = 0;
+//    	return;
+//    }
+
+    //finding the msb
+    int msb = 0;
+    while (top_digit >>= 1) {
+  	  msb++;
+    }
+
+    dst->bits = (word_count - 1) * LOG2_DIGIT_BASE + msb + 1;
+    //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
 __device__ __host__ inline digit_t cuda_mpz_get_last_digit(cuda_mpz_t *cuda_mpz) {//changes
