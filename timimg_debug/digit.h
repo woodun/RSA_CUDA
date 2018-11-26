@@ -38,17 +38,45 @@ __device__ __host__ inline digit_t mult(digit_t a, digit_t b, digit_t *carry) {
   return result;
 }
 
-__device__ __host__ inline digit_t add(digit_t a, digit_t b, digit_t *carry) {
+//__device__ __host__ inline digit_t add(digit_t a, digit_t b, digit_t *carry) {
+//
+//  unsigned long long tmp = ((unsigned long long) a) +
+//                           ((unsigned long long) b) +
+//                           ((unsigned long long) *carry);
+//  digit_t result;
+//
+//  clip(tmp, &result, carry);
+//
+//  return result;
+//}
 
-  unsigned long long tmp = ((unsigned long long) a) +
-                           ((unsigned long long) b) +
-                           ((unsigned long long) *carry);
-  digit_t result;
+__device__ __host__ inline digit_t digits_add(digit_t *sum, unsigned sum_num_digits, digit_t *op1, unsigned op1_num_digits, digit_t *op2, unsigned op2_num_digits) {
+  digit_t carry = 0;
+  digit_t a;
+  digit_t b;
+  unsigned long long value;
 
-  clip(tmp, &result, carry);
+  for (unsigned i = 0; i < sum_num_digits; i++) {
+    a = (i < op1_num_digits) ? op1[i] : 0;
+    b = (i < op2_num_digits) ? op2[i] : 0;
 
-  return result;
+    value = ((unsigned long long) a) + ((unsigned long long) b) + ((unsigned long long) carry);
+
+    carry  = (digit_t) (value >> LOG2_DIGIT_BASE);
+    sum[i] = (digit_t) (value & MOD_DIGIT_BASE);
+  }
+
+  return carry;
 }
+
+//__device__ __host__ inline digit_t add(digit_t a, digit_t b,
+//                                digit_t *carry) {
+//  unsigned long long value = ((unsigned long long) a) + ((unsigned long long) b) + ((unsigned long long) *carry);
+//  *carry  = (digit_t) (value >> LOG2_DIGIT_BASE);
+//  digit_t result = (digit_t) (value & MOD_DIGIT_BASE);
+//
+//  return result;
+//}
 
 __device__ __host__ inline digit_t digits_add_across(digit_t *digits, unsigned num_digits, digit_t d) {
   digit_t carry = d;

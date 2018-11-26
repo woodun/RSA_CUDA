@@ -21,6 +21,9 @@
 #define LOG2_LOG2_DIGIT_BASE 5 //changes
 #define RL 70
 
+#define MPZ_NEGATIVE      1
+#define MPZ_NONNEGATIVE  0
+
 typedef unsigned digit_t;
 
 typedef struct {
@@ -106,9 +109,6 @@ __host__ inline void cuda_mpz_set_str_host(cuda_mpz_t *cuda_mpz, const char *use
   int len = strlen(str);
   int char_per_digit = LOG2_DIGIT_BASE / 4;
   num_digits = (len + char_per_digit - 1) / char_per_digit;
-  CHECK_MEM(cuda_mpz, num_digits);
-
-  digits_set_zero(cuda_mpz->digits);
 
   is_zero = true;
   #pragma unroll
@@ -123,6 +123,18 @@ __host__ inline void cuda_mpz_set_str_host(cuda_mpz_t *cuda_mpz, const char *use
     /* parse the string backwards (little endian order) */
     cuda_mpz->digits[i] = d;
   }
+
+  cuda_mpz->words = num_digits;
+  //finding the msb
+  digit_t v = cuda_mpz->digits[word_count - 1];
+  int msb = 0;
+
+  while (v >>= 1) {
+	  msb++;
+  }
+
+  cuda_mpz->bits = (num_digits - 1) * LOG2_DIGIT_BASE + msb + 1;
+  //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
 __device__ __host__ inline digit_t digits_add_across(digit_t *digits, unsigned num_digits, digit_t carry) {
@@ -142,19 +154,33 @@ __device__ __host__ inline digit_t digits_add_across(digit_t *digits, unsigned n
 __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
   unsigned capacity = max(op1->words, op2->words);
 
+  unsigned word_count = op1->words + op2->words - 1;
+
+  #pragma unroll
+  for (int i = word_count; i < dst->words; i++) {
+  //for (int i = word_count; i < DIGITS_CAPACITY; i ++) {
+  	  dst->digits[i] = 0;
+  }
+
   digit_t carry;
   digit_t prod;
   unsigned k;
   unsigned long long value;
 
+  digit_t op2_val;
+  digit_t op1_val;
+
   #pragma unroll
   for (unsigned i = 0; i < capacity; i++) {
+	op2_val = (i < op2->words) ? op2->digits[i] : 0;/////avoiding loads
 	#pragma unroll
     for (unsigned j = 0; j < capacity; j++) {
       k = i + j;
       carry = 0;
 
-      value = ((unsigned long long) op2->digits[i]) * ((unsigned long long) op1->digits[j]) + ((unsigned long long) carry);
+      op1_val = (j < op1->words) ? op1->digits[j] : 0;/////avoiding loads
+
+      value = ((unsigned long long) op2_val) * ((unsigned long long) op1_val) + ((unsigned long long) carry);
       carry  = (digit_t) (value >> LOG2_DIGIT_BASE);
       prod = (digit_t) (value & MOD_DIGIT_BASE);
 
@@ -162,9 +188,6 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
       digits_add_across(dst->digits + k + 1, 2 * capacity - k - 1, carry);
     }
   }
-
-
-  unsigned word_count = op1->words + op2->words - 1;
 
   if(dst->digits[word_count] != 0){
 	  word_count++;
@@ -183,12 +206,6 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
   if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1 ){
 	  printf("error!\n");//check
-  }
-
-  #pragma unroll
-  for (int i = word_count; i < dst->words; i++) {
-  //for (int i = word_count; i < DIGITS_CAPACITY; i ++) {
-  	  dst->digits[i] = 0;
   }
 
   dst->words = word_count;
@@ -333,6 +350,118 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
   dst->words = (dst->bits + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;
 }
 
+__device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
+  unsigned capacity = max(op1->words, op2->words);
+  for (int i = 0; i < capacity; i++) dst->digits[i] = 0;
+
+  digit_t carry = 0;
+  digit_t a;
+  digit_t b;
+  unsigned long long value;
+
+  for (unsigned i = 0; i < capacity + 1; i++) {
+    a = (i < op1->words) ? op1->digits[i] : 0;
+    b = (i < op2->words) ? op2->digits[i] : 0;
+
+    value = ((unsigned long long) a) + ((unsigned long long) b) + ((unsigned long long) carry);
+    carry  = (digit_t) (value >> LOG2_DIGIT_BASE);
+    dst->digits[i] = (digit_t) (value & MOD_DIGIT_BASE);
+  }
+
+  unsigned word_count = capacity;
+  if(value != 0){
+	  word_count++;
+  }
+
+  #pragma unroll
+  for (int i = word_count; i < dst->words; i++) {
+  //for (int i = word_count; i < DIGITS_CAPACITY; i ++) {
+  	  dst->digits[i] = 0;
+  }
+
+  unsigned total_bit_count = max(op1->bits, op2->bits);
+  unsigned top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
+  if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1){
+	  total_bit_count++;
+  }
+
+  top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
+  if(dst->digits[word_count - 1] == 0 || dst->digits[word_count] != 0){//check
+	  printf("error!\n");
+  }
+  if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1 ){
+	  printf("error!\n");//check
+  }
+
+  dst->words = word_count;
+  dst->bits = total_bit_count;
+  //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
+}
+
+__device__ __host__ inline void digits_complement(digit_t *digits, unsigned num_digits) {
+
+  // Complement each digit by subtracting it from BASE-1
+  for (unsigned i = 0; i < num_digits; i++) {
+    digits[i] = (digit_t) ((DIGIT_BASE - 1) - digits[i]);
+  }
+
+  // Add 1
+  digits_add_across(digits, num_digits, 1);
+}
+
+__device__ __host__ inline void cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
+
+    digits_complement(op2->digits, op2->capacity);
+
+    unsigned capacity = max(op1->words, op2->words);
+    for (int i = 0; i < capacity; i++) dst->digits[i] = 0;
+
+    digit_t carry = 0;
+    digit_t a;
+    digit_t b;
+    unsigned long long value;
+
+    for (unsigned i = 0; i < capacity + 1; i++) {
+      a = (i < op1->words) ? op1->digits[i] : 0;
+      b = (i < op2->words) ? op2->digits[i] : 0;
+
+      value = ((unsigned long long) a) + ((unsigned long long) b) + ((unsigned long long) carry);
+      carry  = (digit_t) (value >> LOG2_DIGIT_BASE);
+      dst->digits[i] = (digit_t) (value & MOD_DIGIT_BASE);
+    }
+
+    unsigned word_count = capacity;
+    if(value != 0){
+  	  word_count++;
+    }
+
+    #pragma unroll
+    for (int i = word_count; i < dst->words; i++) {
+    //for (int i = word_count; i < DIGITS_CAPACITY; i ++) {
+    	  dst->digits[i] = 0;
+    }
+
+    unsigned total_bit_count = max(op1->bits, op2->bits);
+    unsigned top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
+    if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1){
+  	  total_bit_count++;
+    }
+
+    top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
+    if(dst->digits[word_count - 1] == 0 || dst->digits[word_count] != 0){//check
+  	  printf("error!\n");
+    }
+    if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1 ){
+  	  printf("error!\n");//check
+    }
+
+    dst->words = word_count;
+    dst->bits = total_bit_count;
+    //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
+
+    //////digits_complement(op2->digits, op2->capacity);//////todo: make add addeq, how complement work?
+}
+
 __device__ __host__ inline digit_t cuda_mpz_get_last_digit(cuda_mpz_t *cuda_mpz) {//changes
 	return cuda_mpz->digits[0];
 }
@@ -341,10 +470,6 @@ __host__ inline char* cuda_mpz_get_str(cuda_mpz_t *cuda_mpz, char *str, int bufs
   int print_zeroes = 0; // don't print leading 0s
   int i;
   int str_index = 0;
-  if (cuda_mpz_is_negative(cuda_mpz)) {
-    str[0] = '-';
-    str_index = 1;
-  }
 
   #pragma unroll
   for (i = DIGITS_CAPACITY - 1; i >= 0; i--) {
@@ -377,10 +502,6 @@ __host__ inline char* cuda_mpz_get_str(cuda_mpz_t *cuda_mpz, char *str, int bufs
 
 __device__ inline void cuda_mpz_print_str_device(cuda_mpz_t *cuda_mpz) {//changes
   int print_zeroes = 0; // don't print leading 0s
-
-  if (cuda_mpz_is_negative(cuda_mpz)) {
-	  printf("-");
-  }
 
   #pragma unroll
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
