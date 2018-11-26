@@ -15,28 +15,20 @@
 #define LOG2_DIGIT_BASE     32
 #define DIGIT_BASE          ((unsigned long long) 1 << (LOG2_DIGIT_BASE))
 #define DIGITS_CAPACITY     8 //changes: make enough space for large input
+#define MOD_DIGIT_BASE      0xffffffff//changes
 #define MOD_LOG2_DIGIT_BASE     31 //changes
 #define LOG2_LOG2_DIGIT_BASE 5 //changes
 #define RL 70
 
 typedef unsigned digit_t;
 
-__device__ __host__ inline void clip(unsigned long long value,
-                                     digit_t* result, digit_t *carry) {
-  *carry  = (digit_t) (value / DIGIT_BASE); //FIXME
-  *result = (digit_t) (value % DIGIT_BASE); //FIXME
+__device__ __host__ inline void clip(unsigned long long value, digit_t* result, digit_t *carry) {
+  *carry  = (digit_t) (value >> LOG2_DIGIT_BASE);
+  *result = (digit_t) (value & MOD_DIGIT_BASE);
 }
 
-/**
- * @brief Compute the multiplication of two digits (plus the carry).
- *
- * e.g If DIGIT_BASE is 10, and the input carry is 0,
- *
- *  3 x 5 = 15 = (product: 5, carry: 1)
- *
- * @return The product (as well as the carry out).
- */
 __device__ __host__ inline digit_t mult(digit_t a, digit_t b, digit_t *carry) {
+
   unsigned long long tmp = ((unsigned long long) a) * ((unsigned long long) b) +
                            ((unsigned long long) *carry);
   digit_t result;
@@ -46,14 +38,19 @@ __device__ __host__ inline digit_t mult(digit_t a, digit_t b, digit_t *carry) {
   return result;
 }
 
+__device__ __host__ inline digit_t add(digit_t a, digit_t b, digit_t *carry) {
 
-/**
- * @brief Add the digit d to the list of digits (with carry)!
- *
- * @return The carry out.
- */
-__device__ __host__ inline digit_t digits_add_across(digit_t *digits,
-                                              unsigned num_digits, digit_t d) {
+  unsigned long long tmp = ((unsigned long long) a) +
+                           ((unsigned long long) b) +
+                           ((unsigned long long) *carry);
+  digit_t result;
+
+  clip(tmp, &result, carry);
+
+  return result;
+}
+
+__device__ __host__ inline digit_t digits_add_across(digit_t *digits, unsigned num_digits, digit_t d) {
   digit_t carry = d;
   unsigned i = 0;
 
@@ -108,27 +105,14 @@ __device__ __host__ inline void long_multiplication(digit_t *product,
       digit_t carry = 0;
       digit_t prod;
 
-      prod = mult(op2[i], op1[j], &carry);
+
+     prod = mult(op2[i], op1[j], &carry);
 
       digits_add_across(product + k,     2*num_digits - k,     prod);
       digits_add_across(product + k + 1, 2*num_digits - k - 1, carry);
     }
   }
 
-}
-
-/**
- * @brief Compute op1 * op2 and store the result in product.
- *
- * @warning It is assumed that op1 and op2 contain num_digits each
- * and product has room for at least 2*num_digits.
- */
-__device__ __host__ inline void digits_mult(digit_t *product,
-                                            digit_t *op1,
-                                            digit_t *op2,
-                                            unsigned num_digits,
-                                            unsigned prod_capacity) {
-  long_multiplication(product, op1, op2, num_digits, prod_capacity);
 }
 
 /**
