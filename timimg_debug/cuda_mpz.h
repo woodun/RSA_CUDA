@@ -126,7 +126,7 @@ __host__ inline void cuda_mpz_set_str_host(cuda_mpz_t *cuda_mpz, const char *use
 
   cuda_mpz->words = num_digits;
   //finding the msb
-  digit_t v = cuda_mpz->digits[word_count - 1];
+  digit_t v = cuda_mpz->digits[num_digits - 1];
   int msb = 0;
 
   while (v >>= 1) {
@@ -410,7 +410,7 @@ __device__ __host__ inline void cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 	}
 
 	// Add 1
-	digits_add_across(digits, capacity, 1);
+	digits_add_across(dst->digits, capacity, 1);
 
 	#pragma unroll
 	for (int i = capacity; i < dst->words; i++) {
