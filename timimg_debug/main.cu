@@ -34,10 +34,14 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	int div_count = 0;
 
+		char test_str[1024];
+		printf("mes1: ");
+		printf("%s\n", cuda_mpz_get_str(mes1, test_str, 1024));
+		printf("mes2: ");
+		printf("%s\n", cuda_mpz_get_str(mes2, test_str, 1024));
+
 	//mes1 * r2
 	cuda_mpz_mult(tmp2_1, mes1, r2);
-
-	printf("debug1\n");
 	//mes2 * r2
 	cuda_mpz_mult(tmp2_2, mes2, r2);
 
