@@ -36,8 +36,6 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 
 	//mes1 * r2
 	cuda_mpz_mult(tmp2_1, mes1, r2);
-
-	printf("debug1\n");
 	//mes2 * r2
 	cuda_mpz_mult(tmp2_2, mes2, r2);
 
