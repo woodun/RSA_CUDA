@@ -315,8 +315,8 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_set_str_host(&h_r2, r2_input);
 
 	///////get e
-	char e_input[] = "101";
-	//char e_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
+	//char e_input[] = "101";
+	char e_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
 
 	int e_bitsLength = (int)strlen(e_input);
 	int* eBits = (int *) malloc(sizeof(int) * e_bitsLength);
