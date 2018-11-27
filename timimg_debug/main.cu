@@ -339,8 +339,8 @@ int main (int argc, char *argv[]) {
 
 	///////get d
 	//char d_input[] = "1011011001001001010011110110010101010111001010110101111000111100001"; //big endian 67 bits
-	char d_input[] = "1000100010110110111110111000110000000001011000001000011010101101000101"; //big endian 70 bits
-	//char d_input[] = "101";
+	//char d_input[] = "1000100010110110111110111000110000000001011000001000011010101101000101"; //big endian 70 bits
+	char d_input[] = "101";
 
 	int d_bitsLength = (int)strlen(d_input);
 
