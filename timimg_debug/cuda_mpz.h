@@ -207,7 +207,7 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
 
   top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
   if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1 ){
-	  printf("error2!\n");//check
+	  printf("error2! %x\n", ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) );//check
   }
 
   dst->words = word_count;
@@ -393,7 +393,7 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 	  printf("error3!\n");
   }
   if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1 ){
-	  printf("error4!\n");//check
+	  printf("error4! %\n", ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) );//check
   }
 
   dst->words = word_count;

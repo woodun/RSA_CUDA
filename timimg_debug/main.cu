@@ -501,9 +501,10 @@ int main (int argc, char *argv[]) {
 			if (bit1_div_num == data_num && nondiv_num == data_num && bothdiv_num == data_num && bit0_div_num == data_num){
 				break;
 			}
+			break;////////////
 		}
 
-		break;
+		break;/////////////
 
 		long long int sum1 = 0;
 		long long int sum2 = 0;
@@ -561,7 +562,7 @@ int main (int argc, char *argv[]) {
 		}
 		printf("\n");
 
-		break;
+		break;///////////////
 	}
 
 //	known_bits[known_bits_length] = 1;//last bit is always 1
