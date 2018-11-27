@@ -153,12 +153,10 @@ __device__ __host__ inline digit_t digits_add_across(digit_t *digits, unsigned n
 }
 
 __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
-  unsigned capacity = max(op1->words, op2->words);
-
-  unsigned word_count = op1->words + op2->words - 1;
+  unsigned capacity = op1->words + op2->words;
 
   #pragma unroll
-  for (int i = word_count; i < dst->words; i++) {
+  for (int i = 0; i < dst->words; i++) {
   //for (int i = word_count; i < DIGITS_CAPACITY; i ++) {
   	  dst->digits[i] = 0;
   }
@@ -172,24 +170,27 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   digit_t op1_val;
 
   #pragma unroll
-  for (unsigned i = 0; i < capacity; i++) {
-	op2_val = (i < op2->words) ? op2->digits[i] : 0;/////avoiding loads
+  for (unsigned i = 0; i < op2->words; i++) {
+	op2_val = op2->digits[i];
+	//op2_val = (i < op2->words) ? op2->digits[i] : 0;/////avoiding loads
 	#pragma unroll
-    for (unsigned j = 0; j < capacity; j++) {
+    for (unsigned j = 0; j < op1->words; j++) {
       k = i + j;
       carry = 0;
 
-      op1_val = (j < op1->words) ? op1->digits[j] : 0;/////avoiding loads
+      op1_val = op1->digits[j];
+      //op1_val = (j < op1->words) ? op1->digits[j] : 0;/////avoiding loads
 
       value = ((unsigned long long) op2_val) * ((unsigned long long) op1_val) + ((unsigned long long) carry);
       carry  = (digit_t) (value >> LOG2_DIGIT_BASE);
       prod = (digit_t) (value & MOD_DIGIT_BASE);
 
-      digits_add_across(dst->digits + k,     2 * capacity - k,     prod);
-      digits_add_across(dst->digits + k + 1, 2 * capacity - k - 1, carry);
+      digits_add_across(dst->digits + k,     capacity - k,     prod);
+      digits_add_across(dst->digits + k + 1, capacity - k - 1, carry);
     }
   }
 
+  unsigned word_count = op1->words + op2->words - 1;
   if(dst->digits[word_count] != 0){
 	  word_count++;
   }
