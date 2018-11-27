@@ -195,7 +195,7 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   }
 
   if(dst->digits[word_count - 1] == 0 || dst->digits[word_count] != 0){//check
-	  printf("error!\n");
+	  printf("error1!\n");
   }
 
   unsigned total_bit_count = op1->bits + op2->bits;
@@ -206,7 +206,7 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
 
   top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
   if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1 ){
-	  printf("error!\n");//check
+	  printf("error2!\n");//check
   }
 
   dst->words = word_count;
@@ -389,10 +389,10 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 
   top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
   if(dst->digits[word_count - 1] == 0 || dst->digits[word_count] != 0){//check
-	  printf("error!\n");
+	  printf("error3!\n");
   }
   if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1 ){
-	  printf("error!\n");//check
+	  printf("error4!\n");//check
   }
 
   dst->words = word_count;
@@ -442,7 +442,7 @@ __device__ __host__ inline void cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, c
     }
 
     if(carry != 1){////////in RSA it must be positive number
-    	printf("error! negative!\n");//check
+    	printf("error5! negative!\n");//check
     }
 
     word_count++;
