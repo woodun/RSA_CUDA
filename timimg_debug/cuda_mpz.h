@@ -685,6 +685,7 @@ __device__ __host__ inline void cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 	  printf("\n");
 	  printf("words: %u\n", op2->words);
 	  printf("bits: %u\n", op2->bits);
+	  printf("##############################################################\n");
 	  ///////////////////////debug
 
 
@@ -774,6 +775,8 @@ __device__ __host__ inline void cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, c
     printf("\n");
     printf("words: %u\n", op2->words);
     printf("bits: %u\n", op2->bits);
+    printf("##############################################################\n");
+    printf("##############################################################\n");
     ///////////////////////debug
 }
 
