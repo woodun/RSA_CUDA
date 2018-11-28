@@ -3,8 +3,7 @@
 //#include "mpz.h"
 #include "cuda_mpz.h"
 
-
-__device__ __host__ mpz_t* REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t* t){//mpz_t* RMOD, int L, mpz_t* N, mpz_t* N_ should not be changed.
+__host__ mpz_t* REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t* t){//mpz_t* RMOD, int L, mpz_t* N, mpz_t* N_ should not be changed.
 
 	//m = ((T & R) * N_) & R
 	mpz_bitwise_truncate(t, T, RL);
