@@ -180,6 +180,7 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   printf("\n");
   printf("words: %u\n", op2->words);
   printf("bits: %u\n", op2->bits);
+  printf("##############################################################\n");
   ///////////////////////debug
 
 
@@ -267,6 +268,8 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   printf("\n");
   printf("words: %u\n", op2->words);
   printf("bits: %u\n", op2->bits);
+  printf("##############################################################\n");
+  printf("##############################################################\n");
   ///////////////////////debug
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
@@ -290,6 +293,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
     printf("\n");
     printf("words: %u\n", src->words);
     printf("bits: %u\n", src->bits);
+    printf("##############################################################\n");
     ///////////////////////debug
 
 //  if(RL >= dst->bits){
@@ -350,6 +354,8 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
   printf("\n");
   printf("words: %u\n", src->words);
   printf("bits: %u\n", src->bits);
+  printf("##############################################################\n");
+  printf("##############################################################\n");
   ///////////////////////debug
 }
 
@@ -364,6 +370,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
     printf("\n");
     printf("words: %u\n", cuda_mpz->words);
     printf("bits: %u\n", cuda_mpz->bits);
+    printf("##############################################################\n");
     ///////////////////////debug
 
 //  if(RL >= dst->bits){
@@ -413,6 +420,8 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
   printf("\n");
   printf("words: %u\n", cuda_mpz->words);
   printf("bits: %u\n", cuda_mpz->bits);
+  printf("##############################################################\n");
+  printf("##############################################################\n");
   ///////////////////////debug
 }
 
@@ -487,6 +496,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
     printf("\n");
     printf("words: %u\n", src->words);
     printf("bits: %u\n", src->bits);
+    printf("##############################################################\n");
     ///////////////////////debug
 
 //  if(RL >= dst->bits){
@@ -535,6 +545,8 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
   printf("\n");
   printf("words: %u\n", src->words);
   printf("bits: %u\n", src->bits);
+  printf("##############################################################\n");
+  printf("##############################################################\n");
   ///////////////////////debug
 }
 
@@ -565,6 +577,7 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 	  printf("\n");
 	  printf("words: %u\n", op2->words);
 	  printf("bits: %u\n", op2->bits);
+	  printf("##############################################################\n");
 	  ///////////////////////debug
 
   unsigned capacity = max(op1->words, op2->words);
@@ -640,6 +653,8 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
   printf("\n");
   printf("words: %u\n", op2->words);
   printf("bits: %u\n", op2->bits);
+  printf("##############################################################\n");
+  printf("##############################################################\n");
   ///////////////////////debug
 }
 
