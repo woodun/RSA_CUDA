@@ -347,8 +347,15 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   unsigned total_bit_count = RL;
   unsigned top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;/////////////////////check when rl = 64
 
+  printf("top_word: %u\n", top_word);
+  printf("total_bit_count: %u\n", total_bit_count);
+  fflush(stdout);
   //finding the msb, for efficiency we assume heading zeros does not pass word boundary
    while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
+	   printf("top_word: %u\n", (top_word >> ( top_bit_count - 1 ));
+	   fflush(stdout);
+	   printf("total_bit_count: %u\n", total_bit_count);
+	   fflush(stdout);
 	   top_bit_count--;
   }
 
