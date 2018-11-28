@@ -710,13 +710,15 @@ __device__ __host__ inline void cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, c
     digit_t a;
     digit_t b;
     unsigned long long value;
-    unsigned tmp;
+    digit_t tmp;
     digit_t top_digit = 0;
     int word_count = -1;
 
     for (unsigned i = 0; i < capacity; i++) {
-      a = (i < op1->words) ? op1->digits[i] : 0;
-      b = (i < op2->words) ? dst->digits[i] : 0;
+      //a = (i < op1->words) ? op1->digits[i] : 0;
+      //b = (i < op2->words) ? dst->digits[i] : 0;
+       a = op1->digits[i];
+       b = dst->digits[i];
 
       value = ((unsigned long long) a) + ((unsigned long long) b) + ((unsigned long long) carry);
       carry  = (digit_t) (value >> LOG2_DIGIT_BASE);
