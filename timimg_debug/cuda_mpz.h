@@ -309,7 +309,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
 	  dst_digits[d_index] = 0;
   }
 
-  digit_t top_word = src_digits[rs_digits] & ( 0xffffffff >> ls_remainder)
+  digit_t top_word = src_digits[rs_digits] & ( 0xffffffff >> ls_remainder);
   dst_digits[rs_digits] = top_word;
 
   #pragma unroll
