@@ -118,33 +118,33 @@ __device__ __host__ inline digit_t digits_add_across(digit_t *digits, unsigned n
 __device__ __host__ inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   unsigned capacity = op1->words + op2->words;
 
-  ///////////////////////debug
-  printf("mult:\n");
-  printf("dst: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", dst->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", dst->words);
-  printf("bits: %u\n", dst->bits);
-
-  printf("op1: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", op1->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", op1->words);
-  printf("bits: %u\n", op1->bits);
-
-  printf("op2: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", op2->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", op2->words);
-  printf("bits: %u\n", op2->bits);
-  printf("##############################################################\n");
-  ///////////////////////debug
+//  ///////////////////////debug
+//  printf("mult:\n");
+//  printf("dst: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", dst->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", dst->words);
+//  printf("bits: %u\n", dst->bits);
+//
+//  printf("op1: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", op1->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", op1->words);
+//  printf("bits: %u\n", op1->bits);
+//
+//  printf("op2: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", op2->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", op2->words);
+//  printf("bits: %u\n", op2->bits);
+//  printf("##############################################################\n");
+//  ///////////////////////debug
 
 
   #pragma unroll
@@ -206,58 +206,58 @@ __device__ __host__ inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   dst->bits = total_bit_count;
 
 
-  ///////////////////////debug
-  printf("mult:\n");
-  printf("dst: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", dst->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", dst->words);
-  printf("bits: %u\n", dst->bits);
-
-  printf("op1: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", op1->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", op1->words);
-  printf("bits: %u\n", op1->bits);
-
-  printf("op2: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", op2->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", op2->words);
-  printf("bits: %u\n", op2->bits);
-  printf("##############################################################\n");
-  printf("##############################################################\n");
-  ///////////////////////debug
+//  ///////////////////////debug
+//  printf("mult:\n");
+//  printf("dst: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", dst->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", dst->words);
+//  printf("bits: %u\n", dst->bits);
+//
+//  printf("op1: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", op1->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", op1->words);
+//  printf("bits: %u\n", op1->bits);
+//
+//  printf("op2: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", op2->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", op2->words);
+//  printf("bits: %u\n", op2->bits);
+//  printf("##############################################################\n");
+//  printf("##############################################################\n");
+//  ///////////////////////debug
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
 __device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int RL) {//changes
 
-    ///////////////////////debug
-    printf("truncate:\n");
-    printf("dst: \n");
-    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-  	  printf("%08x", dst->digits[i]);
-    }
-    printf("\n");
-    printf("words: %u\n", dst->words);
-    printf("bits: %u\n", dst->bits);
-
-    printf("src: \n");
-    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-  	  printf("%08x", src->digits[i]);
-    }
-    printf("\n");
-    printf("words: %u\n", src->words);
-    printf("bits: %u\n", src->bits);
-    printf("##############################################################\n");
-    ///////////////////////debug
+//    ///////////////////////debug
+//    printf("truncate:\n");
+//    printf("dst: \n");
+//    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//  	  printf("%08x", dst->digits[i]);
+//    }
+//    printf("\n");
+//    printf("words: %u\n", dst->words);
+//    printf("bits: %u\n", dst->bits);
+//
+//    printf("src: \n");
+//    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//  	  printf("%08x", src->digits[i]);
+//    }
+//    printf("\n");
+//    printf("words: %u\n", src->words);
+//    printf("bits: %u\n", src->bits);
+//    printf("##############################################################\n");
+//    ///////////////////////debug
 
 //  if(RL >= dst->bits){
 //	  return;
@@ -300,41 +300,41 @@ __device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int
   dst->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
   dst->words = word_count;
 
-  ///////////////////////debug
-  printf("truncate:\n");
-  printf("dst: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", dst->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", dst->words);
-  printf("bits: %u\n", dst->bits);
-
-  printf("src: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", src->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", src->words);
-  printf("bits: %u\n", src->bits);
-  printf("##############################################################\n");
-  printf("##############################################################\n");
-  ///////////////////////debug
+//  ///////////////////////debug
+//  printf("truncate:\n");
+//  printf("dst: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", dst->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", dst->words);
+//  printf("bits: %u\n", dst->bits);
+//
+//  printf("src: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", src->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", src->words);
+//  printf("bits: %u\n", src->bits);
+//  printf("##############################################################\n");
+//  printf("##############################################################\n");
+//  ///////////////////////debug
 }
 
 __device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int RL) {//changes
 
-    ///////////////////////debug
-    printf("truncateeq:\n");
-    printf("mpz: \n");
-    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-  	  printf("%08x", mpz->digits[i]);
-    }
-    printf("\n");
-    printf("words: %u\n", mpz->words);
-    printf("bits: %u\n", mpz->bits);
-    printf("##############################################################\n");
-    ///////////////////////debug
+//    ///////////////////////debug
+//    printf("truncateeq:\n");
+//    printf("mpz: \n");
+//    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//  	  printf("%08x", mpz->digits[i]);
+//    }
+//    printf("\n");
+//    printf("words: %u\n", mpz->words);
+//    printf("bits: %u\n", mpz->bits);
+//    printf("##############################################################\n");
+//    ///////////////////////debug
 
 //  if(RL >= dst->bits){
 //	  return;
@@ -374,18 +374,18 @@ __device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int RL) {//c
   mpz->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
   mpz->words = word_count;
 
-  ///////////////////////debug
-  printf("truncateeq:\n");
-  printf("mpz: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", mpz->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", mpz->words);
-  printf("bits: %u\n", mpz->bits);
-  printf("##############################################################\n");
-  printf("##############################################################\n");
-  ///////////////////////debug
+//  ///////////////////////debug
+//  printf("truncateeq:\n");
+//  printf("mpz: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", mpz->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", mpz->words);
+//  printf("bits: %u\n", mpz->bits);
+//  printf("##############################################################\n");
+//  printf("##############################################################\n");
+//  ///////////////////////debug
 }
 
 __device__ __host__ inline int mpz_compare(mpz_t *a, mpz_t *b) {
@@ -442,25 +442,25 @@ __device__ __host__ inline void mpz_bitwise_rshift_eq(mpz_t *mpz, int RL) {//cha
 
 __device__ __host__ inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int RL) {//changes
 
-    ///////////////////////debug
-    printf("rshift:\n");
-    printf("dst: \n");
-    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-  	  printf("%08x", dst->digits[i]);
-    }
-    printf("\n");
-    printf("words: %u\n", dst->words);
-    printf("bits: %u\n", dst->bits);
-
-    printf("src: \n");
-    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-  	  printf("%08x", src->digits[i]);
-    }
-    printf("\n");
-    printf("words: %u\n", src->words);
-    printf("bits: %u\n", src->bits);
-    printf("##############################################################\n");
-    ///////////////////////debug
+//    ///////////////////////debug
+//    printf("rshift:\n");
+//    printf("dst: \n");
+//    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//  	  printf("%08x", dst->digits[i]);
+//    }
+//    printf("\n");
+//    printf("words: %u\n", dst->words);
+//    printf("bits: %u\n", dst->bits);
+//
+//    printf("src: \n");
+//    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//  	  printf("%08x", src->digits[i]);
+//    }
+//    printf("\n");
+//    printf("words: %u\n", src->words);
+//    printf("bits: %u\n", src->bits);
+//    printf("##############################################################\n");
+//    ///////////////////////debug
 
 //  if(RL >= dst->bits){
 //	  for (int i = 0; i < dst->words; i++) dst->digits[i] = 0;
@@ -491,57 +491,57 @@ __device__ __host__ inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int R
   dst->words = (dst->bits + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;
 
 
-  ///////////////////////debug
-  printf("rshift:\n");
-  printf("dst: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", dst->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", dst->words);
-  printf("bits: %u\n", dst->bits);
-
-  printf("src: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", src->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", src->words);
-  printf("bits: %u\n", src->bits);
-  printf("##############################################################\n");
-  printf("##############################################################\n");
-  ///////////////////////debug
+//  ///////////////////////debug
+//  printf("rshift:\n");
+//  printf("dst: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", dst->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", dst->words);
+//  printf("bits: %u\n", dst->bits);
+//
+//  printf("src: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", src->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", src->words);
+//  printf("bits: %u\n", src->bits);
+//  printf("##############################################################\n");
+//  printf("##############################################################\n");
+//  ///////////////////////debug
 }
 
 __device__ __host__ inline void mpz_add(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
 
-	  ///////////////////////debug
-	  printf("add:\n");
-	  printf("dst: \n");
-	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-		  printf("%08x", dst->digits[i]);
-	  }
-	  printf("\n");
-	  printf("words: %u\n", dst->words);
-	  printf("bits: %u\n", dst->bits);
-
-	  printf("op1: \n");
-	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-		  printf("%08x", op1->digits[i]);
-	  }
-	  printf("\n");
-	  printf("words: %u\n", op1->words);
-	  printf("bits: %u\n", op1->bits);
-
-	  printf("op2: \n");
-	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-		  printf("%08x", op2->digits[i]);
-	  }
-	  printf("\n");
-	  printf("words: %u\n", op2->words);
-	  printf("bits: %u\n", op2->bits);
-	  printf("##############################################################\n");
-	  ///////////////////////debug
+//	  ///////////////////////debug
+//	  printf("add:\n");
+//	  printf("dst: \n");
+//	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//		  printf("%08x", dst->digits[i]);
+//	  }
+//	  printf("\n");
+//	  printf("words: %u\n", dst->words);
+//	  printf("bits: %u\n", dst->bits);
+//
+//	  printf("op1: \n");
+//	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//		  printf("%08x", op1->digits[i]);
+//	  }
+//	  printf("\n");
+//	  printf("words: %u\n", op1->words);
+//	  printf("bits: %u\n", op1->bits);
+//
+//	  printf("op2: \n");
+//	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//		  printf("%08x", op2->digits[i]);
+//	  }
+//	  printf("\n");
+//	  printf("words: %u\n", op2->words);
+//	  printf("bits: %u\n", op2->bits);
+//	  printf("##############################################################\n");
+//	  ///////////////////////debug
 
   unsigned capacity = max(op1->words, op2->words);
 
@@ -591,34 +591,34 @@ __device__ __host__ inline void mpz_add(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 
 
-  ///////////////////////debug
-  printf("add:\n");
-  printf("dst: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", dst->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", dst->words);
-  printf("bits: %u\n", dst->bits);
-
-  printf("op1: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", op1->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", op1->words);
-  printf("bits: %u\n", op1->bits);
-
-  printf("op2: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", op2->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", op2->words);
-  printf("bits: %u\n", op2->bits);
-  printf("##############################################################\n");
-  printf("##############################################################\n");
-  ///////////////////////debug
+//  ///////////////////////debug
+//  printf("add:\n");
+//  printf("dst: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", dst->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", dst->words);
+//  printf("bits: %u\n", dst->bits);
+//
+//  printf("op1: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", op1->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", op1->words);
+//  printf("bits: %u\n", op1->bits);
+//
+//  printf("op2: \n");
+//  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//	  printf("%08x", op2->digits[i]);
+//  }
+//  printf("\n");
+//  printf("words: %u\n", op2->words);
+//  printf("bits: %u\n", op2->bits);
+//  printf("##############################################################\n");
+//  printf("##############################################################\n");
+//  ///////////////////////debug
 }
 
 __device__ __host__ inline void mpz_sub(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
