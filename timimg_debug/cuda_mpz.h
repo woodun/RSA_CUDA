@@ -433,11 +433,11 @@ __device__ __host__ inline int cuda_mpz_compare(cuda_mpz_t *a, cuda_mpz_t *b) {
   if(a->bits < b->bits){
 	  return -1;
   }
-  unsigned word_count = a->words;
-  if(a->digits[word_count] > b->digits[word_count]){
+  unsigned top_index = a->words - 1;
+  if(a->digits[top_index] > b->digits[top_index]){
 	  return 1;
   }
-  if(a->digits[word_count] < b->digits[word_count]){
+  if(a->digits[top_index] < b->digits[top_index]){
 	  return -1;
   }
   return 0;
