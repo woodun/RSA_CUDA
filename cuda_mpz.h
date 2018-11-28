@@ -18,7 +18,7 @@
 #define MOD_DIGIT_BASE      0xffffffff//changes
 #define MOD_LOG2_DIGIT_BASE     31 //changes
 #define LOG2_LOG2_DIGIT_BASE 5 //changes
-#define RL 70
+//#define RL 70
 
 #define MPZ_NEGATIVE      1
 #define MPZ_NONNEGATIVE  0
@@ -237,7 +237,7 @@ __device__ __host__ inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
-__device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src) {//changes
+__device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int RL) {//changes
 
     ///////////////////////debug
     printf("truncate:\n");
@@ -322,7 +322,7 @@ __device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src) {//
   ///////////////////////debug
 }
 
-__device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz) {//changes
+__device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int RL) {//changes
 
     ///////////////////////debug
     printf("truncateeq:\n");
@@ -410,7 +410,7 @@ __device__ __host__ inline int mpz_gte(mpz_t *a, mpz_t *b) {
   return (mpz_compare(a, b) >= 0);
 }
 
-__device__ __host__ inline void mpz_bitwise_rshift_eq(mpz_t *mpz) {//changes
+__device__ __host__ inline void mpz_bitwise_rshift_eq(mpz_t *mpz, int RL) {//changes
 
 //  if(RL >= mpz->bits){
 //	  for (int i = 0; i < mpz->words; i++) mpz->digits[i] = 0;
@@ -440,7 +440,7 @@ __device__ __host__ inline void mpz_bitwise_rshift_eq(mpz_t *mpz) {//changes
   mpz->words = (mpz->bits + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;
 }
 
-__device__ __host__ inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src) {//changes
+__device__ __host__ inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int RL) {//changes
 
     ///////////////////////debug
     printf("rshift:\n");
