@@ -3,8 +3,8 @@
 #include <math.h>
 #include "kernel.cu"
 #include <time.h>
-#include "mpz.h"
-
+//#include "mpz.h"
+#include "cuda_mpz.h"
 
 long long unsigned time_diff(timespec start, timespec end){
 	struct timespec temp;

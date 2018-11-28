@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "mpz.h"
+//#include "mpz.h"
+#include "cuda_mpz.h"
 
 
 __device__ mpz_t* REDC(int RL, mpz_t* N, mpz_t* N_, mpz_t* T, mpz_t* tmp, mpz_t* t){//mpz_t* RMOD, int L, mpz_t* N, mpz_t* N_ should not be changed.
