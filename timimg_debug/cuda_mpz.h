@@ -96,6 +96,7 @@ __host__ inline void cuda_mpz_set_str_host(cuda_mpz_t *cuda_mpz, const char *use
   unsigned num_digits;
   unsigned i;
   int is_zero;
+  unsigned word_count = 0;
 
   #pragma unroll
   for (i = 0; i < DIGITS_CAPACITY; i++) cuda_mpz->digits[i] = 0;//changes
@@ -122,18 +123,23 @@ __host__ inline void cuda_mpz_set_str_host(cuda_mpz_t *cuda_mpz, const char *use
 
     /* parse the string backwards (little endian order) */
     cuda_mpz->digits[i] = d;
+
+    if(d != 0 ){
+    	word_count = i;
+    }
   }
 
-  cuda_mpz->words = num_digits;
+  word_count++;
+  cuda_mpz->words = word_count;
   //finding the msb
-  digit_t v = cuda_mpz->digits[num_digits - 1];
+  digit_t v = cuda_mpz->digits[word_count - 1];
   int msb = 0;
 
   while (v >>= 1) {
 	  msb++;
   }
 
-  cuda_mpz->bits = (num_digits - 1) * LOG2_DIGIT_BASE + msb + 1;
+  cuda_mpz->bits = (word_count - 1) * LOG2_DIGIT_BASE + msb + 1;
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
