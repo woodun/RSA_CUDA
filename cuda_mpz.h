@@ -31,13 +31,13 @@ typedef struct {
   unsigned bits;
 } mpz_t;
 
- __host__ inline void mpz_init(mpz_t *mpz) {
+  inline void mpz_init(mpz_t *mpz) {
   for (int i = 0; i < DIGITS_CAPACITY; i++) mpz->digits[i] = 0;
   mpz->words = 0;
   mpz->bits = 0;
 }
 
- __host__ inline void mpz_set(mpz_t *to, mpz_t *from) {
+  inline void mpz_set(mpz_t *to, mpz_t *from) {
 	    ///////////////////////debug
 	    printf("rshift:\n");
 	    printf("to: \n");
@@ -97,7 +97,7 @@ typedef struct {
   ///////////////////////debug
 }
 
-__host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//changes
+ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//changes
   unsigned num_digits;
   unsigned i;
   int is_zero;
@@ -148,7 +148,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
- __host__ inline digit_t digits_add_across(digit_t *digits, unsigned num_digits, digit_t carry) {
+  inline digit_t digits_add_across(digit_t *digits, unsigned num_digits, digit_t carry) {
   unsigned i = 0;
   unsigned long long value;
 
@@ -163,7 +163,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   return carry;
 }
 
- __host__ inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
+  inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   unsigned capacity = op1->words + op2->words;
 
   ///////////////////////debug
@@ -287,7 +287,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
- __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int RL) {//changes
+  inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int RL) {//changes
 
     ///////////////////////debug
     printf("truncate:\n");
@@ -374,7 +374,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   ///////////////////////debug
 }
 
- __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int RL) {//changes
+  inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int RL) {//changes
 
     ///////////////////////debug
     printf("truncateeq:\n");
@@ -442,7 +442,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   ///////////////////////debug
 }
 
- __host__ inline int mpz_compare(mpz_t *a, mpz_t *b) {
+  inline int mpz_compare(mpz_t *a, mpz_t *b) {
 
   if(a->bits > b->bits){
 	  return 1;
@@ -460,11 +460,11 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   return 0;
 }
 
- __host__ inline int mpz_gte(mpz_t *a, mpz_t *b) {
+  inline int mpz_gte(mpz_t *a, mpz_t *b) {
   return (mpz_compare(a, b) >= 0);
 }
 
- __host__ inline void mpz_bitwise_rshift_eq(mpz_t *mpz, int RL) {//changes
+  inline void mpz_bitwise_rshift_eq(mpz_t *mpz, int RL) {//changes
 
 //  if(RL >= mpz->bits){
 //	  for (int i = 0; i < mpz->words; i++) mpz->digits[i] = 0;
@@ -494,7 +494,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   mpz->words = (mpz->bits + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;
 }
 
- __host__ inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int RL) {//changes
+  inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int RL) {//changes
 
     ///////////////////////debug
     printf("rshift:\n");
@@ -569,7 +569,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   ///////////////////////debug
 }
 
- __host__ inline void mpz_add(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
+  inline void mpz_add(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
 
 	  ///////////////////////debug
 	  printf("add:\n");
@@ -679,7 +679,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   ///////////////////////debug
 }
 
- __host__ inline void mpz_sub(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
+  inline void mpz_sub(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
 
 	  ///////////////////////debug
 	  printf("sub:\n");
@@ -805,11 +805,11 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
     ///////////////////////debug
 }
 
- __host__ inline digit_t mpz_get_last_digit(mpz_t *mpz) {//changes
+  inline digit_t mpz_get_last_digit(mpz_t *mpz) {//changes
 	return mpz->digits[0];
 }
 
-__host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize) {
+ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize) {
   int print_zeroes = 0; // don't print leading 0s
   int i;
   int str_index = 0;
