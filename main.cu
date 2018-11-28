@@ -37,7 +37,7 @@ int main (int argc, char *argv[]) {
 //
 //	long x = strtol(argv[3], NULL, 10);
 	long long unsigned pairs = 1;
-	unsigned thread_num = 2;
+	unsigned thread_num = 1;
 	long long unsigned data_num = pairs * thread_num;
 
 	///////host memory
@@ -184,7 +184,7 @@ int main (int argc, char *argv[]) {
 	cudaDeviceSynchronize();
 
 	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
-	printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
+	//printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
 
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
@@ -193,7 +193,7 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(myMes1_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
 
 	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
-	printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
+	//printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
 
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
@@ -201,7 +201,7 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(myMes1_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
 
 	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
-	printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
+	//printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
 
 	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 

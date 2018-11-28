@@ -59,11 +59,11 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 			mpz_print_str_device(&_x1[j]);
 			printf("\n");
 		}
-		if(j == 1){
-			printf("mes2: ");
-			mpz_print_str_device(&_x1[j]);
-			printf("\n");
-		}
+//		if(j == 1){
+//			printf("mes2: ");
+//			mpz_print_str_device(&_x1[j]);
+//			printf("\n");
+//		}
 		if(k == 0){
 			printf("vn: ");
 			mpz_print_str_device(&vn);
