@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "kernel.cu"
+//#include "kernel.cu"
+#include "kernel_debug.cu"
 #include <time.h>
 //#include "mpz.h"
 #include "cuda_mpz.h"
