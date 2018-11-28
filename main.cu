@@ -105,8 +105,8 @@ int main (int argc, char *argv[]) {
 
 	/////get Message2
 	//char mes2_input[] = "00000000000987654321";
-	char mes2_input[] = "0000000002fdc1454a7284fd5d6";
-	mpz_set_str_host(&myMes1_h[1], mes2_input); //input from string
+//	char mes2_input[] = "0000000002fdc1454a7284fd5d6";
+//	mpz_set_str_host(&myMes1_h[1], mes2_input); //input from string
 
 //	//debug
 	char test_str[1024];
