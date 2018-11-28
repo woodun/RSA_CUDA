@@ -185,6 +185,9 @@ int main (int argc, char *argv[]) {
 
 	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
 	//printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
+	printf("x1: words: %u bits: %u\n", myMes1_h[0].words, myMes1_h[0].bits);
+
+	if(0){
 
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
@@ -205,6 +208,7 @@ int main (int argc, char *argv[]) {
 
 	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 
+	}
 //	FILE *fp1= fopen(argv[1], "w");
 //	for (long long unsigned q = 0; q < pairs; q++){
 //		fprintf(fp1, "%lld\n", clockTable_h[q]);
