@@ -187,11 +187,10 @@ int main (int argc, char *argv[]) {
 	//printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
 	printf("x1: words: %u bits: %u\n", myMes1_h[0].words, myMes1_h[0].bits);
 
-	if(0){
-
 	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 
+	if(0){
 	cudaMemcpy(myMes1_d, _x1_mpz, mesSize, cudaMemcpyDeviceToDevice);
 	cudaMemcpy(myMes1_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
 
