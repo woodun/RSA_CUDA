@@ -150,6 +150,7 @@ __device__ __host__ inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   printf("words: %u\n", op2->words);
   printf("bits: %u\n", op2->bits);
   printf("##############################################################\n");
+  fflush(stdout);
   ///////////////////////debug
 
 
@@ -239,6 +240,7 @@ __device__ __host__ inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   printf("bits: %u\n", op2->bits);
   printf("##############################################################\n");
   printf("##############################################################\n");
+  fflush(stdout);
   ///////////////////////debug
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
@@ -263,6 +265,7 @@ __device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int
     printf("words: %u\n", src->words);
     printf("bits: %u\n", src->bits);
     printf("##############################################################\n");
+    fflush(stdout);
     ///////////////////////debug
 
 //  if(RL >= dst->bits){
@@ -325,6 +328,7 @@ __device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int
   printf("bits: %u\n", src->bits);
   printf("##############################################################\n");
   printf("##############################################################\n");
+  fflush(stdout);
   ///////////////////////debug
 }
 
@@ -340,6 +344,7 @@ __device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int RL) {//c
     printf("words: %u\n", mpz->words);
     printf("bits: %u\n", mpz->bits);
     printf("##############################################################\n");
+    fflush(stdout);
     ///////////////////////debug
 
 //  if(RL >= dst->bits){
@@ -391,6 +396,7 @@ __device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int RL) {//c
   printf("bits: %u\n", mpz->bits);
   printf("##############################################################\n");
   printf("##############################################################\n");
+  fflush(stdout);
   ///////////////////////debug
 }
 
@@ -466,6 +472,7 @@ __device__ __host__ inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int R
     printf("words: %u\n", src->words);
     printf("bits: %u\n", src->bits);
     printf("##############################################################\n");
+    fflush(stdout);
     ///////////////////////debug
 
 //  if(RL >= dst->bits){
@@ -516,6 +523,7 @@ __device__ __host__ inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int R
   printf("bits: %u\n", src->bits);
   printf("##############################################################\n");
   printf("##############################################################\n");
+  fflush(stdout);
   ///////////////////////debug
 }
 
@@ -547,6 +555,7 @@ __device__ __host__ inline void mpz_add(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
 	  printf("words: %u\n", op2->words);
 	  printf("bits: %u\n", op2->bits);
 	  printf("##############################################################\n");
+	  fflush(stdout);
 	  ///////////////////////debug
 
   unsigned capacity = max(op1->words, op2->words);
@@ -624,6 +633,7 @@ __device__ __host__ inline void mpz_add(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   printf("bits: %u\n", op2->bits);
   printf("##############################################################\n");
   printf("##############################################################\n");
+  fflush(stdout);
   ///////////////////////debug
 }
 
@@ -655,6 +665,7 @@ __device__ __host__ inline void mpz_sub(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
 	  printf("words: %u\n", op2->words);
 	  printf("bits: %u\n", op2->bits);
 	  printf("##############################################################\n");
+	  fflush(stdout);
 	  ///////////////////////debug
 
 
@@ -748,6 +759,7 @@ __device__ __host__ inline void mpz_sub(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
     printf("bits: %u\n", op2->bits);
     printf("##############################################################\n");
     printf("##############################################################\n");
+    fflush(stdout);
     ///////////////////////debug
 }
 

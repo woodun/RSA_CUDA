@@ -174,7 +174,7 @@ int main (int argc, char *argv[]) {
 	mpz_t *d_t;
 	mpz_t *_x1_mpz;
 	mpz_t *_x2_mpz;
-//	cudaMalloc((void **) &clockTable_d, pairs * sizeof(long long int));
+	cudaMalloc((void **) &clockTable_d, pairs * sizeof(long long int));
 //	cudaMalloc((void **) &tmp, varSize);
 //	cudaMalloc((void **) &tmp2, varSize);
 //	cudaMalloc((void **) &d_t, varSize);
