@@ -38,6 +38,26 @@ typedef struct {
 }
 
  __host__ inline void mpz_set(mpz_t *to, mpz_t *from) {
+	    ///////////////////////debug
+	    printf("rshift:\n");
+	    printf("to: \n");
+	    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+	  	  printf("%08x", to->digits[i]);
+	    }
+	    printf("\n");
+	    printf("words: %u\n", to->words);
+	    printf("bits: %u\n", to->bits);
+
+	    printf("from: \n");
+	    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+	  	  printf("%08x", from->digits[i]);
+	    }
+	    printf("\n");
+	    printf("words: %u\n", from->words);
+	    printf("bits: %u\n", from->bits);
+	    printf("##############################################################\n");
+	    fflush(stdout);
+	    ///////////////////////debug
   unsigned i;
 
   #pragma unroll
@@ -53,6 +73,28 @@ typedef struct {
   to->words = from->words;
   to->bits = from->bits;
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
+
+  ///////////////////////debug
+  printf("rshift:\n");
+  printf("to: \n");
+  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+	  printf("%08x", to->digits[i]);
+  }
+  printf("\n");
+  printf("words: %u\n", to->words);
+  printf("bits: %u\n", to->bits);
+
+  printf("from: \n");
+  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+	  printf("%08x", from->digits[i]);
+  }
+  printf("\n");
+  printf("words: %u\n", from->words);
+  printf("bits: %u\n", from->bits);
+  printf("##############################################################\n");
+  printf("##############################################################\n");
+  fflush(stdout);
+  ///////////////////////debug
 }
 
 __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//changes
