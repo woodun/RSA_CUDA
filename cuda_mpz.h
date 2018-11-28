@@ -31,15 +31,15 @@ typedef struct {
   unsigned bits;
 } mpz_t;
 
-  inline void mpz_init(mpz_t *mpz) {
+ __host__ inline void mpz_init(mpz_t *mpz) {
   for (int i = 0; i < DIGITS_CAPACITY; i++) mpz->digits[i] = 0;
   mpz->words = 0;
   mpz->bits = 0;
 }
 
-  inline void mpz_set(mpz_t *to, mpz_t *from) {
+ __host__ inline void mpz_set(mpz_t *to, mpz_t *from) {
 	    ///////////////////////debug
-	    printf("rshift:\n");
+	    printf("set:\n");
 	    printf("to: \n");
 	    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  	  printf("%08x", to->digits[i]);
@@ -75,7 +75,7 @@ typedef struct {
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 
   ///////////////////////debug
-  printf("rshift:\n");
+  printf("set:\n");
   printf("to: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", to->digits[i]);
@@ -97,7 +97,7 @@ typedef struct {
   ///////////////////////debug
 }
 
- inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//changes
+__host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//changes
   unsigned num_digits;
   unsigned i;
   int is_zero;
@@ -148,7 +148,7 @@ typedef struct {
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
-  inline digit_t digits_add_across(digit_t *digits, unsigned num_digits, digit_t carry) {
+ __host__ inline digit_t digits_add_across(digit_t *digits, unsigned num_digits, digit_t carry) {
   unsigned i = 0;
   unsigned long long value;
 
@@ -163,7 +163,7 @@ typedef struct {
   return carry;
 }
 
-  inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
+ __host__ inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   unsigned capacity = op1->words + op2->words;
 
   ///////////////////////debug
@@ -171,6 +171,7 @@ typedef struct {
   printf("dst: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", dst->digits[i]);
+	  fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", dst->words);
@@ -179,6 +180,7 @@ typedef struct {
   printf("op1: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", op1->digits[i]);
+	  fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", op1->words);
@@ -187,6 +189,7 @@ typedef struct {
   printf("op2: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", op2->digits[i]);
+	  fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", op2->words);
@@ -260,6 +263,7 @@ typedef struct {
   printf("dst: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", dst->digits[i]);
+	  fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", dst->words);
@@ -268,6 +272,7 @@ typedef struct {
   printf("op1: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", op1->digits[i]);
+	  fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", op1->words);
@@ -276,6 +281,7 @@ typedef struct {
   printf("op2: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", op2->digits[i]);
+	  fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", op2->words);
@@ -287,7 +293,7 @@ typedef struct {
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
-  inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int RL) {//changes
+ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int RL) {//changes
 
     ///////////////////////debug
     printf("truncate:\n");
@@ -374,7 +380,7 @@ typedef struct {
   ///////////////////////debug
 }
 
-  inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int RL) {//changes
+ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int RL) {//changes
 
     ///////////////////////debug
     printf("truncateeq:\n");
@@ -442,7 +448,7 @@ typedef struct {
   ///////////////////////debug
 }
 
-  inline int mpz_compare(mpz_t *a, mpz_t *b) {
+ __host__ inline int mpz_compare(mpz_t *a, mpz_t *b) {
 
   if(a->bits > b->bits){
 	  return 1;
@@ -460,11 +466,11 @@ typedef struct {
   return 0;
 }
 
-  inline int mpz_gte(mpz_t *a, mpz_t *b) {
+ __host__ inline int mpz_gte(mpz_t *a, mpz_t *b) {
   return (mpz_compare(a, b) >= 0);
 }
 
-  inline void mpz_bitwise_rshift_eq(mpz_t *mpz, int RL) {//changes
+ __host__ inline void mpz_bitwise_rshift_eq(mpz_t *mpz, int RL) {//changes
 
 //  if(RL >= mpz->bits){
 //	  for (int i = 0; i < mpz->words; i++) mpz->digits[i] = 0;
@@ -494,7 +500,7 @@ typedef struct {
   mpz->words = (mpz->bits + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;
 }
 
-  inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int RL) {//changes
+ __host__ inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int RL) {//changes
 
     ///////////////////////debug
     printf("rshift:\n");
@@ -569,7 +575,7 @@ typedef struct {
   ///////////////////////debug
 }
 
-  inline void mpz_add(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
+ __host__ inline void mpz_add(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
 
 	  ///////////////////////debug
 	  printf("add:\n");
@@ -679,7 +685,7 @@ typedef struct {
   ///////////////////////debug
 }
 
-  inline void mpz_sub(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
+ __host__ inline void mpz_sub(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
 
 	  ///////////////////////debug
 	  printf("sub:\n");
@@ -805,11 +811,11 @@ typedef struct {
     ///////////////////////debug
 }
 
-  inline digit_t mpz_get_last_digit(mpz_t *mpz) {//changes
+ __host__ inline digit_t mpz_get_last_digit(mpz_t *mpz) {//changes
 	return mpz->digits[0];
 }
 
- inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize) {
+__host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize) {
   int print_zeroes = 0; // don't print leading 0s
   int i;
   int str_index = 0;
