@@ -173,41 +173,51 @@ int main (int argc, char *argv[]) {
 	mpz_t *d_t;
 	mpz_t *_x1_mpz;
 	mpz_t *_x2_mpz;
-	cudaMalloc((void **) &clockTable_d, pairs * sizeof(long long int));
-	cudaMalloc((void **) &tmp, varSize);
-	cudaMalloc((void **) &tmp2, varSize);
-	cudaMalloc((void **) &d_t, varSize);
-	cudaMalloc((void **) &_x2_mpz, varSize);
-	cudaMalloc((void **) &_x1_mpz, varSize);
+//	cudaMalloc((void **) &clockTable_d, pairs * sizeof(long long int));
+//	cudaMalloc((void **) &tmp, varSize);
+//	cudaMalloc((void **) &tmp2, varSize);
+//	cudaMalloc((void **) &d_t, varSize);
+//	cudaMalloc((void **) &_x2_mpz, varSize);
+//	cudaMalloc((void **) &_x1_mpz, varSize);
 
-	init<<<1, thread_num>>>(_x1_mpz, _x2_mpz, tmp, tmp2, d_t);
-	cudaDeviceSynchronize();
+	tmp = (mpz_t*) malloc (varSize);
+	tmp2 = (mpz_t*) malloc (varSize);
+	d_t = (mpz_t*) malloc (varSize);
+	_x1_mpz = (mpz_t*) malloc (varSize);
+	_x2_mpz = (mpz_t*) malloc (varSize);
+
+	init(_x1_mpz, _x2_mpz, tmp, tmp2, d_t);
+
+	//init<<<1, thread_num>>>(_x1_mpz, _x2_mpz, tmp, tmp2, d_t);
+	//cudaDeviceSynchronize();
 
 	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
 	//printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
 	printf("x1: words: %u bits: %u\n", myMes1_h[0].words, myMes1_h[0].bits);
+	MontSQMLadder(myMes1_h, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, d_t);/////////////////////////////////////////kernel
 
-	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
-	cudaDeviceSynchronize();
+//	if(0){
+//	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, eBits_d, e_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+//	cudaDeviceSynchronize();
+//
+//	cudaMemcpy(myMes1_d, _x1_mpz, mesSize, cudaMemcpyDeviceToDevice);
+//	cudaMemcpy(myMes1_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
+//
+//	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
+//	//printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
+//
+//	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
+//	cudaDeviceSynchronize();
+//
+//	cudaMemcpy(myMes1_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
+//
+//	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
+//	//printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
+//
+//	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
+//
+//	}
 
-	if(0){
-	cudaMemcpy(myMes1_d, _x1_mpz, mesSize, cudaMemcpyDeviceToDevice);
-	cudaMemcpy(myMes1_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
-
-	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
-	//printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
-
-	MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, _x1_mpz, _x2_mpz, tmp, tmp2, rl, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d, d_t);/////////////////////////////////////////kernel
-	cudaDeviceSynchronize();
-
-	cudaMemcpy(myMes1_h, _x1_mpz, mesSize, cudaMemcpyDeviceToHost);
-
-	printf("x1: %s\n", mpz_get_str(&myMes1_h[0], test_str, 1024));
-	//printf("x2: %s\n", mpz_get_str(&myMes1_h[1], test_str, 1024));
-
-	cudaMemcpy(clockTable_h, clockTable_d, pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
-
-	}
 //	FILE *fp1= fopen(argv[1], "w");
 //	for (long long unsigned q = 0; q < pairs; q++){
 //		fprintf(fp1, "%lld\n", clockTable_h[q]);
