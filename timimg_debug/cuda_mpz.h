@@ -401,8 +401,8 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
 	  printf("error6! %x\n", (top_word >> ( top_bit_count - 1 ) ) );//check
   }
 
-  dst->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
-  dst->words = word_count;
+  cuda_mpz->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
+  cuda_mpz->words = word_count;
 
   ///////////////////////debug
   printf("truncateeq:\n");
