@@ -55,7 +55,7 @@ __device__ __host__ inline void mpz_set(mpz_t *to, mpz_t *from) {
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
-__host__ inline void cuda_mpz_set_str_host(cuda_mpz_t *cuda_mpz, const char *user_str) {//changes
+__host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//changes
   unsigned num_digits;
   unsigned i;
   int is_zero;
