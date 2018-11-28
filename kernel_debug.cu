@@ -40,38 +40,38 @@ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1, mpz_t* _x
 
 //		if(j == 1){
 //			printf("mes2: ");
-//			mpz_print_str_device(&_x1[j]);
+//			mpz_print_str_device(&_x1[0]);
 //			printf("\n");
 //		}
 
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
-		mpz_mult(&tmp2[j], &_x1[j], &r2);
-		mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+		mpz_mult(&tmp2[0], &_x1[0], &r2);
+		mpz_set( &_x1[0], REDC(rl, n, n_, &tmp2[0], &tmp[0], &t[0]) );
 
 		//x2 = _x1 * _x1
-		mpz_mult(&tmp2[j], &_x1[j], &t[j]);
+		mpz_mult(&tmp2[0], &_x1[0], &t[0]);
 		//_x2 = REDC(rmod,n,n_,_x2,l)
-		mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+		mpz_set( &_x2[0], REDC(rl, n, n_, &tmp2[0], &tmp[0], &t[0]) );
 
 //		if(j == 0){
-//			mpz_print_str_device(&_x1[j]);
+//			mpz_print_str_device(&_x1[0]);
 //			printf(" ");
-//			mpz_print_str_device(&_x2[j]);
+//			mpz_print_str_device(&_x2[0]);
 //			printf("\n");
 //		}
 
 //		if(j == 0){
 //			printf("mes1: ");
-//			mpz_print_str_device(&_x1[j]);
+//			mpz_print_str_device(&_x1[0]);
 //			printf(" ");
-//			mpz_print_str_device(&_x2[j]);
+//			mpz_print_str_device(&_x2[0]);
 //			printf("\n");
 //		}
 //		if(j == 1){
 //			printf("mes2: ");
-//			mpz_print_str_device(&_x1[j]);
+//			mpz_print_str_device(&_x1[0]);
 //			printf(" ");
-//			mpz_print_str_device(&_x2[j]);
+//			mpz_print_str_device(&_x2[0]);
 //			printf("\n");
 //		}
 
@@ -79,53 +79,53 @@ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1, mpz_t* _x
 
 			if(eBits[i] == 0){
 				//x2 = _x1 * _x2
-				mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
+				mpz_mult(&tmp2[0], &_x1[0], &_x2[0]);
 				//_x2 = REDC(rmod,n,n_,_x2,l)
-				mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				mpz_set( &_x2[0], REDC(rl, n, n_, &tmp2[0], &tmp[0], &t[0]) );
 				//_x1 = _x1 * _x1
-				mpz_set( &tmp[j], &_x1[j]);
-				mpz_mult(&tmp2[j], &_x1[j], &tmp[j]);
+				mpz_set( &tmp[0], &_x1[0]);
+				mpz_mult(&tmp2[0], &_x1[0], &tmp[0]);
 				//_x1 = REDC(rmod,n,n_,_x1,l)
-				mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				mpz_set( &_x1[0], REDC(rl, n, n_, &tmp2[0], &tmp[0], &t[0]) );
 			} else {
 				//_x1 = _x1 * _x2
-				mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
+				mpz_mult(&tmp2[0], &_x1[0], &_x2[0]);
 				//_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
-				mpz_set( &_x1[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				mpz_set( &_x1[0], REDC(rl, n, n_, &tmp2[0], &tmp[0], &t[0]) );
 				//_x2 = _x2 * _x2
-				mpz_set( &tmp[j], &_x2[j]);
-				mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
+				mpz_set( &tmp[0], &_x2[0]);
+				mpz_mult(&tmp2[0], &_x2[0], &tmp[0]);
 				//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
-				mpz_set( &_x2[j], REDC(rl, n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				mpz_set( &_x2[0], REDC(rl, n, n_, &tmp2[0], &tmp[0], &t[0]) );
 			}
 
 //			if(j == 0){
 //				printf("mes1: ");
-//				mpz_print_str_device(&_x1[j]);
+//				mpz_print_str_device(&_x1[0]);
 //				printf(" ");
-//				mpz_print_str_device(&_x2[j]);
+//				mpz_print_str_device(&_x2[0]);
 //				printf("\n");
 //			}
 //			if(j == 1){
 //				printf("mes2: ");
-//				mpz_print_str_device(&_x1[j]);
+//				mpz_print_str_device(&_x1[0]);
 //				printf(" ");
-//				mpz_print_str_device(&_x2[j]);
+//				mpz_print_str_device(&_x2[0]);
 //				printf("\n");
 //			}
 		}
 
 		//_x1 = REDC(rmod,n,n_,_x1,l)
-		mpz_set( &_x1[j], REDC(rl, n, n_, &_x1[j], &tmp[j], &t[j]) );
+		mpz_set( &_x1[0], REDC(rl, n, n_, &_x1[0], &tmp[0], &t[0]) );
 
 //		if(j == 0){
 //			printf("mes1: ");
-//			mpz_print_str_device(&_x1[j]);
+//			mpz_print_str_device(&_x1[0]);
 //			printf("\n");
 //		}
 //		if(j == 1){
 //			printf("mes2: ");
-//			mpz_print_str_device(&_x1[j]);
+//			mpz_print_str_device(&_x1[0]);
 //			printf("\n");
 //		}
 	}
