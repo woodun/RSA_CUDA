@@ -228,12 +228,12 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   }
 
   unsigned total_bit_count = op1->bits + op2->bits;
-  unsigned top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
+  unsigned top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;
   if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) == 0){
 	  total_bit_count--;
   }
 
-  top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
+  top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;
   if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1 ){
 	  printf("error2! %x\n", ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) );//check
   }
@@ -309,15 +309,29 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
 	  dst_digits[d_index] = 0;
   }
 
-  dst_digits[rs_digits] = src_digits[rs_digits] & ( 0xffffffff >> ls_remainder);
+  digit_t top_word = src_digits[rs_digits] & ( 0xffffffff >> ls_remainder)
+  dst_digits[rs_digits] = top_word;
 
   #pragma unroll
   for(int d_index = rs_digits - 1; d_index >= 0; d_index--) {
 	  dst_digits[d_index] = src_digits[d_index];
   }
 
-  dst->bits = RL;
-  dst->words = (RL + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;
+  unsigned word_count = rs_digits + 1;
+  unsigned total_bit_count = RL;
+  unsigned top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;/////////////////////check when rl = 64
+
+  //finding the msb, for efficiency we assume heading zeros does not pass word boundary
+   while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
+	   top_bit_count--;
+  }
+
+  if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){
+	  printf("error6! %x\n", (top_word >> ( top_bit_count - 1 ) ) );//check
+  }
+
+  dst->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
+  dst->words = word_count;
 
   ///////////////////////debug
   printf("truncate:\n");
@@ -368,11 +382,27 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
 	digits[d_index] = 0;
   }
 
-  digits[rs_digits] = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
+  digit_t top_word = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
+  digits[rs_digits] = top_word;
 
   cuda_mpz->bits = RL;
   cuda_mpz->words = (RL + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;
 
+  unsigned word_count = rs_digits + 1;
+  unsigned total_bit_count = RL;
+  unsigned top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;/////////////////////check when rl = 64
+
+  //finding the msb, for efficiency we assume heading zeros does not pass word boundary
+   while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
+	   top_bit_count--;
+  }
+
+  if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){
+	  printf("error6! %x\n", (top_word >> ( top_bit_count - 1 ) ) );//check
+  }
+
+  dst->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
+  dst->words = word_count;
 
   ///////////////////////debug
   printf("truncateeq:\n");
@@ -567,12 +597,12 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
   }
 
   unsigned total_bit_count = max(op1->bits, op2->bits);
-  unsigned top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
+  unsigned top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;
   if( ( dst->digits[word_count - 1] >> (top_bit_count - 1) ) != 1){
 	  total_bit_count++;
   }
 
-  top_bit_count = total_bit_count - (word_count - 1) * LOG2_DIGIT_BASE;
+  top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;
   if(dst->digits[word_count - 1] == 0 || dst->digits[word_count] != 0){//check
 	  printf("error3!\n");
   }
@@ -703,7 +733,6 @@ __device__ __host__ inline void cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 
     dst->bits = (word_count - 1) * LOG2_DIGIT_BASE + msb + 1;
     //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
-
 
     ///////////////////////debug
     printf("sub:\n");
