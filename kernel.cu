@@ -64,6 +64,11 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 			mpz_print_str_device(&_x1[j]);
 			printf("\n");
 		}
+		if(k == 0){
+			printf("vn: ");
+			mpz_print_str_device(&vn);
+			printf("\n");
+		}
 
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
 		mpz_mult(&tmp2[j], &_x1[j], &r2);
@@ -95,6 +100,11 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 //			mpz_print_str_device(&_x2[j]);
 //			printf("\n");
 //		}
+		if(k == 0){
+			printf("vn: ");
+			mpz_print_str_device(&vn);
+			printf("\n");
+		}
 
 		for(int i = eLength - 2; i >= 0; i--){
 
@@ -134,6 +144,11 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 //				mpz_print_str_device(&_x2[j]);
 //				printf("\n");
 //			}
+			if(k == 0){
+				printf("vn: ");
+				mpz_print_str_device(&vn);
+				printf("\n");
+			}
 		}
 
 		//_x1 = REDC(rmod,n,n_,_x1,l)
