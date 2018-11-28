@@ -55,13 +55,14 @@ __device__ __host__ inline void mpz_set(mpz_t *to, mpz_t *from) {
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
-__host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//changes
+__host__ inline void cuda_mpz_set_str_host(cuda_mpz_t *cuda_mpz, const char *user_str) {//changes
   unsigned num_digits;
   unsigned i;
   int is_zero;
+  unsigned word_count = 0;
 
   #pragma unroll
-  for (i = 0; i < DIGITS_CAPACITY; i++) mpz->digits[i] = 0;//changes
+  for (i = 0; i < DIGITS_CAPACITY; i++) cuda_mpz->digits[i] = 0;//changes
 
   const int bufsize = 1024;
   char buf[bufsize];
@@ -84,19 +85,24 @@ __host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//chang
     is_zero = is_zero && (d == 0);
 
     /* parse the string backwards (little endian order) */
-    mpz->digits[i] = d;
+    cuda_mpz->digits[i] = d;
+
+    if(d != 0 ){
+    	word_count = i;
+    }
   }
 
-  mpz->words = num_digits;
+  word_count++;
+  cuda_mpz->words = word_count;
   //finding the msb
-  digit_t v = mpz->digits[num_digits - 1];
+  digit_t v = cuda_mpz->digits[word_count - 1];
   int msb = 0;
 
   while (v >>= 1) {
 	  msb++;
   }
 
-  mpz->bits = (num_digits - 1) * LOG2_DIGIT_BASE + msb + 1;
+  cuda_mpz->bits = (word_count - 1) * LOG2_DIGIT_BASE + msb + 1;
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
