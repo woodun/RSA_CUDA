@@ -300,6 +300,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
     printf("dst: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", dst->digits[i]);
+  	  fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", dst->words);
@@ -308,6 +309,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
     printf("src: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", src->digits[i]);
+  	  fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", src->words);
@@ -352,6 +354,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
 
   if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){
 	  printf("error6! %x\n", (top_word >> ( top_bit_count - 1 ) ) );//check
+	  fflush(stdout);
   }
 
   dst->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
@@ -362,6 +365,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   printf("dst: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", dst->digits[i]);
+	  fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", dst->words);
@@ -370,6 +374,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   printf("src: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", src->digits[i]);
+	  fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", src->words);
