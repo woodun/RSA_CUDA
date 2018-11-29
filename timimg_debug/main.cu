@@ -5,6 +5,7 @@
 #include <time.h>
 #include "cuda_mpz.h"
 #include <gmp.h>
+#include <helper_cuda.h>
 
 
 //nvprof --print-gpu-trace --log-file prof1.txt ./main 1000 1 > nvprof.txt
@@ -546,6 +547,17 @@ int main (int argc, char *argv[]) {
 		long long int diff3 = sum1 - sum4;
 
 		printf("%lld %lld %lld %lld %lld %lld %lld %f %f\n", sum1, sum2, sum3, sum4, diff1, diff2, diff3, ((double) diff1) / diff2, ((double) diff2) / diff1);
+
+		int peak_clk = 1;//kHz
+		int dev_id = 0;
+		checkCudaErrors(cudaDeviceGetAttribute(&peak_clk, cudaDevAttrClockRate, dev_id));
+		float clock_rate = (float) peak_clk;
+		printf("clock_rate_out_kernel:%f\n", clock_rate);
+
+		printf ("bit1_div: %fms %lldcycles\n", sum1 / (float)clock_rate, sum1);
+		printf ("non_div: %fms %lldcycles\n", sum2 / (float)clock_rate, sum2);
+		printf ("both_div: %fms %lldcycles\n", sum3 / (float)clock_rate, sum3);
+		printf ("bit0_div: %fms %lldcycles\n", sum4 / (float)clock_rate, sum4);
 
 		if(diff3 > 2000){//bit is 1
 			known_bits[known_bits_length] = 1;
