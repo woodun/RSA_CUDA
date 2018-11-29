@@ -1,5 +1,5 @@
 NVCC = nvcc
-NCXXFLAGS = -keep -Xptxas -dlcm=ca --optimize 1 -lgmp -lhelper_cuda
+NCXXFLAGS = -keep -Xptxas -dlcm=ca --optimize 1 -lgmp -I/stor1/hwang07/toolkit_cuda/samples/common/inc
 #NVCCFLAGS = -g -G -m64 -arch compute_20
 
 execs = main
