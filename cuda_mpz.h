@@ -339,23 +339,38 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   dst_digits[rs_digits] = top_word;
 
   #pragma unroll
-  for(int d_index = rs_digits - 1; d_index >= 0; d_index--) {
+  for(int d_index = 0; d_index <= rs_digits - 1; d_index++) {
 	  dst_digits[d_index] = src_digits[d_index];
   }
 
-  unsigned word_count = rs_digits + 1;
-  unsigned total_bit_count = RL;
-  unsigned top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;/////////////////////check when rl = 64
+  unsigned word_count;
+  unsigned total_bit_count;
+  unsigned top_bit_count;
 
-  printf("top_word: %u\n", top_word);
-  printf("top_bit_count: %u\n", top_bit_count);
-  fflush(stdout);
-  //finding the msb, for efficiency we assume heading zeros does not pass word boundary
+  if(top_word == 0){///for efficiency we assume heading zeros does not pass two words boundary
+	  word_count = rs_digits;
+	  total_bit_count = rs_digits << LOG2_LOG2_DIGIT_BASE;
+	  top_bit_count = 32;
+	  top_word = src_digits[rs_digits - 1];
+	  if(top_word == 0){
+		  printf("error7!\n");
+	  }
+  }else{
+	  word_count = rs_digits + 1;
+	  total_bit_count = RL;
+	  top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;
+  }
+
+
+//  printf("top_word: %u\n", top_word);
+//  printf("top_bit_count: %u\n", top_bit_count);
+//  fflush(stdout);
+  //finding the msb
    while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
-	   printf("top_bit_count: %u\n", (top_word >> ( top_bit_count - 1 )) );
-	   fflush(stdout);
-	   printf("total_bit_count: %u\n", total_bit_count);
-	   fflush(stdout);
+//	   printf("top_bit_count: %u\n", (top_word >> ( top_bit_count - 1 )) );
+//	   fflush(stdout);
+//	   printf("total_bit_count: %u\n", total_bit_count);
+//	   fflush(stdout);
 	   top_bit_count--;
   }
 
@@ -392,72 +407,86 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   ///////////////////////debug
 }
 
- __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz, int RL) {//changes
+__host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mpz) {//changes
 
-    ///////////////////////debug
-    printf("truncateeq:\n");
-    printf("mpz: \n");
-    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-  	  printf("%08x", mpz->digits[i]);
-    }
-    printf("\n");
-    printf("words: %u\n", mpz->words);
-    printf("bits: %u\n", mpz->bits);
-    printf("##############################################################\n");
-    fflush(stdout);
-    ///////////////////////debug
+     ///////////////////////debug
+     printf("truncateeq:\n");
+     printf("cuda_mpz: \n");
+     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+   	  printf("%08x", cuda_mpz->digits[i]);
+     }
+     printf("\n");
+     printf("words: %u\n", cuda_mpz->words);
+     printf("bits: %u\n", cuda_mpz->bits);
+     printf("##############################################################\n");
+     ///////////////////////debug
 
-//  if(RL >= dst->bits){
-//	  return;
-//  }
+ //  if(RL >= dst->bits){
+ //	  return;
+ //  }
 
-  digit_t *digits = mpz->digits;
+   digit_t *digits = cuda_mpz->digits;
 
-  int rs_digits = RL >> LOG2_LOG2_DIGIT_BASE;
-  //int ls_digits = capacity - rs_digits - 1;
-  int ls_remainder = LOG2_DIGIT_BASE - ( RL & MOD_LOG2_DIGIT_BASE );
-  //int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
+   int rs_digits = RL >> LOG2_LOG2_DIGIT_BASE;
+   //int ls_digits = capacity - rs_digits - 1;
+   int ls_remainder = LOG2_DIGIT_BASE - ( RL & MOD_LOG2_DIGIT_BASE );
+   //int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
 
-  #pragma unroll
-  for(int d_index = mpz->words - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
-	digits[d_index] = 0;
-  }
+   #pragma unroll
+   for(int d_index = cuda_mpz->words - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
+ 	digits[d_index] = 0;
+   }
 
-  digit_t top_word = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
-  digits[rs_digits] = top_word;
+   digit_t top_word = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
+   digits[rs_digits] = top_word;
 
-  mpz->bits = RL;
-  mpz->words = (RL + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;
+   #pragma unroll
+   for(int d_index = 0; d_index <= rs_digits - 1; d_index++) {
+ 	    dst_digits[d_index] = src_digits[d_index];
+   }
 
-  unsigned word_count = rs_digits + 1;
-  unsigned total_bit_count = RL;
-  unsigned top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;/////////////////////check when rl = 64
+   unsigned word_count;
+   unsigned total_bit_count;
+   unsigned top_bit_count;
 
-  //finding the msb, for efficiency we assume heading zeros does not pass word boundary
-   while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
-	   top_bit_count--;
-  }
+   if(top_word == 0){///for efficiency we assume heading zeros does not pass two words boundary
+ 	  word_count = rs_digits;
+ 	  total_bit_count = rs_digits << LOG2_LOG2_DIGIT_BASE;
+ 	  top_bit_count = 32;
+ 	  top_word = src_digits[rs_digits - 1];
+ 	  if(top_word == 0){
+ 		  printf("error7!\n");
+ 	  }
+   }else{
+ 	  word_count = rs_digits + 1;
+ 	  total_bit_count = RL;
+ 	  top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;
+   }
 
-  if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){
-	  printf("error6! %x\n", (top_word >> ( top_bit_count - 1 ) ) );//check
-  }
+   //finding the msb, for efficiency we assume heading zeros does not pass word boundary
+    while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
+ 	   top_bit_count--;
+   }
 
-  mpz->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
-  mpz->words = word_count;
+   if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){
+ 	  printf("error6! %x\n", (top_word >> ( top_bit_count - 1 ) ) );//check
+   }
 
-  ///////////////////////debug
-  printf("truncateeq:\n");
-  printf("mpz: \n");
-  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", mpz->digits[i]);
-  }
-  printf("\n");
-  printf("words: %u\n", mpz->words);
-  printf("bits: %u\n", mpz->bits);
-  printf("##############################################################\n");
-  printf("##############################################################\n");
-  fflush(stdout);
-  ///////////////////////debug
+   cuda_mpz->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
+   cuda_mpz->words = word_count;
+
+   ///////////////////////debug
+   printf("truncateeq:\n");
+   printf("cuda_mpz: \n");
+   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+ 	  printf("%08x", cuda_mpz->digits[i]);
+   }
+   printf("\n");
+   printf("words: %u\n", cuda_mpz->words);
+   printf("bits: %u\n", cuda_mpz->bits);
+   printf("##############################################################\n");
+   printf("##############################################################\n");
+   ///////////////////////debug
 }
 
  __host__ inline int mpz_compare(mpz_t *a, mpz_t *b) {

@@ -323,15 +323,29 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
   dst_digits[rs_digits] = top_word;
 
   #pragma unroll
-  for(int d_index = rs_digits - 1; d_index >= 0; d_index--) {
+  for(int d_index = 0; d_index <= rs_digits - 1; d_index++) {
 	  dst_digits[d_index] = src_digits[d_index];
   }
 
-  unsigned word_count = rs_digits + 1;
-  unsigned total_bit_count = RL;
-  unsigned top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;/////////////////////check when rl = 64
+  unsigned word_count;
+  unsigned total_bit_count;
+  unsigned top_bit_count;
 
-  //finding the msb, for efficiency we assume heading zeros does not pass word boundary
+  if(top_word == 0){///for efficiency we assume heading zeros does not pass two words boundary
+	  word_count = rs_digits;
+	  total_bit_count = rs_digits << LOG2_LOG2_DIGIT_BASE;
+	  top_bit_count = 32;
+	  top_word = src_digits[rs_digits - 1];
+	  if(top_word == 0){
+		  printf("error7!\n");
+	  }
+  }else{
+	  word_count = rs_digits + 1;
+	  total_bit_count = RL;
+	  top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;
+  }
+
+  //finding the msb
    while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
 	   top_bit_count--;
   }
@@ -398,12 +412,28 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
   digit_t top_word = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
   digits[rs_digits] = top_word;
 
-  cuda_mpz->bits = RL;
-  cuda_mpz->words = (RL + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;
+  #pragma unroll
+  for(int d_index = 0; d_index <= rs_digits - 1; d_index++) {
+	    dst_digits[d_index] = src_digits[d_index];
+  }
 
-  unsigned word_count = rs_digits + 1;
-  unsigned total_bit_count = RL;
-  unsigned top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;/////////////////////check when rl = 64
+  unsigned word_count;
+  unsigned total_bit_count;
+  unsigned top_bit_count;
+
+  if(top_word == 0){///for efficiency we assume heading zeros does not pass two words boundary
+	  word_count = rs_digits;
+	  total_bit_count = rs_digits << LOG2_LOG2_DIGIT_BASE;
+	  top_bit_count = 32;
+	  top_word = src_digits[rs_digits - 1];
+	  if(top_word == 0){
+		  printf("error7!\n");
+	  }
+  }else{
+	  word_count = rs_digits + 1;
+	  total_bit_count = RL;
+	  top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;
+  }
 
   //finding the msb, for efficiency we assume heading zeros does not pass word boundary
    while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
