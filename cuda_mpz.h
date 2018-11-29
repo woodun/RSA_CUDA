@@ -407,7 +407,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   ///////////////////////debug
 }
 
-__host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mpz) {//changes
+__host__ inline void mpz_bitwise_truncate_eq(mpz_t *cuda_mpz) {//changes
 
      ///////////////////////debug
      printf("truncateeq:\n");
@@ -453,7 +453,7 @@ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mpz) {//chang
  	  word_count = rs_digits;
  	  total_bit_count = rs_digits << LOG2_LOG2_DIGIT_BASE;
  	  top_bit_count = 32;
- 	  top_word = src_digits[rs_digits - 1];
+ 	  top_word = digits[rs_digits - 1];
  	  if(top_word == 0){
  		  printf("error7!\n");
  	  }

@@ -425,7 +425,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
 	  word_count = rs_digits;
 	  total_bit_count = rs_digits << LOG2_LOG2_DIGIT_BASE;
 	  top_bit_count = 32;
-	  top_word = src_digits[rs_digits - 1];
+	  top_word = digits[rs_digits - 1];
 	  if(top_word == 0){
 		  printf("error7!\n");
 	  }
