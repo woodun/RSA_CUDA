@@ -529,7 +529,8 @@ int main (int argc, char *argv[]) {
 
 		struct timespec ts2;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
-		printf("%llu\n", time_diff(ts1, ts2));/////////////////////////////////time
+		long long unsigned time_interval = time_diff(ts1, ts2);
+		printf("%lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000,  ((double) time_interval) / 1000000000);/////////////////////////////////time
 
 		cudaMemcpy(clockTable_h, clockTable_d, 4 * sizeof(long long int), cudaMemcpyDeviceToHost);
 
