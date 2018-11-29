@@ -407,7 +407,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   ///////////////////////debug
 }
 
-__host__ inline void mpz_bitwise_truncate_eq(mpz_t *cuda_mpz) {//changes
+__host__ inline void mpz_bitwise_truncate_eq(mpz_t *cuda_mpz, int RL) {//changes
 
      ///////////////////////debug
      printf("truncateeq:\n");
