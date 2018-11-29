@@ -440,11 +440,6 @@ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *cuda_mpz, int RL) {//changes
    digit_t top_word = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
    digits[rs_digits] = top_word;
 
-   #pragma unroll
-   for(int d_index = 0; d_index <= rs_digits - 1; d_index++) {
- 	    dst_digits[d_index] = src_digits[d_index];
-   }
-
    unsigned word_count;
    unsigned total_bit_count;
    unsigned top_bit_count;
