@@ -36,11 +36,11 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 
 	int k = blockIdx.x * blockDim.x + threadIdx.x;
 
-	if(k == 0){
-		printf("vn: ");
-		mpz_print_str_device(&vn);
-		printf("\n");
-	}
+//	if(k == 0){
+//		printf("vn: ");
+//		mpz_print_str_device(&vn);
+//		printf("\n");
+//	}
 
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
 	for(long long unsigned iter1 = 0; iter1 < pairs; iter1++){
@@ -54,21 +54,21 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 		mpz_t* n_ = &vn_;
 		int j = blockIdx.x * blockDim.x + threadIdx.x;
 
-		if(j == 0){
-			printf("mes1: ");
-			mpz_print_str_device(&_x1[j]);
-			printf("\n");
-		}
+//		if(j == 0){
+//			printf("mes1: ");
+//			mpz_print_str_device(&_x1[j]);
+//			printf("\n");
+//		}
 //		if(j == 1){
 //			printf("mes2: ");
 //			mpz_print_str_device(&_x1[j]);
 //			printf("\n");
 //		}
-		if(k == 0){
-			printf("vn: ");
-			mpz_print_str_device(&vn);
-			printf("\n");
-		}
+//		if(k == 0){
+//			printf("vn: ");
+//			mpz_print_str_device(&vn);
+//			printf("\n");
+//		}
 
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
 		mpz_mult(&tmp2[j], &_x1[j], &r2);
@@ -100,11 +100,11 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 //			mpz_print_str_device(&_x2[j]);
 //			printf("\n");
 //		}
-		if(k == 0){
-			printf("vn: ");
-			mpz_print_str_device(&vn);
-			printf("\n");
-		}
+//		if(k == 0){
+//			printf("vn: ");
+//			mpz_print_str_device(&vn);
+//			printf("\n");
+//		}
 
 		for(int i = eLength - 2; i >= 0; i--){
 
@@ -144,11 +144,11 @@ __global__ void MontSQMLadder(mpz_t * mes1, long long unsigned pairs, mpz_t* _x1
 //				mpz_print_str_device(&_x2[j]);
 //				printf("\n");
 //			}
-			if(k == 0){
-				printf("vn: ");
-				mpz_print_str_device(&vn);
-				printf("\n");
-			}
+//			if(k == 0){
+//				printf("vn: ");
+//				mpz_print_str_device(&vn);
+//				printf("\n");
+//			}
 		}
 
 		//_x1 = REDC(rmod,n,n_,_x1,l)
