@@ -11,7 +11,6 @@
 #include "compile.h"
 #include "cuda_string.h"
 #include <string.h> //changes
-#include <gmp.h>
 
 #define LOG2_DIGIT_BASE     32
 #define DIGIT_BASE          ((unsigned long long) 1 << (LOG2_DIGIT_BASE))
