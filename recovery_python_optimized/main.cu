@@ -97,7 +97,7 @@ int main (int argc, char *argv[]) {
 	cudaDeviceSynchronize();
 
 	cudaMemcpy(clockTable_h, clockTable_d, 1 * sizeof(long long int), cudaMemcpyDeviceToHost);
-
+	long long int sum1 = clockTable_h[0];
 	sum1 = sum1 / pairs;
 
 	printf("%lld", sum1);
@@ -106,16 +106,10 @@ int main (int argc, char *argv[]) {
 	cudaFree(clockTable_d);
 	cudaFree(dBits_d);
 	cudaFree(myMes1_d);
-	cudaFree(tmp);
-	cudaFree(tmp2);
-	cudaFree(d_t);
-	cudaFree(_x1_mpz);
-	cudaFree(_x2_mpz);
 
 	////////free host
 	free(clockTable_h);
 	free(myMes1_h);
-	free(eBits);
 	free(dBits);
 
     return 0;
