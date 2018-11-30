@@ -41,16 +41,12 @@ def CheckREDC(R,N,N_,T,L):
 	else:
 		return 0
 			
-def CheckDivExp(e, n, n_, r2, rmod, l, bit, check_pre, div_num, num): #now gen pair and check pre at the same time
+def CheckDivExp(e, n, n_, r2, rmod, l, bit, num): #now gen pair and check pre at the same time
 	
 	bit1_div_sum = 0 #0 1
-	nondiv_sum = 0 #0 0
-	bothdiv_sum = 0 #1 1
 	bit0_div_sum = 0 #1 0
 	
 	bit1_div_num = num #0 1
-	nondiv_num = num #0 0
-	bothdiv_num = num #1 1
 	bit0_div_num = num #1 0
 	
 	e_b = bits(e)
@@ -59,7 +55,7 @@ def CheckDivExp(e, n, n_, r2, rmod, l, bit, check_pre, div_num, num): #now gen p
 		print ("Wrong bit!")
 		exit(1)
 	
-	while bit1_div_num > 0 or nondiv_num > 0 or bothdiv_num > 0 or bit0_div_num > 0 :
+	while bit1_div_num > 0 or bit0_div_num > 0 :
 	
 		mark = 0
 		div_count = 0
@@ -85,15 +81,8 @@ def CheckDivExp(e, n, n_, r2, rmod, l, bit, check_pre, div_num, num): #now gen p
 				div_count+=1				
 			if s2_1 != s2_2 :
 				div_count+=1				
-# 			if div_count != 1 : #same divergence pattern
-# 				return 0
-# 			div_count = 0
-			
-			if bit == c:			
-				
-				if check_pre == 1 and div_count != div_num : #total divergence number
-					break			
-				
+
+			if bit == c:
 				_x1_1_temp = _x1_1
 				_x2_1_temp = _x2_1
 				_x1_2_temp = _x1_2
@@ -129,11 +118,12 @@ def CheckDivExp(e, n, n_, r2, rmod, l, bit, check_pre, div_num, num): #now gen p
 				if (d0_s1_1 != d0_s1_2 and d0_s2_1 == d0_s2_2) or (d0_s1_1 == d0_s1_2 and d0_s2_1 != d0_s2_2): #diverge for bit 0 (1 0) or (0 1)
 					if (d1_s1_1 != d1_s1_2 and d1_s2_1 == d1_s2_2) or (d1_s1_1 == d1_s1_2 and d1_s2_1 != d1_s2_2): #diverge for bit 0, diverge for bit 1 (1 0) or (0 1)
 						#print ("debug3\n")
-						if bothdiv_num > 0 :
-							bothdiv_num-=1
-							mark = 3
-						else:
-							break
+						break
+# 						if bothdiv_num > 0 :
+# 							bothdiv_num-=1
+# 							mark = 3
+# 						else:
+# 							break
 					elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #diverge for bit 0, converge for bit 1 (0 0)
 						#print ("debug4\n")
 						if bit0_div_num > 0 :
@@ -153,11 +143,12 @@ def CheckDivExp(e, n, n_, r2, rmod, l, bit, check_pre, div_num, num): #now gen p
 							break
 					elif d1_s1_1 == d1_s1_2 and d1_s2_1 == d1_s2_2: #converge for bit 0, converge for bit 1 (0 0)
 						#print ("debug2\n")
-						if nondiv_num > 0 :
-							nondiv_num-=1
-							mark = 2
-						else:
-							break
+						break
+# 						if nondiv_num > 0 :							
+# 							nondiv_num-=1
+# 							mark = 2
+# 						else:
+# 							break
 					else:
 						break
 				else:
@@ -232,8 +223,7 @@ def CheckDivExp(e, n, n_, r2, rmod, l, bit, check_pre, div_num, num): #now gen p
 			continue
 			
 		s1 = CheckREDC(rmod,n,n_,_x1_1,l)
-		s2 = CheckREDC(rmod,n,n_,_x1_2,l)
-		
+		s2 = CheckREDC(rmod,n,n_,_x1_2,l)		
 		
 		if s1_1 != s1_2 :
 			div_count+=1				
@@ -244,39 +234,13 @@ def CheckDivExp(e, n, n_, r2, rmod, l, bit, check_pre, div_num, num): #now gen p
 				
 		if mark == 1 :
 			bit1_div_sum+=div_count
-		elif mark == 2 :
-			nondiv_sum+=div_count
-		elif mark == 3 :
-			bothdiv_sum+=div_count
 		else: # mark == 4
 			bit0_div_sum+=div_count			
 			
 	sum1 = bit1_div_sum / num
-	sum2 = nondiv_sum / num
-	sum3 = bothdiv_sum / num
 	sum4 = bit0_div_sum / num
-	print(sum1)
-	print(sum2)
-	print(sum3)
-	print(sum4)
-	
-	diff1 = sum1 - sum2 # close to zero means 0, greater than zero means 1
-	diff2 = sum4 - sum2 # close to zero means 1, greater than zero means 0
-	mean1 = (diff1 + diff2) / 2
-	print(diff1,diff2,mean1)
-    
-	diff3 = sum1 - sum3 # close to zero means 1, smaller than zero means 0
-	diff4 = sum4 - sum3 # close to zero means 0, smaller than zero means 1
-	mean2 = (diff3 + diff4) / 2
-	print(diff3,diff4, mean2)
-    
-	val1 = mean1 + mean2
-	sign1 = mean1 * mean2
-	print(val1, sign1)
-    
 	diff5 = sum1 - sum4 # greater means 1
-	diff6 = sum3 - sum2 # must be greater
-	print(diff5,diff6)
+	print(sum1, sum4, diff5)
 
 
 random.seed(time.time())
@@ -305,7 +269,7 @@ start = time.time()
 
 print(key[(1023 - bit)])
 for i in range(5):
-	CheckDivExp(d, n, n_, r2, rmod, l, bit, 0, 0, 100)
+	CheckDivExp(d, n, n_, r2, rmod, l, bit, 1000)
 	print("\n") 
 
 end = time.time()
