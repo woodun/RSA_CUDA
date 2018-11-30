@@ -439,6 +439,7 @@ int main (int argc, char *argv[]) {
 	int known_bits_length = 1;
 	//int total_bits_length = 3;
 	int div_con = 0;
+	int wrong_key = 0;
 
 	///////gmp init
 	mpz_t mod;
@@ -561,10 +562,10 @@ int main (int argc, char *argv[]) {
 		printf ("both_div: %fms %lldcycles\n", sum3 / (float)clock_rate, sum3);
 		printf ("bit0_div: %fms %lldcycles\n", sum4 / (float)clock_rate, sum4);
 
-		if(diff3 > 2000){//bit is 1
+		if(diff3 > 1000){//bit is 1
 			known_bits[known_bits_length] = 1;
 			printf("bit is 1.\n");
-		}else if(diff3 < -2000){//bit is 0
+		}else if(diff3 < -1000){//bit is 0
 
 			known_bits[known_bits_length] = 0;
 			printf("bit is 0.\n");
@@ -582,19 +583,28 @@ int main (int argc, char *argv[]) {
 		}
 		printf("\n");
 
+		if(known_bits[known_bits_length - 1] != dBits[known_bits_length - 1]){
+			wrong_key = 1;
+			printf("wrong key!");
+			break;
+		}
+
+		//wrong_key = 1;
 		//break;///////////////
 	}
 
-	known_bits[known_bits_length] = 1;//last bit is always 1
-	printf("bit is 1.\n");
+	if(wrong_key == 0){
+		known_bits[known_bits_length] = 1;//last bit is always 1
+		printf("bit is 1.\n");
 
-	known_bits_length++;
+		known_bits_length++;
 
-	printf("current bits: ");
-	for(int i = 0; i < known_bits_length; i++){
-		printf("%d", known_bits[i]);
+		printf("current bits: ");
+		for(int i = 0; i < known_bits_length; i++){
+			printf("%d", known_bits[i]);
+		}
+		printf("\n");
 	}
-	printf("\n");
 
 	///////gmp clear
 	gmp_randclear (rand_state);
