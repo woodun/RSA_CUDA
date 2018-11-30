@@ -280,14 +280,15 @@ def CheckDivExp(e, n, n_, r2, rmod, l, bit, check_pre, div_num, num): #now gen p
 
 
 random.seed(time.time())
-p = 32416189867
-q = 32416189909
+p = 24459629785364283833111470410697016767033653211208122876885582413633536633041146086554558328286062725490645509691783941884323722081206394402126328961429611
+q = 23919455913170500015755783799226625762223555612017221740308873996331017696448333058981571497700037939790397009985964455331321308700955400852467790892848337
+
 n = p * q
 phi = (p - 1) * (q - 1)
 n_lambda = phi // egcd(p-1, q-1)[0] 
-e = 5
-_d = modinv(e, n_lambda) #67 bits
-d = modinv(e, phi)
+e = 7
+d = modinv(e, n_lambda) #67 bits
+_d = modinv(e, phi)
 
 r = findR(n)[1] 
 rmod = r - 1  	
@@ -295,18 +296,17 @@ l = findR(n)[0]
 n_ = - modinv(n,r) & rmod 
 r2 = (r << l) % n
 	
-bit = 68
-
-#key = "1011011001001001010011110110010101010111001010110101111000111100001"
-key = "1000100010110110111110111000110000000001011000001000011010101101000101"
-print(bits(d))
+bit = 1021
+key = bits(d)
+print(key)
 print("\n") 
 
 start = time.time()
 
-print(key[(69 - bit)])
-for i in range(10):
-	CheckDivExp(d, n, n_, r2, rmod, l, bit, 0, 0, 2000)
+print(key[(1023 - bit)])
+for i in range(5):
+	CheckDivExp(d, n, n_, r2, rmod, l, bit, 0, 0, 100)
+	print("\n") 
 
 end = time.time()
 

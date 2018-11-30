@@ -421,7 +421,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
 	  top_bit_count = ((RL - 1) & MOD_LOG2_DIGIT_BASE) + 1;
   }
 
-  //finding the msb, for efficiency we assume heading zeros does not pass word boundary
+  //finding the msb
    while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
 	   top_bit_count--;
   }

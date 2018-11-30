@@ -1,5 +1,5 @@
 /**
- * @file cuda_mpz.c
+ * @file mpz.c
  *
  * @brief Multiple Precision arithmetic code.
  *
@@ -30,10 +30,10 @@ typedef struct {
   unsigned bits;
 } mpz_t;
 
-__device__ __host__ inline void mpz_init(mpz_t *cuda_mpz) {
-  for (int i = 0; i < DIGITS_CAPACITY; i++) cuda_mpz->digits[i] = 0;
-  cuda_mpz->words = 0;
-  cuda_mpz->bits = 0;
+__device__ __host__ inline void mpz_init(mpz_t *mpz) {
+  for (int i = 0; i < DIGITS_CAPACITY; i++) mpz->digits[i] = 0;
+  mpz->words = 0;
+  mpz->bits = 0;
 }
 
 __device__ __host__ inline void mpz_set(mpz_t *to, mpz_t *from) {
@@ -54,14 +54,14 @@ __device__ __host__ inline void mpz_set(mpz_t *to, mpz_t *from) {
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
-__host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//changes
+__host__ inline void mpz_set_str_host(mpz_t *mpz, const char *user_str) {//changes
   unsigned num_digits;
   unsigned i;
   int is_zero;
   unsigned word_count = 0;
 
   #pragma unroll
-  for (i = 0; i < DIGITS_CAPACITY; i++) cuda_mpz->digits[i] = 0;//changes
+  for (i = 0; i < DIGITS_CAPACITY; i++) mpz->digits[i] = 0;//changes
 
   const int bufsize = 1024;
   char buf[bufsize];
@@ -84,7 +84,7 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
     is_zero = is_zero && (d == 0);
 
     /* parse the string backwards (little endian order) */
-    cuda_mpz->digits[i] = d;
+    mpz->digits[i] = d;
 
     if(d != 0 ){
     	word_count = i;
@@ -92,16 +92,16 @@ __host__ inline void mpz_set_str_host(mpz_t *cuda_mpz, const char *user_str) {//
   }
 
   word_count++;
-  cuda_mpz->words = word_count;
+  mpz->words = word_count;
   //finding the msb
-  digit_t v = cuda_mpz->digits[word_count - 1];
+  digit_t v = mpz->digits[word_count - 1];
   int msb = 0;
 
   while (v >>= 1) {
 	  msb++;
   }
 
-  cuda_mpz->bits = (word_count - 1) * LOG2_DIGIT_BASE + msb + 1;
+  mpz->bits = (word_count - 1) * LOG2_DIGIT_BASE + msb + 1;
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
@@ -242,7 +242,7 @@ __device__ __host__ inline void mpz_mult(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
-__device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int RL) {//changes
+__device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src) {//changes
 
     ///////////////////////debug
     printf("truncate:\n");
@@ -289,22 +289,17 @@ __device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int
 	  dst_digits[d_index] = src_digits[d_index];
   }
 
-  unsigned word_count;
-  unsigned total_bit_count;
+  unsigned word_count = rs_digits + 1;
   unsigned top_bit_count;
 
-  if(top_word == 0){///for efficiency we assume heading zeros does not pass two words boundary
-	  word_count = rs_digits;
-	  total_bit_count = rs_digits << LOG2_LOG2_DIGIT_BASE;
-	  top_bit_count = 32;
-	  top_word = src_digits[rs_digits - 1];
-	  if(top_word == 0){
-		  printf("error7!\n");
+  if(top_word == 0){
+	  while(top_word == 0 && word_count > 1){
+		  --word_count;
+		  top_word = src_digits[word_count - 1];
 	  }
+	  top_bit_count = 32;
   }else{
-	  word_count = rs_digits + 1;
-	  total_bit_count = RL;
-	  top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;
+	  top_bit_count = ((RL - 1) & MOD_LOG2_DIGIT_BASE) + 1;
   }
 
   //finding the msb
@@ -312,12 +307,13 @@ __device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int
 	   top_bit_count--;
   }
 
-  if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){
-	  printf("error6! %x\n", (top_word >> ( top_bit_count - 1 ) ) );//check
-  }
+//  if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){
+//	  printf("error6! %x\n", (top_word >> ( top_bit_count - 1 ) ) );//check
+//  }
 
   dst->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
-  dst->words = word_count;
+  dst->words = (dst->bits + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;////in case top_bit_count is 0
+  //dst->words = word_count;
 
   ///////////////////////debug
   printf("truncate:\n");
@@ -341,17 +337,17 @@ __device__ __host__ inline void mpz_bitwise_truncate(mpz_t *dst, mpz_t *src, int
   ///////////////////////debug
 }
 
-__device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *cuda_mpz, int RL) {//changes
+__device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *mpz) {//changes
 
     ///////////////////////debug
     printf("truncateeq:\n");
-    printf("cuda_mpz: \n");
+    printf("mpz: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-  	  printf("%08x", cuda_mpz->digits[i]);
+  	  printf("%08x", mpz->digits[i]);
     }
     printf("\n");
-    printf("words: %u\n", cuda_mpz->words);
-    printf("bits: %u\n", cuda_mpz->bits);
+    printf("words: %u\n", mpz->words);
+    printf("bits: %u\n", mpz->bits);
     printf("##############################################################\n");
     ///////////////////////debug
 
@@ -359,7 +355,7 @@ __device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *cuda_mpz, int RL)
 //	  return;
 //  }
 
-  digit_t *digits = cuda_mpz->digits;
+  digit_t *digits = mpz->digits;
 
   int rs_digits = RL >> LOG2_LOG2_DIGIT_BASE;
   //int ls_digits = capacity - rs_digits - 1;
@@ -367,52 +363,48 @@ __device__ __host__ inline void mpz_bitwise_truncate_eq(mpz_t *cuda_mpz, int RL)
   //int rs_remainder = n_bits & MOD_LOG2_DIGIT_BASE;
 
   #pragma unroll
-  for(int d_index = cuda_mpz->words - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
+  for(int d_index = mpz->words - 1; d_index > rs_digits; d_index--) {//constant time for specific rl
 	digits[d_index] = 0;
   }
 
   digit_t top_word = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
   digits[rs_digits] = top_word;
 
-  unsigned word_count;
-  unsigned total_bit_count;
+  unsigned word_count = rs_digits + 1;
   unsigned top_bit_count;
 
-  if(top_word == 0){///for efficiency we assume heading zeros does not pass two words boundary
-	  word_count = rs_digits;
-	  total_bit_count = rs_digits << LOG2_LOG2_DIGIT_BASE;
-	  top_bit_count = 32;
-	  top_word = digits[rs_digits - 1];
-	  if(top_word == 0){
-		  printf("error7!\n");
+  if(top_word == 0){
+	  while(top_word == 0 && word_count > 1){
+		  --word_count;
+		  top_word = digits[word_count - 1];
 	  }
+	  top_bit_count = 32;
   }else{
-	  word_count = rs_digits + 1;
-	  total_bit_count = RL;
-	  top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;
+	  top_bit_count = ((RL - 1) & MOD_LOG2_DIGIT_BASE) + 1;
   }
 
-  //finding the msb, for efficiency we assume heading zeros does not pass word boundary
+  //finding the msb
    while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
 	   top_bit_count--;
   }
 
-  if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){
-	  printf("error6! %x\n", (top_word >> ( top_bit_count - 1 ) ) );//check
-  }
+//  if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){
+//	  printf("error6! %x\n", (top_word >> ( top_bit_count - 1 ) ) );//check
+//  }
 
-  cuda_mpz->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
-  cuda_mpz->words = word_count;
+  mpz->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
+  mpz->words = (mpz->bits + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;////in case top_bit_count is 0
+  //mpz->words = word_count;
 
   ///////////////////////debug
   printf("truncateeq:\n");
-  printf("cuda_mpz: \n");
+  printf("mpz: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-	  printf("%08x", cuda_mpz->digits[i]);
+	  printf("%08x", mpz->digits[i]);
   }
   printf("\n");
-  printf("words: %u\n", cuda_mpz->words);
-  printf("bits: %u\n", cuda_mpz->bits);
+  printf("words: %u\n", mpz->words);
+  printf("bits: %u\n", mpz->bits);
   printf("##############################################################\n");
   printf("##############################################################\n");
   ///////////////////////debug
@@ -443,34 +435,34 @@ __device__ __host__ inline int mpz_gte(mpz_t *a, mpz_t *b) {
   return (mpz_compare(a, b) >= 0);
 }
 
-__device__ __host__ inline void mpz_bitwise_rshift_eq(mpz_t *cuda_mpz, int RL) {//changes
+__device__ __host__ inline void mpz_bitwise_rshift_eq(mpz_t *mpz, int RL) {//changes
 
-//  if(RL >= cuda_mpz->bits){
-//	  for (int i = 0; i < cuda_mpz->words; i++) cuda_mpz->digits[i] = 0;
-//	  cuda_mpz->words = 0;
-//	  cuda_mpz->bits = 0;
+//  if(RL >= mpz->bits){
+//	  for (int i = 0; i < mpz->words; i++) mpz->digits[i] = 0;
+//	  mpz->words = 0;
+//	  mpz->bits = 0;
 //	  return;
 //  }
 
-  digit_t *digits = cuda_mpz->digits;
+  digit_t *digits = mpz->digits;
 
   int rs_digits = RL >> LOG2_LOG2_DIGIT_BASE;
   int rs_remainder = RL & MOD_LOG2_DIGIT_BASE;
 
   #pragma unroll
-  for(int d_index = 0; d_index < cuda_mpz->words - 1 - rs_digits; d_index++) {
+  for(int d_index = 0; d_index < mpz->words - 1 - rs_digits; d_index++) {
 	digits[d_index] = ( digits[d_index + rs_digits] >> rs_remainder ) | ( digits[d_index + rs_digits + 1] << ( LOG2_DIGIT_BASE - rs_remainder ) );
   }
 
-  digits[cuda_mpz->words - 1 - rs_digits] = digits[cuda_mpz->words - 1] >> rs_remainder;
+  digits[mpz->words - 1 - rs_digits] = digits[mpz->words - 1] >> rs_remainder;
 
   #pragma unroll
-  for(int d_index = cuda_mpz->words - rs_digits; d_index <= cuda_mpz->words - 1; d_index++) {//could cause overflow, but not in RSA
+  for(int d_index = mpz->words - rs_digits; d_index <= mpz->words - 1; d_index++) {//could cause overflow, but not in RSA
   	digits[d_index] = 0;
   }
 
-  cuda_mpz->bits = cuda_mpz->bits - RL;
-  cuda_mpz->words = (cuda_mpz->bits + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;
+  mpz->bits = mpz->bits - RL;
+  mpz->words = (mpz->bits + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;
 }
 
 __device__ __host__ inline void mpz_bitwise_rshift(mpz_t *dst, mpz_t *src, int RL) {//changes
@@ -778,18 +770,18 @@ __device__ __host__ inline void mpz_sub(mpz_t *dst, mpz_t *op1, mpz_t *op2) {
     ///////////////////////debug
 }
 
-__device__ __host__ inline digit_t mpz_get_last_digit(mpz_t *cuda_mpz) {//changes
-	return cuda_mpz->digits[0];
+__device__ __host__ inline digit_t mpz_get_last_digit(mpz_t *mpz) {//changes
+	return mpz->digits[0];
 }
 
-__host__ inline char* mpz_get_str(mpz_t *cuda_mpz, char *str, int bufsize) {
+__host__ inline char* mpz_get_str(mpz_t *mpz, char *str, int bufsize) {
   int print_zeroes = 0; // don't print leading 0s
   int i;
   int str_index = 0;
 
   #pragma unroll
   for (i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-    unsigned digit = cuda_mpz->digits[i];
+    unsigned digit = mpz->digits[i];
 
     if (digit != 0 || print_zeroes) {
       if (bufsize < str_index + 8) {
@@ -816,12 +808,12 @@ __host__ inline char* mpz_get_str(mpz_t *cuda_mpz, char *str, int bufsize) {
   return str;
 }
 
-__device__ inline void mpz_print_str_device(mpz_t *cuda_mpz) {//changes
+__device__ inline void mpz_print_str_device(mpz_t *mpz) {//changes
   int print_zeroes = 0; // don't print leading 0s
 
   #pragma unroll
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
-    unsigned digit = cuda_mpz->digits[i];
+    unsigned digit = mpz->digits[i];
 
     if (digit != 0 || print_zeroes) {
       if (!print_zeroes) {

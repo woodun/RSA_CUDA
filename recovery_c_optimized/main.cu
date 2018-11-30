@@ -388,8 +388,6 @@ int main (int argc, char *argv[]) {
 			}
 		}
 
-		printf("debug1\n");
-
 		cudaMemcpy(myMes1_d, myMes1_h, mesSize * 2 , cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
 
 		struct timespec ts1;/////////////////////////////////time
