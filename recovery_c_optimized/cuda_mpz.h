@@ -323,32 +323,26 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
   dst_digits[rs_digits] = top_word;
 
   #pragma unroll
-  for(int d_index = 0; d_index <= rs_digits - 1; d_index++) {
+  for(int d_index = rs_digits - 1; d_index >= 0; d_index++) {
 	  dst_digits[d_index] = src_digits[d_index];
   }
 
-  unsigned word_count;
-  unsigned total_bit_count;
+  unsigned word_count = rs_digits + 1;
   unsigned top_bit_count;
 
-  if(top_word == 0){///for efficiency we assume heading zeros does not pass two words boundary
-	  word_count = rs_digits;
-	  total_bit_count = rs_digits << LOG2_LOG2_DIGIT_BASE;
+  if(top_word == 0){
+	  while(top_word == 0 && word_count > 1){
+		  --word_count;
+		  top_word = src_digits[word_count - 1];
+	  }
 	  top_bit_count = 32;
-	  top_word = src_digits[rs_digits - 1];
-//	  if(top_word == 0){
-//		  printf("error7!\n");
-//	  }
   }else{
-	  word_count = rs_digits + 1;
-	  total_bit_count = RL;
-	  top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;
+	  top_bit_count = ((RL - 1) & MOD_LOG2_DIGIT_BASE) + 1;
   }
 
   //finding the msb
    while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
 	   top_bit_count--;
-	   printf("stuck1\n");
   }
 
 //  if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){
@@ -356,7 +350,8 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
 //  }
 
   dst->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
-  dst->words = word_count;
+  dst->words = (dst->bits + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;////in case top_bit_count is 0
+  //dst->words = word_count;
 
 //  ///////////////////////debug
 //  printf("truncate:\n");
@@ -413,28 +408,22 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
   digit_t top_word = digits[rs_digits] & ( 0xffffffff >> ls_remainder);
   digits[rs_digits] = top_word;
 
-  unsigned word_count;
-  unsigned total_bit_count;
+  unsigned word_count = rs_digits + 1;
   unsigned top_bit_count;
 
-  if(top_word == 0){///for efficiency we assume heading zeros does not pass two words boundary
-	  word_count = rs_digits;
-	  total_bit_count = rs_digits << LOG2_LOG2_DIGIT_BASE;
+  if(top_word == 0){
+	  while(top_word == 0 && word_count > 1){
+		  --word_count;
+		  top_word = src_digits[word_count - 1];
+	  }
 	  top_bit_count = 32;
-	  top_word = digits[rs_digits - 1];
-//	  if(top_word == 0){
-//		  printf("error7!\n");
-//	  }
   }else{
-	  word_count = rs_digits + 1;
-	  total_bit_count = RL;
-	  top_bit_count = ((total_bit_count - 1) & MOD_LOG2_DIGIT_BASE) + 1;
+	  top_bit_count = ((RL - 1) & MOD_LOG2_DIGIT_BASE) + 1;
   }
 
   //finding the msb, for efficiency we assume heading zeros does not pass word boundary
    while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
 	   top_bit_count--;
-	   printf("stuck2\n");
   }
 
 //  if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){
@@ -442,7 +431,8 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
 //  }
 
   cuda_mpz->bits = (word_count - 1) * LOG2_DIGIT_BASE + top_bit_count;
-  cuda_mpz->words = word_count;
+  cuda_mpz->words = (cuda_mpz->bits + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;////in case top_bit_count is 0
+  //cuda_mpz->words = word_count;
 
 //  ///////////////////////debug
 //  printf("truncateeq:\n");
