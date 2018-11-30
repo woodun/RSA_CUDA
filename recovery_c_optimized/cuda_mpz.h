@@ -15,7 +15,7 @@
 
 #define LOG2_DIGIT_BASE     32
 #define DIGIT_BASE          ((unsigned long long) 1 << (LOG2_DIGIT_BASE))
-#define DIGITS_CAPACITY     65 //changes: make enough space for large input
+#define DIGITS_CAPACITY     66 //changes: make enough space for large input
 #define MOD_DIGIT_BASE      0xffffffff//changes
 #define MOD_LOG2_DIGIT_BASE     31 //changes
 #define LOG2_LOG2_DIGIT_BASE 5 //changes
