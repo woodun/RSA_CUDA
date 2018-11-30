@@ -1,0 +1,10 @@
+#!/bin/bash
+#PBS -l nodes=1:hima:v100:ppn=1
+#PBS -l walltime=72:00:00
+#PBS -N RSA
+#PBS -m a
+#PBS -M hwang07@email.wm.edu
+PROG=nvprof
+ARGS="./main 1000 1"
+cd $PBS_O_WORKDIR
+nvprof --log-file prof1.txt ./main 1000 1 > nvprof.txt
