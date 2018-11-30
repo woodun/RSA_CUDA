@@ -260,7 +260,7 @@ l = findR(n)[0]
 n_ = - modinv(n,r) & rmod 
 r2 = (r << l) % n
 	
-bit = 1021
+bit = 1022
 key = bits(d)
 print(key)
 print("\n") 
