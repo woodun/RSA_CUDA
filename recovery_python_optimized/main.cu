@@ -22,26 +22,26 @@ int main (int argc, char *argv[]) {
 	long long int *clockTable_h;
 	clockTable_h = (long long int*) malloc( pairs * sizeof(long long int));
 
-	mpz_t h_n;
-	mpz_t h_n_;
-	mpz_t h_r2;
+	cuda_mpz_t h_n;
+	cuda_mpz_t h_n_;
+	cuda_mpz_t h_r2;
 
 	///////get n
 	char n_input[] = "00000038f6e8cfba55dd0e47";
-	mpz_set_str_host(&h_n, n_input);
+	cuda_mpz_set_str_host(&h_n, n_input);
 	
 	///////get n_
 	char n__input[] = "0000002e8457440e0d93c489";
-	mpz_set_str_host(&h_n_, n__input);
+	cuda_mpz_set_str_host(&h_n_, n__input);
 
 	///////get r2
 	char r2_input[] = "0000003709d17d8f8686609f";
-	mpz_set_str_host(&h_r2, r2_input);
+	cuda_mpz_set_str_host(&h_r2, r2_input);
 
 	///////get Messages
-	long long unsigned mesSize = sizeof(mpz_t) * data_num;
-	mpz_t *myMes1_h;
-	myMes1_h = (mpz_t*) malloc (mesSize);
+	long long unsigned mesSize = sizeof(cuda_mpz_t) * data_num;
+	cuda_mpz_t *myMes1_h;
+	myMes1_h = (cuda_mpz_t*) malloc (mesSize);
 
 	///////get Message pairs
 	char* line = NULL;
@@ -55,7 +55,7 @@ int main (int argc, char *argv[]) {
 	long long unsigned line_num = 0;
 	while ((getline(&line, &len, fp2)) != -1) {
 		line[strcspn(line, "\n")] = 0;
-		mpz_set_str_host(&myMes1_h[line_num], line);
+		cuda_mpz_set_str_host(&myMes1_h[line_num], line);
 		line_num++;
 		if(line_num == data_num){
 			break;
@@ -65,8 +65,8 @@ int main (int argc, char *argv[]) {
 	if (line)
 	    free(line);
 
-	mpz_t *myMes1_d;
-	cudaMalloc((mpz_t **) &myMes1_d, mesSize);
+	cuda_mpz_t *myMes1_d;
+	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize);
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);
 
 	///////get d
