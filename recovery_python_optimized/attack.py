@@ -41,7 +41,7 @@ def CheckREDC(R,N,N_,T,L):
     else:
         return 0
             
-def CheckDivExp(mes1, mes2, e, n, n_, rsquare, rmod, l, check_pre, div_num): # div_num is a relaxed condition, otherwise cannot reach very far bits. Also the non-bothdiv combo can always be reached.
+def CheckDivExp(mes1, mes2, e, n, n_, rsquare, rmod, l):
     
     s1_1 = CheckREDC(rmod, n, n_, mes1 * rsquare, l)
     s1_2 = CheckREDC(rmod, n, n_, mes2 * rsquare, l)    
@@ -54,17 +54,6 @@ def CheckDivExp(mes1, mes2, e, n, n_, rsquare, rmod, l, check_pre, div_num): # d
     s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
     _x2_1 = REDC(rmod, n, n_, _x2_1, l)
     _x2_2 = REDC(rmod, n, n_, _x2_2, l)
-    
-    div_count = 0
-     
-    if check_pre == 1: 
-        if s1_1 != s1_2 :
-            div_count+=1
-        if s2_1 != s2_2 :
-            div_count+=1    
-#         if div_count != 1 : #same divergence pattern
-#             return 0
-#         div_count = 0
     
     e_b = bits(e)   
     
@@ -97,18 +86,6 @@ def CheckDivExp(mes1, mes2, e, n, n_, rsquare, rmod, l, check_pre, div_num): # d
             _x2_2 = _x2_2 * _x2_2
             s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
             _x2_2 = REDC(rmod, n, n_, _x2_2, l)        
-            
-        if check_pre == 1: 
-            if s1_1 != s1_2 :
-                div_count+=1
-            if s2_1 != s2_2 :
-                div_count+=1
-#             if div_count != 1 : #same divergence pattern
-#                 return 0
-#             div_count = 0
-            
-    if check_pre == 1 and div_count != div_num : #total divergence number
-        return 0
     
     _x1_1_temp = _x1_1
     _x2_1_temp = _x2_1
@@ -172,36 +149,20 @@ def Padding8 (n):
         hex_n = "0" + hex_n;
     return hex_n;
             
-def FindPairs (num, mod, e, n_, rsquare, rmod, l, f1, f2, f3, f4, check_pre, div_num): 
+def FindPairs (num, mod, e, n_, rsquare, rmod, l, f1, f4): 
     bit1_div_num = num #0 1
-    nondiv_num = num #0 0
-    bothdiv_num = num #1 1
     bit0_div_num = num #1 0
     while(True):
-        r1, r2 = random.randint(2, mod), random.randint(2, mod)
-        div_con = CheckDivExp(r1, r2, e, mod, n_, rsquare, rmod, l, check_pre, div_num)    
+        mes1, mes2 = random.randint(2, mod), random.randint(2, mod)
+        div_con = CheckDivExp(mes1, mes2, e, mod, n_, rsquare, rmod, l)    
         if div_con == 1 and bit1_div_num > 0:                
-            f1.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
+            f1.write("%s\n%s\n" % (Padding8(mes1), Padding8(mes2) ) )
             bit1_div_num-=1
-        if div_con == 2 and nondiv_num > 0:                
-            f2.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
-            nondiv_num-=1
-        if div_con == 3 and bothdiv_num > 0:                
-            f3.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
-            bothdiv_num-=1
         if div_con == 4 and bit0_div_num > 0:                
-            f4.write("%s\n%s\n" % (Padding8(r1), Padding8(r2) ) )
+            f4.write("%s\n%s\n" % (Padding8(mes1), Padding8(mes2) ) )
             bit0_div_num-=1
-#         if bit1_div_num == 0 and bothdiv_num == 0 and bit0_div_num == 0: # no 0 0            
-#             return 0    
-#         if bothdiv_num == 0 == 0 and nondiv_num == 0 and bit0_div_num == 0: # no 0 1        
-#             return 1    
-#         if bit1_div_num == 0 and nondiv_num == 0 and bothdiv_num == 0: # no 1 0            
-#             return 2       
-#         if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0: # no 1 1                
-#             return 3     
-        if bit1_div_num == 0 and nondiv_num == 0 and bit0_div_num == 0 and bothdiv_num == 0: # all               
-            return 4
+        if bit1_div_num == 0 and bit0_div_num == 0: # all               
+            return 1
           
 time1 = time.time()      
 print(time1)    
@@ -215,65 +176,42 @@ l = findR(n)[0]
 n_ = - modinv(n,r) & rmod 
 r2 = (r << l) % n
 
+phi = (p-1)*(q-1)
+n_lambda = phi // egcd(p-1, q-1)[0]
+e = 5
+_d = modinv(e, phi)
+d = modinv(e, n_lambda)
+print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R2):%s, bits(e):%s, bits(d):%s, RL:%d\n" % (Padding8 (n), Padding8 (n_), Padding8 (r2), bits(e), bits(d), l))
+
+_key = "1011011001001001010011110110010101010111001010110101111000111100001"
+#key = "1000100010110110111110111000110000000001011000001000011010101101000101"
+key = bits(d)
+
 current_bits = 1
 eob = 0
 temp = "0"
 bit_count = 0
 
-#iter_count = 0
-# vote_count = 3
-# vote_0 = 0 # multiple runs to vote?
-# vote_1 = 0
-#key = "1011011001001001010011110110010101010111001010110101111000111100001"
-key = "1000100010110110111110111000110000000001011000001000011010101101000101"
-
-# int(sys.argv[1])
-
 print("current bits: " + bits(current_bits))
 while(eob == 0 ):    
 
     f1 = open("bit1divpairs_pre.txt","w+")
-    f2 = open("nondivpairs_pre.txt","w+")
-    f3 = open("divpairs_pre.txt","w+")
     f4 = open("bit0divpairs_pre.txt","w+")
-#     random.seed(1542226726.06)#get a good seed?
-#     random.seed(0)#get a good seed?
-    FindPairs (2256, n, current_bits, n_, r2, rmod, l, f1, f2, f3, f4, int(sys.argv[1]), len(bits(current_bits) ) )
+
+    FindPairs (int(sys.argv[1]), n, current_bits, n_, r2, rmod, l, f1, f4)
     f1.close()
-    f2.close()
-    f3.close()
     f4.close()
     
     #./main bit0divpairs_pre.txt 1000
-    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", "2256", "bit1divpairs_out.txt"]) # greater means 1
+    sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", sys.argv[1], "bit1divpairs_out.txt"]) # greater means 1
     print(sum1)
-    sum2 = subprocess.check_output(["./main", "nondivpairs_pre.txt", "2256", "nondivpairs_out.txt"])
-    print(sum2)
-    sum3 = subprocess.check_output(["./main", "divpairs_pre.txt", "2256", "divpairs_out.txt"])
-    print(sum3)
-    sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", "2256", "bit0divpairs_out.txt"]) # greater means 0
+    sum4 = subprocess.check_output(["./main", "bit0divpairs_pre.txt", sys.argv[1], "bit0divpairs_out.txt"]) # greater means 0
     print(sum4)
 
-    diff1 = int(sum1) - int(sum2) # close to zero means 0, greater than zero means 1
-    diff2 = int(sum4) - int(sum2) # close to zero means 1, greater than zero means 0
-    mean1 = (diff1 + diff2) / 2
-    print(diff1,diff2,mean1)
-    
-    diff3 = int(sum1) - int(sum3) # close to zero means 1, smaller than zero means 0
-    diff4 = int(sum4) - int(sum3) # close to zero means 0, smaller than zero means 1
-    mean2 = (diff3 + diff4) / 2
-    print(diff3,diff4, mean2)
-    
-    val1 = mean1 + mean2
-    sign1 = mean1 * mean2
-    print(val1, sign1)
-    
     diff5 = int(sum1) - int(sum4) # greater means 1
-    diff6 = int(sum3) - int(sum2) # must be greater
-    print(diff5,diff6)
-    
+    print(diff5)    
 
-    if abs(diff5) < 5000 :
+    if abs(diff5) < 1000 : # noise filter
         print("bit not accepted. current bits: " + bits(current_bits))
         continue
 
