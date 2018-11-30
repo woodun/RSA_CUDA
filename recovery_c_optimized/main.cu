@@ -394,6 +394,8 @@ int main (int argc, char *argv[]) {
 		struct timespec ts1;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
 
+		printf("debug0\n");
+
 		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d);/////////////////////////////////////////kernel
 		cudaDeviceSynchronize();
 
