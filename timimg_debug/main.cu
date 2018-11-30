@@ -551,7 +551,8 @@ int main (int argc, char *argv[]) {
 
 		int peak_clk = 1;//kHz
 		int dev_id = 0;
-		checkCudaErrors(cudaDeviceGetAttribute(&peak_clk, cudaDevAttrClockRate, dev_id));
+		//checkCudaErrors(cudaDeviceGetAttribute(&peak_clk, cudaDevAttrClockRate, dev_id));
+		cudaDeviceGetAttribute(&peak_clk, cudaDevAttrClockRate, dev_id);
 		float clock_rate = (float) peak_clk;
 		printf("clock_rate_out_kernel:%f\n", clock_rate);
 
