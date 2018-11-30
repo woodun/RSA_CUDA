@@ -250,10 +250,7 @@ int main (int argc, char *argv[]) {
 	unsigned thread_num = 2;
 	long long unsigned data_num = pairs * thread_num;
 
-	///////host memory
-	long long int *clockTable_h;
-	clockTable_h = (long long int*) malloc( 2 * sizeof(long long int));
-
+	////////constant variables
 	cuda_mpz_t h_n;
 	cuda_mpz_t h_n_;
 	cuda_mpz_t h_r2;
@@ -289,16 +286,18 @@ int main (int argc, char *argv[]) {
 	}
 	cudaMemcpy(dBits_d, dBits, sizeof(int) * d_bitsLength, cudaMemcpyHostToDevice);
 
-	long long int *clockTable_d;
-	cudaMalloc((void **) &clockTable_d, 2 * sizeof(long long int));
-
 	///////get Messages
 	long long unsigned mesSize = sizeof(cuda_mpz_t) * data_num;
 	cuda_mpz_t *myMes1_h;
 	myMes1_h = (cuda_mpz_t*) malloc (mesSize * 2); //CPU, bit1_div and bit0_div lists
-
 	cuda_mpz_t *myMes1_d;
 	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize * 2); //GPU
+
+	///////time per sample
+	long long int *clockTable_h;
+	clockTable_h = (long long int*) malloc( 2 * sizeof(long long int));	//CPU
+	long long int *clockTable_d;
+	cudaMalloc((void **) &clockTable_d, 2 * sizeof(long long int)); //GPU
 
 	///////gen_pairs variables
 	int	bit1_div_num = 0;
@@ -335,8 +334,8 @@ int main (int argc, char *argv[]) {
 	///////gmp init
 	mpz_t mod;
 	mpz_t rand_num;
-	mpz_init (mod);
-	mpz_init (rand_num);
+	mpz_init(mod);
+	mpz_init(rand_num);
 
 	mpz_set_str (mod, n_input, 16);
 
@@ -354,7 +353,6 @@ int main (int argc, char *argv[]) {
 	printf("\n");
 
 	while(known_bits_length < d_bitsLength - 1){
-
 		bit1_div_num = 0;
 		bit0_div_num = 0;
 
@@ -388,18 +386,13 @@ int main (int argc, char *argv[]) {
 		long long int sum1 = 0;
 		long long int sum4 = 0;
 
-		////////////////////////////////////////////////////////////////converge for bit 0, diverge for bit 1
-		cudaMemcpy(myMes1_d, myMes1_h, mesSize * 4 , cudaMemcpyHostToDevice);
+		cudaMemcpy(myMes1_d, myMes1_h, mesSize * 2 , cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
 
 		struct timespec ts1;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
 
-		printf("debug0\n");
-
 		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d);/////////////////////////////////////////kernel
 		cudaDeviceSynchronize();
-
-		printf("debug1\n");
 
 		struct timespec ts2;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time

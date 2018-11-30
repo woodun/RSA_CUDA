@@ -53,14 +53,14 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 	cuda_mpz_t* n_ = &vn_;
 
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
-	for(unsigned iter1 = 0; iter1 < pairs * 4; ++iter1){
+	for(unsigned iter1 = 0; iter1 < pairs * 2; ++iter1){
 
 		s_index[k] = iter1;//make a dependency to make sure previous store is finished.
 		t1 = clock64();//beginning of necessary instructions within the kernel
 
-		cuda_mpz_set(&_x1[k], &mes1[2 * iter1 + k]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
-
 		int j = blockIdx.x * blockDim.x + threadIdx.x;
+
+		cuda_mpz_set(&_x1[j], &mes1[2 * iter1 + j]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 
 		//_x1 = REDC(rmod,n,n_,mes*r2,l)
 		cuda_mpz_mult(&tmp2[j], &_x1[j], &r2);
@@ -76,9 +76,7 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 //			cuda_mpz_print_str_device(&_x2[j]);
 //			printf("\n");
 //		}
-
 		for(int i = 1; i < eLength; ++i){
-
 			if(eBits[i] == 0){
 				//x2 = _x1 * _x2
 				cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
