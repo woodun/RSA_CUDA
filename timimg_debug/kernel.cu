@@ -21,8 +21,8 @@ __device__ __host__ inline cuda_mpz_t* REDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_
 		return t;
     }
 	else{
-		//cuda_mpz_sub(tmp, t, N);
-		//cuda_mpz_set(tmp, t);
+		cuda_mpz_sub(tmp, t, N);
+		cuda_mpz_set(tmp, t);
 	    return t;
 	}
 }
