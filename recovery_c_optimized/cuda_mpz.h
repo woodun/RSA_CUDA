@@ -348,6 +348,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
   //finding the msb
    while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
 	   top_bit_count--;
+	   printf("stuck1\n");
   }
 
 //  if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){
@@ -433,6 +434,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
   //finding the msb, for efficiency we assume heading zeros does not pass word boundary
    while ( (top_word >> ( top_bit_count - 1 ) ) == 0 ) {
 	   top_bit_count--;
+	   printf("stuck2\n");
   }
 
 //  if( (top_word >> ( top_bit_count - 1 ) ) != 1 ){

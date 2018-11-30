@@ -170,8 +170,8 @@ random.seed(time1)
 p = 32416189867
 q = 32416189909
 
-p = 29996224275497
-q = 29996224275821
+p = 24459629785364283833111470410697016767033653211208122876885582413633536633041146086554558328286062725490645509691783941884323722081206394402126328961429611
+q = 23919455913170500015755783799226625762223555612017221740308873996331017696448333058981571497700037939790397009985964455331321308700955400852467790892848337
 
 n = p * q
 r = findR(n)[1] 
@@ -188,9 +188,6 @@ d = modinv(e, n_lambda)
 print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R2):%s" % ( Padding8 (n), Padding8 (n_), Padding8 (r2) ) )
 print( "CUDA inputs: bits(e):%s, bits(d):%s, len(bits(d)):%s, RL:%d\n" % ( bits(e), bits(d), len(bits(d)), l ) )
 
-#100 zeros
-#10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-exit()
 _key = "1011011001001001010011110110010101010111001010110101111000111100001"
 #key = "1000100010110110111110111000110000000001011000001000011010101101000101"
 key = bits(d)
@@ -206,9 +203,12 @@ while(eob == 0 ):
     f1 = open("bit1divpairs_pre.txt","w+")
     f4 = open("bit0divpairs_pre.txt","w+")
 
-    FindPairs (int(sys.argv[1]), n, current_bits, n_, r2, rmod, l, f1, f4)
+    FindPairs (1, n, current_bits, n_, r2, rmod, l, f1, f4)
+    #FindPairs (int(sys.argv[1]), n, current_bits, n_, r2, rmod, l, f1, f4)
     f1.close()
     f4.close()
+    
+    exit()
     
     #./main bit0divpairs_pre.txt 1000
     sum1 = subprocess.check_output(["./main", "bit1divpairs_pre.txt", sys.argv[1], "bit1divpairs_out.txt"]) # greater means 1
