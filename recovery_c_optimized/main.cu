@@ -235,7 +235,7 @@ int main (int argc, char *argv[]) {
 
 	///////input control
 	if (argc < 2){
-		printf("input sample size\n");
+		printf("sample size required.\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -396,6 +396,8 @@ int main (int argc, char *argv[]) {
 
 		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d);/////////////////////////////////////////kernel
 		cudaDeviceSynchronize();
+
+		printf("debug1\n");
 
 		struct timespec ts2;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
