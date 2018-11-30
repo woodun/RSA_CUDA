@@ -414,7 +414,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
   if(top_word == 0){
 	  while(top_word == 0 && word_count > 1){
 		  --word_count;
-		  top_word = src_digits[word_count - 1];
+		  top_word = digits[word_count - 1];
 	  }
 	  top_bit_count = 32;
   }else{
