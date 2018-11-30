@@ -235,6 +235,7 @@ int main (int argc, char *argv[]) {
 
 	///////input control
 	if (argc < 2){
+		printf("input sample size\n");
 		exit(EXIT_FAILURE);
 	}
 
