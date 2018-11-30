@@ -409,8 +409,8 @@ int main (int argc, char *argv[]) {
 		sum4 = sum4 / pairs;
 		diff3 = sum1 - sum4;
 
-		printf ("bit1_div: %fms %lldcycles\n", sum1 / (float)clock_rate, sum1);
-		printf ("bit0_div: %fms %lldcycles\n", sum4 / (float)clock_rate, sum4);
+		printf ("bit1_div: %fms %lldcycles ", sum1 / (float)clock_rate, sum1);
+		printf ("bit0_div: %fms %lldcycles ", sum4 / (float)clock_rate, sum4);
 		printf ("difference: %fms %lldcycles\n", diff3 / (float)clock_rate, diff3);
 
 		if(diff3 > 1000){//bit is 1
