@@ -355,8 +355,6 @@ int main (int argc, char *argv[]) {
 	while(known_bits_length < d_bitsLength - 1){
 
 		bit1_div_num = 0;
-		nondiv_num = 0;
-		bothdiv_num = 0;
 		bit0_div_num = 0;
 
 		while(1){
