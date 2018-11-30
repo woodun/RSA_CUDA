@@ -346,6 +346,11 @@ int main (int argc, char *argv[]) {
 	gmp_randseed_ui (rand_state, time(NULL));
 	//gmp_randseed_ui (rand_state, 0);
 
+	/////////timing results
+	long long int sum1 = 0;
+	long long int sum4 = 0;
+	long long int diff3 = 0;
+
 	printf("current bits: ");
 	for(int i = 0; i < known_bits_length; i++){
 		printf("%d", known_bits[i]);
@@ -383,9 +388,6 @@ int main (int argc, char *argv[]) {
 			}
 		}
 
-		long long int sum1 = 0;
-		long long int sum4 = 0;
-
 		cudaMemcpy(myMes1_d, myMes1_h, mesSize * 2 , cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
 
 		struct timespec ts1;/////////////////////////////////time
@@ -397,7 +399,7 @@ int main (int argc, char *argv[]) {
 		struct timespec ts2;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
 		long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
-		printf("%lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000,  ((double) time_interval) / 1000000000);/////////////////////////////////time
+		printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000,  ((double) time_interval) / 1000000000);/////////////////////////////////time
 
 		cudaMemcpy(clockTable_h, clockTable_d, 2 * sizeof(long long int), cudaMemcpyDeviceToHost);
 
@@ -405,12 +407,11 @@ int main (int argc, char *argv[]) {
 		sum1 = sum1 / pairs;
 		sum4 = clockTable_h[1] - clockTable_h[0];
 		sum4 = sum4 / pairs;
+		diff3 = sum1 - sum4;
 
-		long long int diff3 = sum1 - sum4;
-
-		printf("%lld %lld %lld\n", sum1, sum4, diff3);
 		printf ("bit1_div: %fms %lldcycles\n", sum1 / (float)clock_rate, sum1);
 		printf ("bit0_div: %fms %lldcycles\n", sum4 / (float)clock_rate, sum4);
+		printf ("difference: %fms %lldcycles\n", diff3 / (float)clock_rate, diff3);
 
 		if(diff3 > 1000){//bit is 1
 			known_bits[known_bits_length] = 1;
