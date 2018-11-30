@@ -582,19 +582,19 @@ int main (int argc, char *argv[]) {
 		}
 		printf("\n");
 
-		break;///////////////
+		//break;///////////////
 	}
 
-//	known_bits[known_bits_length] = 1;//last bit is always 1
-//	printf("bit is 1.\n");
-//
-//	known_bits_length++;
-//
-//	printf("current bits: ");
-//	for(int i = 0; i < known_bits_length; i++){
-//		printf("%d", known_bits[i]);
-//	}
-//	printf("\n");
+	known_bits[known_bits_length] = 1;//last bit is always 1
+	printf("bit is 1.\n");
+
+	known_bits_length++;
+
+	printf("current bits: ");
+	for(int i = 0; i < known_bits_length; i++){
+		printf("%d", known_bits[i]);
+	}
+	printf("\n");
 
 	///////gmp clear
 	gmp_randclear (rand_state);
