@@ -5,7 +5,7 @@
 #include <time.h>
 #include "cuda_mpz.h"
 #include <gmp.h>
-#include <helper_cuda.h>
+#include "helper_cuda.h"
 
 //NCXXFLAGS = -keep -Xptxas -dlcm=ca --optimize 1 -lgmp -I/stor1/hwang07/toolkit_cuda/samples/common/inc
 //nvprof --print-gpu-trace --log-file prof1.txt ./main 1000 1 > nvprof.txt
