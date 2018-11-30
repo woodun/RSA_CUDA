@@ -29,7 +29,7 @@ __device__ __host__ inline cuda_mpz_t* REDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_
 
 __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength, long long int* clockTable) {
 
-	__shared__ cuda_mpz_t tmp[2];
+	__shared__ cuda_mpz_t tmp[2]; //capacity will become a problem for shared memory with large keys
 	__shared__ cuda_mpz_t tmp2[2];
 	__shared__ cuda_mpz_t t[2];
 	__shared__ cuda_mpz_t _x1[2];
