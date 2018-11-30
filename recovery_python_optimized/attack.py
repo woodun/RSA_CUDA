@@ -169,6 +169,10 @@ print(time1)
 random.seed(time1)
 p = 32416189867
 q = 32416189909
+
+p = 29996224275497
+q = 29996224275821
+
 n = p * q
 r = findR(n)[1] 
 rmod = r - 1      
@@ -178,11 +182,15 @@ r2 = (r << l) % n
 
 phi = (p-1)*(q-1)
 n_lambda = phi // egcd(p-1, q-1)[0]
-e = 5
+e = 7
 _d = modinv(e, phi)
 d = modinv(e, n_lambda)
-print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R2):%s, bits(e):%s, bits(d):%s, RL:%d\n" % (Padding8 (n), Padding8 (n_), Padding8 (r2), bits(e), bits(d), l))
+print( "CUDA inputs: hex(n):%s, hex(N_):%s, hex(R2):%s" % ( Padding8 (n), Padding8 (n_), Padding8 (r2) ) )
+print( "CUDA inputs: bits(e):%s, bits(d):%s, len(bits(d)):%s, RL:%d\n" % ( bits(e), bits(d), len(bits(d)), l ) )
 
+#100 zeros
+#10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+exit()
 _key = "1011011001001001010011110110010101010111001010110101111000111100001"
 #key = "1000100010110110111110111000110000000001011000001000011010101101000101"
 key = bits(d)
