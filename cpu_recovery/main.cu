@@ -78,81 +78,79 @@ __device__ __host__ inline cuda_mpz_t* CUDA_REDC(cuda_mpz_t* N, cuda_mpz_t* N_, 
 
 void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength, long long int* clockTable) {
 
-	cuda_mpz_t tmp[2]; //capacity will become a problem for shared memory with large keys
-	cuda_mpz_t tmp2[2];
-	cuda_mpz_t t[2];
-	cuda_mpz_t _x1[2];
-	cuda_mpz_t _x2[2];
+	cuda_mpz_t* tmp; //capacity will become a problem for shared memory with large keys
+	cuda_mpz_t* tmp2;
+	cuda_mpz_t* t;
+	cuda_mpz_t* _x1;
+	cuda_mpz_t* _x2;
 
-	long long int t1, t2;
+//	long long int t1, t2;
+//	struct timespec ts1;/////////////////////////////////time
+//	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
+
 	long long int sum1 = 0;
 
 	///////////////////initialize
-	cuda_mpz_init(&tmp[k]);
-	cuda_mpz_init(&tmp2[k]);
-	cuda_mpz_init(&t[k]);
-	cuda_mpz_init(&_x1[k]);
-	cuda_mpz_init(&_x2[k]);
+	cuda_mpz_init(tmp);
+	cuda_mpz_init(tmp2);
+	cuda_mpz_init(t);
+	cuda_mpz_init(_x1);
+	cuda_mpz_init(_x2);
 
 	cuda_mpz_t* n = &vn;
 	cuda_mpz_t* n_ = &vn_;
 
 	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
-	for(unsigned iter1 = 0; iter1 < pairs; ++iter1){
+	for(unsigned iter1 = 0; iter1 < 2 * pairs; ++iter1){
 
-		t1 = clock64();//beginning of necessary instructions within the kernel
+//		t1 = clock64();//beginning of necessary instructions within the kernel
 
-		cuda_mpz_set(&_x1[j], &mes1[2 * iter1 + j]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
+		cuda_mpz_set(_x1, &mes1[iter1]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 
 		//_x1 = CUDA_REDC(rmod,n,n_,mes*r2,l)
-		cuda_mpz_mult(&tmp2[j], &_x1[j], &r2);
-		cuda_mpz_set( &_x1[j], CUDA_REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
+		cuda_mpz_mult(tmp2, _x1, r2);
+		cuda_mpz_set( _x1, CUDA_REDC(n, n_, tmp2, tmp, t) );
 		//x2 = _x1 * _x1
-		cuda_mpz_mult(&tmp2[j], &_x1[j], &t[j]);
+		cuda_mpz_mult(tmp2, _x1, t);
 		//_x2 = CUDA_REDC(rmod,n,n_,_x2,l)
-		cuda_mpz_set( &_x2[j], CUDA_REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
+		cuda_mpz_set( _x2[j], CUDA_REDC(n, n_, tmp2, tmp, t) );
 
 		for(int i = 1; i < eLength; ++i){
 			if(eBits[i] == 0){
 				//x2 = _x1 * _x2
-				cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
+				cuda_mpz_mult(tmp2, _x1,  _x2);
 				//_x2 = CUDA_REDC(rmod,n,n_,_x2,l)
-				cuda_mpz_set( &_x2[j], CUDA_REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				cuda_mpz_set(  _x2, CUDA_REDC(n, n_, tmp2, tmp, t) );
 				//_x1 = _x1 * _x1
-				cuda_mpz_set( &tmp[j], &_x1[j]);
-				cuda_mpz_mult(&tmp2[j], &_x1[j], &tmp[j]);
+				cuda_mpz_set( tmp, _x1);
+				cuda_mpz_mult(tmp2, _x1, tmp);
 				//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
-				cuda_mpz_set( &_x1[j], CUDA_REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				cuda_mpz_set( _x1, CUDA_REDC(n, n_, tmp2, tmp, t) );
 			} else {
 				//_x1 = _x1 * _x2
-				cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
+				cuda_mpz_mult(tmp2, _x1,  _x2);
 				//_x1 = CUDA_REDC(rmod,n,n_,_x1,l) #changes: more efficient
-				cuda_mpz_set( &_x1[j], CUDA_REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				cuda_mpz_set( _x1, CUDA_REDC(n, n_, tmp2, tmp, t) );
 				//_x2 = _x2 * _x2
-				cuda_mpz_set( &tmp[j], &_x2[j]);
-				cuda_mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
+				cuda_mpz_set( tmp,  _x2);
+				cuda_mpz_mult(tmp2,  _x2, tmp);
 				//_x2 = CUDA_REDC(rmod,n,n_,_x2,l) #changes: more efficient
-				cuda_mpz_set( &_x2[j], CUDA_REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				cuda_mpz_set(  _x2, CUDA_REDC(n, n_, tmp2, tmp, t) );
 			}
 		}
 
 		//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
-		cuda_mpz_set( &_x1[j], CUDA_REDC(n, n_, &_x1[j], &tmp[j], &t[j]) );
+		cuda_mpz_set( _x1, CUDA_REDC(n, n_, _x1, tmp, t) );
 
-		t2 = clock64();//end of necessary kernel instructions
-//		printf("combo_num: %lld, iter1: %u, iter2: %u\n", combo_num, iter1, iter2);
-
-		sum1 +=  t2 - t1;
-		if (iter1 == pairs - 1){
-			if( k == 0){
-				clockTable[0] = sum1;
-			}
-		}
-		if (iter1 == 2 * pairs - 1){
-			if( k == 0){
-				clockTable[1] = sum1;
-			}
-		}
+//		t2 = clock64();//end of necessary kernel instructions
+//
+//		sum1 +=  t2 - t1;
+//		if (iter1 == pairs - 1){
+//				clockTable[0] = sum1;
+//		}
+//		if (iter1 == 2 * pairs - 1){
+//				clockTable[1] = sum1;
+//		}
 	}
 }
 
@@ -398,7 +396,7 @@ int main (int argc, char *argv[]) {
 
 	long x = strtol(argv[1], NULL, 10);
 	long long unsigned pairs = x;
-	unsigned thread_num = 2;
+	unsigned thread_num = 1;
 	long long unsigned data_num = pairs * thread_num;
 
 	////////constant variables
@@ -502,121 +500,55 @@ int main (int argc, char *argv[]) {
 	//gmp_randseed_ui (rand_state, 0);
 
 	/////////timing results
-	long long int sum1 = 0;
-	long long int sum4 = 0;
-	long long int diff3 = 0;
+//	long long int sum1 = 0;
+//	long long int sum4 = 0;
+//	long long int diff3 = 0;
 
-	printf("current bits: ");
-	for(int i = 0; i < known_bits_length; i++){
-		printf("%d", known_bits[i]);
-	}
-	printf("\n");
+while(known_bits_length < d_bitsLength - 1){
+	bit1_div_num = 0;
+	bit0_div_num = 0;
 
-	while(known_bits_length < d_bitsLength - 1){
-		bit1_div_num = 0;
-		bit0_div_num = 0;
+	while(1){
+		mpz_urandomm (rand_num, rand_state, mod);
+		cuda_mpz_set_gmp(&r1, rand_num);
+		mpz_urandomm (rand_num, rand_state, mod);
+		cuda_mpz_set_gmp(&r2, rand_num);
 
-		while(1){
-			mpz_urandomm (rand_num, rand_state, mod);
-			cuda_mpz_set_gmp(&r1, rand_num);
-			mpz_urandomm (rand_num, rand_state, mod);
-			cuda_mpz_set_gmp(&r2, rand_num);
+		div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2,  &h_r2, &h_n, &h_n_,  &t_1, &t_2);
 
-			div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-											&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-											&tmp_1, &tmp_2, &tmp2_1, &tmp2_2,  &h_r2, &h_n, &h_n_,  &t_1, &t_2);
-
-			if (div_con == 1 && bit1_div_num < data_num){
-				cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
-				bit1_div_num++;
-				cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
-				bit1_div_num++;
-			}
-			if (div_con == 4 && bit0_div_num < data_num){
-				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r1);
-				bit0_div_num++;
-				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r2);
-				bit0_div_num++;
-			}
-			if (bit1_div_num == data_num && bit0_div_num == data_num){
-				break;
-			}
+		if (div_con == 1 && bit1_div_num < data_num){
+			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
+			bit1_div_num++;
+			cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
+			bit1_div_num++;
 		}
-
-		cudaMemcpy(myMes1_d, myMes1_h, mesSize * 2 , cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
-
-		struct timespec ts1;/////////////////////////////////time
-		clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
-
-		MontSQMLadder<<<1, thread_num>>>(myMes1_d, pairs, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d);/////////////////////////////////////////kernel
-		cudaDeviceSynchronize();
-
-		struct timespec ts2;/////////////////////////////////time
-		clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
-		long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
-		printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000,  ((double) time_interval) / 1000000000);/////////////////////////////////time
-
-		cudaMemcpy(clockTable_h, clockTable_d, 2 * sizeof(long long int), cudaMemcpyDeviceToHost);
-
-		sum1 = clockTable_h[0];
-		sum1 = sum1 / pairs;
-		sum4 = clockTable_h[1] - clockTable_h[0];
-		sum4 = sum4 / pairs;
-		diff3 = sum1 - sum4;
-
-		printf ("bit1_div: %fms %lldcycles ", sum1 / (float)clock_rate, sum1);
-		printf ("bit0_div: %fms %lldcycles ", sum4 / (float)clock_rate, sum4);
-		printf ("difference: %fms %lldcycles\n", diff3 / (float)clock_rate, diff3);
-
-		if(diff3 > 1000){//bit is 1
-			known_bits[known_bits_length] = 1;
-			printf("bit is 1.\n");
-		}else if(diff3 < -1000){//bit is 0
-			known_bits[known_bits_length] = 0;
-			printf("bit is 0.\n");
-		}else{//EOB
-			//printf("end of bits.\n");
-			printf("bit not accepted.\n");
-			continue;
+		if (div_con == 4 && bit0_div_num < data_num){
+			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r1);
+			bit0_div_num++;
+			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r2);
+			bit0_div_num++;
 		}
-
-		known_bits_length++;
-
-		printf("current bits: ");
-		for(int i = 0; i < known_bits_length; i++){
-			printf("%d", known_bits[i]);
-		}
-		printf("\n");
-
-		if(known_bits[known_bits_length - 1] != dBits[known_bits_length - 1]){
-			wrong_key = 1;
-			printf("wrong key!");
+		if (bit1_div_num == data_num && bit0_div_num == data_num){
 			break;
 		}
 	}
 
-	if(wrong_key == 0){
-		known_bits[known_bits_length] = 1;//last bit is always 1
-		printf("bit is 1.\n");
+	struct timespec ts1;/////////////////////////////////time
+	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
 
-		known_bits_length++;
+	MontSQMLadder(myMes1_h, pairs, h_r2, h_n, h_n_, dBits_h, d_bitsLength, clockTable_h);/////////////////////////////////////////kernel
 
-		printf("current bits: ");
-		for(int i = 0; i < known_bits_length; i++){
-			printf("%d", known_bits[i]);
-		}
-		printf("\n");
-	}
+	struct timespec ts2;/////////////////////////////////time
+	clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
+	long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
+	printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000,  ((double) time_interval) / 1000000000);/////////////////////////////////time
 
 	///////gmp clear
 	gmp_randclear(rand_state);
 	mpz_clear(rand_num);
 	mpz_clear(mod);
-
-	////////free device
-	cudaFree(clockTable_d);
-	cudaFree(dBits_d);
-	cudaFree(myMes1_d);
 
 	////////free host
 	free(clockTable_h);
