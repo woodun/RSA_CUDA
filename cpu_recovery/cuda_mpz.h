@@ -455,6 +455,28 @@ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mpz) {//chang
 
 __host__ inline int cuda_mpz_compare(cuda_mpz_t *a, cuda_mpz_t *b) {
 
+    ///////////////////////debug
+    printf("compare:\n");
+    printf("a: \n");
+    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+  	  printf("%08x", a->digits[i]);
+  	  fflush(stdout);
+    }
+    printf("\n");
+    printf("words: %u\n", a->words);
+    printf("bits: %u\n", a->bits);
+
+    printf("b: \n");
+    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+  	  printf("%08x", b->digits[i]);
+  	  fflush(stdout);
+    }
+    printf("\n");
+    printf("words: %u\n", b->words);
+    printf("bits: %u\n", b->bits);
+    printf("##############################################################\n");
+    ///////////////////////debug
+
   if(a->bits > b->bits){
 	  return 1;
   }
