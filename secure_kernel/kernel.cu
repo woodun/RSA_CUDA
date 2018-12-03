@@ -101,8 +101,8 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 				//_x2 = CUDA_REDC(rmod,n,n_,_x2,l)
 				cuda_mpz_set( &_x2[j], CUDA_REDC(n, n_, &tmp2[j], &t[2 * j]) );
 				//_x1 = _x1 * _x1
-				cuda_mpz_set( &t[2 * j]), &_x1[j]);
-				cuda_mpz_mult(&tmp2[j], &_x1[j], &t[2 * j]));
+				cuda_mpz_set( &t[2 * j], &_x1[j]);
+				cuda_mpz_mult(&tmp2[j], &_x1[j], &t[2 * j]);
 				//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
 				cuda_mpz_set( &_x1[j], CUDA_REDC(n, n_, &tmp2[j], &t[2 * j]) );
 			} else {
@@ -111,8 +111,8 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 				//_x1 = CUDA_REDC(rmod,n,n_,_x1,l) #changes: more efficient
 				cuda_mpz_set( &_x1[j], CUDA_REDC(n, n_, &tmp2[j], &t[2 * j]) );
 				//_x2 = _x2 * _x2
-				cuda_mpz_set( &t[2 * j]), &_x2[j]);
-				cuda_mpz_mult(&tmp2[j], &_x2[j], &t[2 * j]));
+				cuda_mpz_set( &t[2 * j], &_x2[j]);
+				cuda_mpz_mult(&tmp2[j], &_x2[j], &t[2 * j]);
 				//_x2 = CUDA_REDC(rmod,n,n_,_x2,l) #changes: more efficient
 				cuda_mpz_set( &_x2[j], CUDA_REDC(n, n_, &tmp2[j], &t[2 * j]) );
 			}
