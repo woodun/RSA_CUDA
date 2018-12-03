@@ -440,14 +440,10 @@ int main (int argc, char *argv[]) {
 	long long unsigned mesSize = sizeof(cuda_mpz_t) * data_num;
 	cuda_mpz_t *myMes1_h;
 	myMes1_h = (cuda_mpz_t*) malloc (mesSize * 2); //CPU, bit1_div and bit0_div lists
-	cuda_mpz_t *myMes1_d;
-	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize * 2); //GPU
 
 	///////time per sample
 	long long int *clockTable_h;
 	clockTable_h = (long long int*) malloc( 2 * sizeof(long long int));	//CPU
-	long long int *clockTable_d;
-	cudaMalloc((void **) &clockTable_d, 2 * sizeof(long long int)); //GPU
 
 	///////gen_pairs variables
 	int	bit1_div_num = 0;
@@ -496,10 +492,6 @@ int main (int argc, char *argv[]) {
 	gmp_randseed_ui (rand_state, time(NULL));
 	//gmp_randseed_ui (rand_state, 0);
 
-	/////////timing results
-//	long long int sum1 = 0;
-//	long long int sum4 = 0;
-//	long long int diff3 = 0;
 
 	bit1_div_num = 0;
 	bit0_div_num = 0;
