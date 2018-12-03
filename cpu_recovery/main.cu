@@ -471,12 +471,6 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_init(&t_1);
 	cuda_mpz_init(&t_2);
 
-	int known_bits[2048];
-	known_bits[0] = 1;//first bit is always 1
-	int known_bits_length = 1;
-	int div_con = 0;
-	int wrong_key = 0;
-
 	///////gmp init
 	mpz_t mod;
 	mpz_t rand_num;
@@ -489,8 +483,8 @@ int main (int argc, char *argv[]) {
 	gmp_randstate_t rand_state;
 	//gmp_randinit_default (rand_state);
 	gmp_randinit_mt(rand_state);
-	gmp_randseed_ui (rand_state, time(NULL));
-	//gmp_randseed_ui (rand_state, 0);
+	//gmp_randseed_ui (rand_state, time(NULL));
+	gmp_randseed_ui (rand_state, 0);
 
 
 	bit1_div_num = 0;
