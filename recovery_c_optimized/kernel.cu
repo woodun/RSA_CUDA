@@ -27,30 +27,6 @@ __device__ __host__ inline cuda_mpz_t* REDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_
 	}
 }
 
-__device__ __host__ inline cuda_mpz_t* CUDA_REDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){//cuda_mpz_t* RMOD, int L, cuda_mpz_t* N, cuda_mpz_t* N_ should not be changed.
-
-	//m = ((T & R) * N_) & R
-	cuda_mpz_bitwise_truncate(t, T);
-	cuda_mpz_mult(tmp, N_, t);
-	cuda_mpz_bitwise_truncate_eq(tmp);
-
-	//t = (T + m*N) >> L
-	cuda_mpz_mult(t, tmp , N);
-	cuda_mpz_add(tmp, T, t);
-	cuda_mpz_bitwise_rshift(t, tmp);
-
-	if (cuda_mpz_gte(t , N)){
-		cuda_mpz_sub(tmp, t, N);
-		cuda_mpz_set(t, tmp);
-		return t;
-    }
-	else{
-		cuda_mpz_sub(tmp, t, N);
-		cuda_mpz_set(tmp, t);
-	    return t;
-	}
-}
-
 //__device__ __host__ inline cuda_mpz_t* CUDA_REDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){//cuda_mpz_t* RMOD, int L, cuda_mpz_t* N, cuda_mpz_t* N_ should not be changed.
 //
 //	//m = ((T & R) * N_) & R
@@ -63,16 +39,40 @@ __device__ __host__ inline cuda_mpz_t* CUDA_REDC(cuda_mpz_t* N, cuda_mpz_t* N_, 
 //	cuda_mpz_add(tmp, T, t);
 //	cuda_mpz_bitwise_rshift(t, tmp);
 //
-//	unsigned carry = cuda_mpz_sub(tmp, t, N);
-//	if (carry){
+//	if (cuda_mpz_gte(t , N)){
+//		cuda_mpz_sub(tmp, t, N);
 //		cuda_mpz_set(t, tmp);
 //		return t;
 //    }
 //	else{
+//		cuda_mpz_sub(tmp, t, N);
 //		cuda_mpz_set(tmp, t);
 //	    return t;
 //	}
 //}
+
+__device__ __host__ inline cuda_mpz_t* CUDA_REDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){//cuda_mpz_t* RMOD, int L, cuda_mpz_t* N, cuda_mpz_t* N_ should not be changed.
+
+	//m = ((T & R) * N_) & R
+	cuda_mpz_bitwise_truncate(t, T);
+	cuda_mpz_mult(tmp, N_, t);
+	cuda_mpz_bitwise_truncate_eq(tmp);
+
+	//t = (T + m*N) >> L
+	cuda_mpz_mult(t, tmp , N);
+	cuda_mpz_add(tmp, T, t);
+	cuda_mpz_bitwise_rshift(t, tmp);
+
+	unsigned carry = cuda_mpz_sub(tmp, t, N);
+	if (carry){
+		cuda_mpz_set(t, tmp);
+		return t;
+    }
+	else{
+		cuda_mpz_set(tmp, t);
+	    return t;
+	}
+}
 
 __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength, long long int* clockTable) {
 

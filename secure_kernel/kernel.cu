@@ -42,16 +42,8 @@ __device__ __host__ inline cuda_mpz_t* CUDA_REDC(cuda_mpz_t* N, cuda_mpz_t* N_, 
 	//t=t[j + 0] tmp=t[j + 1]
 	//////////carry = 1 if >= 0, carry = 0 if < 0
 	unsigned carry = cuda_mpz_sub(&t[1], &t[0], N);
-	if (carry){
-		//cuda_mpz_set(t, tmp);
-		cuda_mpz_set(&t[ (carry + 1) & 1 ], &t[ carry & 1 ]);
-		return t;
-    }
-	else{
-		//cuda_mpz_set(tmp, t);
-		cuda_mpz_set(&t[ (carry + 1) & 1 ], &t[ carry & 1 ]);
-	    return t;
-	}
+	cuda_mpz_set(&t[ (carry + 1) & 1 ], &t[ carry & 1 ]);
+	return t;
 }
 
 __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength, long long int* clockTable) {
