@@ -471,6 +471,11 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_init(&t_1);
 	cuda_mpz_init(&t_2);
 
+	int known_bits[2048];
+	known_bits[0] = 1;//first bit is always 1
+	int known_bits_length = 1;
+	int div_con = 0;
+
 	///////gmp init
 	mpz_t mod;
 	mpz_t rand_num;
@@ -519,6 +524,8 @@ int main (int argc, char *argv[]) {
 
 	struct timespec ts1;/////////////////////////////////time
 	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
+
+	printf("debug1");
 
 	MontSQMLadder(myMes1_h, pairs, h_r2, h_n, h_n_, dBits, d_bitsLength, clockTable_h);/////////////////////////////////////////kernel
 
