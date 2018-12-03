@@ -700,6 +700,7 @@ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz
 	  printf("dst: \n");
 	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 		  printf("%08x", dst->digits[i]);
+		  fflush(stdout);
 	  }
 	  printf("\n");
 	  printf("words: %u\n", dst->words);
@@ -708,6 +709,7 @@ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz
 	  printf("op1: \n");
 	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 		  printf("%08x", op1->digits[i]);
+		  fflush(stdout);
 	  }
 	  printf("\n");
 	  printf("words: %u\n", op1->words);
@@ -716,6 +718,7 @@ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz
 	  printf("op2: \n");
 	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 		  printf("%08x", op2->digits[i]);
+		  fflush(stdout);
 	  }
 	  printf("\n");
 	  printf("words: %u\n", op2->words);
@@ -794,6 +797,7 @@ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz
     printf("dst: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", dst->digits[i]);
+  	  fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", dst->words);
@@ -802,6 +806,7 @@ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz
     printf("op1: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", op1->digits[i]);
+  	  fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", op1->words);
@@ -810,6 +815,7 @@ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz
     printf("op2: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", op2->digits[i]);
+  	  fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", op2->words);
