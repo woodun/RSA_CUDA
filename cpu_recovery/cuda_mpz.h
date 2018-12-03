@@ -33,13 +33,13 @@ typedef struct {
   unsigned bits;
 } cuda_mpz_t;
 
-__device__ __host__ inline void cuda_mpz_init(cuda_mpz_t *cuda_mpz) {
+__host__ inline void cuda_mpz_init(cuda_mpz_t *cuda_mpz) {
   for (int i = 0; i < DIGITS_CAPACITY; i++) cuda_mpz->digits[i] = 0;
   cuda_mpz->words = 0;
   cuda_mpz->bits = 0;
 }
 
-__device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
+__host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
   unsigned i;
 
   #pragma unroll
@@ -149,7 +149,7 @@ __host__ inline void cuda_mpz_set_str_host(cuda_mpz_t *cuda_mpz, const char *use
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
-__device__ __host__ inline digit_t digits_add_across(digit_t *digits, unsigned num_digits, digit_t carry) {
+__host__ inline digit_t digits_add_across(digit_t *digits, unsigned num_digits, digit_t carry) {
   unsigned i = 0;
   unsigned long long value;
 
@@ -164,7 +164,7 @@ __device__ __host__ inline digit_t digits_add_across(digit_t *digits, unsigned n
   return carry;
 }
 
-__device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
+__host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
   unsigned capacity = op1->words + op2->words;
 
   ///////////////////////debug
@@ -285,7 +285,7 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   ///////////////////////debug
 }
 
-__device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_mpz_t *src) {//changes
+__host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_mpz_t *src) {//changes
 
     ///////////////////////debug
     printf("truncate:\n");
@@ -380,7 +380,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
   ///////////////////////debug
 }
 
-__device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mpz) {//changes
+__host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mpz) {//changes
 
     ///////////////////////debug
     printf("truncateeq:\n");
@@ -453,7 +453,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
   ///////////////////////debug
 }
 
-__device__ __host__ inline int cuda_mpz_compare(cuda_mpz_t *a, cuda_mpz_t *b) {
+__host__ inline int cuda_mpz_compare(cuda_mpz_t *a, cuda_mpz_t *b) {
 
   if(a->bits > b->bits){
 	  return 1;
@@ -474,11 +474,11 @@ __device__ __host__ inline int cuda_mpz_compare(cuda_mpz_t *a, cuda_mpz_t *b) {
   return 0;
 }
 
-__device__ __host__ inline int cuda_mpz_gte(cuda_mpz_t *a, cuda_mpz_t *b) {
+__host__ inline int cuda_mpz_gte(cuda_mpz_t *a, cuda_mpz_t *b) {
   return (cuda_mpz_compare(a, b) >= 0);
 }
 
-__device__ __host__ inline void cuda_mpz_bitwise_rshift_eq(cuda_mpz_t *cuda_mpz) {//changes
+__host__ inline void cuda_mpz_bitwise_rshift_eq(cuda_mpz_t *cuda_mpz) {//changes
 
 //  if(RL >= cuda_mpz->bits){
 //	  for (int i = 0; i < cuda_mpz->words; i++) cuda_mpz->digits[i] = 0;
@@ -508,13 +508,14 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift_eq(cuda_mpz_t *cuda_mpz)
   cuda_mpz->words = (cuda_mpz->bits + LOG2_DIGIT_BASE - 1 ) >> LOG2_LOG2_DIGIT_BASE;
 }
 
-__device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mpz_t *src) {//changes
+__host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mpz_t *src) {//changes
 
     ///////////////////////debug
     printf("rshift:\n");
     printf("dst: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", dst->digits[i]);
+  	  fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", dst->words);
@@ -523,6 +524,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
     printf("src: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", src->digits[i]);
+  	  fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", src->words);
@@ -564,6 +566,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
   printf("dst: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", dst->digits[i]);
+	  fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", dst->words);
@@ -572,6 +575,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
   printf("src: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", src->digits[i]);
+	  fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", src->words);
@@ -581,7 +585,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
   ///////////////////////debug
 }
 
-__device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
+__host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
 
 	  ///////////////////////debug
 	  printf("add:\n");
@@ -689,7 +693,7 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
   ///////////////////////debug
 }
 
-__device__ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
+__host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
 
 	  ///////////////////////debug
 	  printf("sub:\n");
@@ -815,7 +819,7 @@ __device__ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op
     ///////////////////////debug
 }
 
-__device__ __host__ inline digit_t cuda_mpz_get_last_digit(cuda_mpz_t *cuda_mpz) {//changes
+__host__ inline digit_t cuda_mpz_get_last_digit(cuda_mpz_t *cuda_mpz) {//changes
 	return cuda_mpz->digits[0];
 }
 
@@ -853,7 +857,7 @@ __host__ inline char* cuda_mpz_get_str(cuda_mpz_t *cuda_mpz, char *str, int bufs
   return str;
 }
 
-__device__ inline void cuda_mpz_print_str_device(cuda_mpz_t *cuda_mpz) {//changes
+inline void cuda_mpz_print_str_device(cuda_mpz_t *cuda_mpz) {//changes
   int print_zeroes = 0; // don't print leading 0s
 
   #pragma unroll
