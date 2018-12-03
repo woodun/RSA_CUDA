@@ -27,6 +27,34 @@ __device__ __host__ inline cuda_mpz_t* REDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_
 	}
 }
 
+__device__ __host__ inline cuda_mpz_t* CUDA_REDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* t){//cuda_mpz_t* RMOD, int L, cuda_mpz_t* N, cuda_mpz_t* N_ should not be changed.
+
+	//m = ((T & R) * N_) & R
+	cuda_mpz_bitwise_truncate(&t[0], T);
+	cuda_mpz_mult(&t[1], N_, &t[0]);
+	cuda_mpz_bitwise_truncate_eq(&t[1]);
+
+	//t = (T + m*N) >> L
+	cuda_mpz_mult(&t[0], &t[1] , N);
+	cuda_mpz_add(&t[1], T, &t[0]);
+	cuda_mpz_bitwise_rshift(&t[0], &t[1]);
+
+	//t=t[j + 0] tmp=t[j + 1]
+	//////////carry = 1 if >= 0, carry = 0 if < 0
+	unsigned carry = cuda_mpz_sub(&t[1], &t[0], N);
+	if (carry){
+		//cuda_mpz_set(t, tmp);
+		cuda_mpz_set(&t[ (carry + 1) & 1 ], &t[ carry & 1 ]);
+		return t;
+    }
+	else{
+		//cuda_mpz_set(tmp, t);
+		cuda_mpz_set(&t[ (carry + 1) & 1 ], &t[ carry & 1 ]);
+	    return t;
+	}
+}
+
+
 __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength, long long int* clockTable) {
 
 	__shared__ cuda_mpz_t tmp[2]; //capacity will become a problem for shared memory with large keys
@@ -62,13 +90,13 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 
 		cuda_mpz_set(&_x1[j], &mes1[2 * iter1 + j]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 
-		//_x1 = REDC(rmod,n,n_,mes*r2,l)
+		//_x1 = CUDA_REDC(rmod,n,n_,mes*r2,l)
 		cuda_mpz_mult(&tmp2[j], &_x1[j], &r2);
-		cuda_mpz_set( &_x1[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
+		cuda_mpz_set( &_x1[j], CUDA_REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 		//x2 = _x1 * _x1
 		cuda_mpz_mult(&tmp2[j], &_x1[j], &t[j]);
-		//_x2 = REDC(rmod,n,n_,_x2,l)
-		cuda_mpz_set( &_x2[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
+		//_x2 = CUDA_REDC(rmod,n,n_,_x2,l)
+		cuda_mpz_set( &_x2[j], CUDA_REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 
 //		if(j == 0){
 //			cuda_mpz_print_str_device(&_x1[j]);
@@ -80,28 +108,28 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_
 			if(eBits[i] == 0){
 				//x2 = _x1 * _x2
 				cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
-				//_x2 = REDC(rmod,n,n_,_x2,l)
-				cuda_mpz_set( &_x2[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				//_x2 = CUDA_REDC(rmod,n,n_,_x2,l)
+				cuda_mpz_set( &_x2[j], CUDA_REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 				//_x1 = _x1 * _x1
 				cuda_mpz_set( &tmp[j], &_x1[j]);
 				cuda_mpz_mult(&tmp2[j], &_x1[j], &tmp[j]);
-				//_x1 = REDC(rmod,n,n_,_x1,l)
-				cuda_mpz_set( &_x1[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
+				cuda_mpz_set( &_x1[j], CUDA_REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 			} else {
 				//_x1 = _x1 * _x2
 				cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
-				//_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
-				cuda_mpz_set( &_x1[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				//_x1 = CUDA_REDC(rmod,n,n_,_x1,l) #changes: more efficient
+				cuda_mpz_set( &_x1[j], CUDA_REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 				//_x2 = _x2 * _x2
 				cuda_mpz_set( &tmp[j], &_x2[j]);
 				cuda_mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
-				//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
-				cuda_mpz_set( &_x2[j], REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
+				//_x2 = CUDA_REDC(rmod,n,n_,_x2,l) #changes: more efficient
+				cuda_mpz_set( &_x2[j], CUDA_REDC(n, n_, &tmp2[j], &tmp[j], &t[j]) );
 			}
 		}
 
-		//_x1 = REDC(rmod,n,n_,_x1,l)
-		cuda_mpz_set( &_x1[j], REDC(n, n_, &_x1[j], &tmp[j], &t[j]) );
+		//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
+		cuda_mpz_set( &_x1[j], CUDA_REDC(n, n_, &_x1[j], &tmp[j], &t[j]) );
 
 		s_index[k] = cuda_mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
 		t2 = clock64();//end of necessary kernel instructions

@@ -5,10 +5,7 @@
 #include <time.h>
 #include "cuda_mpz.h"
 #include <gmp.h>
-//#include "helper_cuda.h"
 
-//NCXXFLAGS = -keep -Xptxas -dlcm=ca --optimize 1 -lgmp -I/stor1/hwang07/toolkit_cuda/samples/common/inc
-//nvprof --print-gpu-trace --log-file prof1.txt ./main 1000 1 > nvprof.txt
 int CheckREDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){
 
 	//m = ((T & R) * N_) & R
@@ -31,37 +28,21 @@ int CheckREDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cud
 
 int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, cuda_mpz_t* _x1_1, cuda_mpz_t* _x1_2, cuda_mpz_t* _x2_1, cuda_mpz_t* _x2_2,
 		cuda_mpz_t* _x1_1_temp, cuda_mpz_t* _x1_2_temp, cuda_mpz_t* _x2_1_temp, cuda_mpz_t* _x2_2_temp,
-		cuda_mpz_t* tmp_1, cuda_mpz_t* tmp_2, cuda_mpz_t* tmp2_1, cuda_mpz_t* tmp2_2, cuda_mpz_t* r2, cuda_mpz_t* n, cuda_mpz_t* n_,  cuda_mpz_t* t_1, cuda_mpz_t* t_2, long check_pre){
-
-	int div_count = 0;
-
-//		char test_str[1024];
-//		printf("mes1: ");
-//		printf("%s\n", cuda_mpz_get_str(mes1, test_str, 1024));
-//		printf("mes2: ");
-//		printf("%s\n", cuda_mpz_get_str(mes2, test_str, 1024));
-//		printf("r2: ");
-//		printf("%s\n", cuda_mpz_get_str(r2, test_str, 1024));
+		cuda_mpz_t* tmp_1, cuda_mpz_t* tmp_2, cuda_mpz_t* tmp2_1, cuda_mpz_t* tmp2_2, cuda_mpz_t* r2, cuda_mpz_t* n, cuda_mpz_t* n_,  cuda_mpz_t* t_1, cuda_mpz_t* t_2){
 
 	//mes1 * r2
 	cuda_mpz_mult(tmp2_1, mes1, r2);
 	//mes2 * r2
 	cuda_mpz_mult(tmp2_2, mes2, r2);
-
 	//s1_1 = CheckREDC(rmod, n, n_, mes1 * r2, l)
 	//s1_2 = CheckREDC(rmod, n, n_, mes2 * r2, l)
 	int s1_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
 	int s1_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 
-	if (s1_1 != s1_2){
-		div_count++;
-	}
-
 	//_x1_1 = REDC(rmod, n, n_, mes1 * r2, l)
 	//_x1_2 = REDC(rmod, n, n_, mes2 * r2, l)
 	cuda_mpz_set( _x1_1, REDC( n, n_, tmp2_1, tmp_1, t_1) );
 	cuda_mpz_set( _x1_2, REDC( n, n_, tmp2_2, tmp_2, t_2) );
-
 	//_x2_1 = _x1_1 * _x1_1
 	//_x2_2 = _x1_2 * _x1_2
 	cuda_mpz_mult(tmp2_1, _x1_1, t_1);
@@ -71,11 +52,6 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 	//s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
 	int s2_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
 	int s2_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
-
-	if (s2_1 != s2_2){
-		div_count++;
-	}
-
 	//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
 	//_x2_2 = REDC(rmod, n, n_, _x2_2, l)
 	cuda_mpz_set( _x2_1, REDC( n, n_, tmp2_1, tmp_1, t_1) );
@@ -95,11 +71,6 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s2_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
 			s2_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s2_1 != s2_2){
-//				return 0;
-				div_count++;
-			}
-
 			//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
 			//_x2_2 = REDC(rmod, n, n_, _x2_2, l)
 			cuda_mpz_set( _x2_1, REDC( n, n_, tmp2_1, tmp_1, t_1) );
@@ -117,11 +88,6 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s1_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
 			s1_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s1_1 != s1_2){
-//				return 0;
-				div_count++;
-			}
-
 			//_x1_1 = REDC(rmod, n, n_, _x1_1, l)
 			//_x1_2 = REDC(rmod, n, n_, _x1_2, l)
 			cuda_mpz_set( _x1_1, REDC( n, n_, tmp2_1, tmp_1, t_1) );
@@ -137,11 +103,6 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			s1_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
 			s1_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
 
-			if (s1_1 != s1_2){
-//				return 0;
-				div_count++;
-			}
-
 			//_x1_1 = REDC(rmod, n, n_, _x1_1, l)
 			//_x1_2 = REDC(rmod, n, n_, _x1_2, l)
 			cuda_mpz_set( _x1_1, REDC( n, n_, tmp2_1, tmp_1, t_1) );
@@ -154,26 +115,16 @@ int CheckDivExp(cuda_mpz_t * mes1, cuda_mpz_t * mes2, int* eBits, int eLength, c
 			cuda_mpz_set( tmp_2, _x2_2);
 			cuda_mpz_mult(tmp2_2, _x2_2, tmp_2);
 
-
 			//s2_1 = CheckREDC(rmod, n, n_, _x2_1, l)
 			//s2_2 = CheckREDC(rmod, n, n_, _x2_2, l)
 			s2_1 = CheckREDC( n, n_, tmp2_1, tmp_1, t_1);
 			s2_2 = CheckREDC( n, n_, tmp2_2, tmp_2, t_2);
-
-			if (s2_1 != s2_2){
-//				return 0;
-				div_count++;
-			}
 
 			//_x2_1 = REDC(rmod, n, n_, _x2_1, l)
 			//_x2_2 = REDC(rmod, n, n_, _x2_2, l)
 			cuda_mpz_set( _x2_1, REDC( n, n_, tmp2_1, tmp_1, t_1) );
 			cuda_mpz_set( _x2_2, REDC( n, n_, tmp2_2, tmp_2, t_2) );
 		}
-	}
-
-	if(div_count != eLength && check_pre == 1){ //total divergence number
-		return 0;
 	}
 
 	//_x1_1_temp = _x1_1
@@ -283,72 +234,47 @@ long long unsigned time_diff(timespec start, timespec end){
 int main (int argc, char *argv[]) {
 
 	///////input control
-	if (argc < 3){
+	if (argc < 2){
+		printf("sample size required.\n");
 		exit(EXIT_FAILURE);
 	}
+
+	int peak_clk = 1;//kHz
+	int dev_id = 0;
+	cudaDeviceGetAttribute(&peak_clk, cudaDevAttrClockRate, dev_id);
+	float clock_rate = (float) peak_clk;
+	printf("clock_rate_out_kernel:%f\n", clock_rate);
 
 	long x = strtol(argv[1], NULL, 10);
 	long long unsigned pairs = x;
 	unsigned thread_num = 2;
 	long long unsigned data_num = pairs * thread_num;
 
-	///////host memory
-	long long int *clockTable_h;
-	clockTable_h = (long long int*) malloc( 4 * sizeof(long long int));
-
+	////////constant variables
 	cuda_mpz_t h_n;
 	cuda_mpz_t h_n_;
 	cuda_mpz_t h_r2;
-//	int rl = 70;
-
-//	cuda_mpz_init(&h_n);
-//	cuda_mpz_init(&h_n_);
-//	cuda_mpz_init(&h_r2);
 
 	///////get n
 	char n_input[] = "00000038f6e8cfba55dd0e47";
+	char n_input[] = "00000003412791fa847ccd00ad83efcae8820aad5457cbd253bc866b3a85184f249ae3a825c6c49af5ebf13cd2ef39ed46a5a0468b153e8521cd5f250049c5491d4f49462edbad1bedb4b48b67f7b59cdb683e6412d40d0000f6e07ba46c0c34d84790e3c83e076c70d3e3eb72ac583700a7664f0efcf67ae4b32254d9d50566357d635b";
 	cuda_mpz_set_str_host(&h_n, n_input);
 
 	///////get n_
 	char n__input[] = "0000002e8457440e0d93c489";
+	char n__input[] = "00000000f8a46a29539787c065dfe90891abaf64d14a94038141e1a3e0a1712160ad261030b0e23fd01f4d261f6595105cac0cfc6c64730e1992cf8b9403905769f59c60eaa3b2bcd63dc7f616f400be60145b000ec8717ec4fe09d139a2c9d2bf44fbb219fc17f6e6000defe57ce6e46986b33219eb41ef1b4e9df4703a2d658d13eb2d";
 	cuda_mpz_set_str_host(&h_n_, n__input);
 
 	///////get r2
 	char r2_input[] = "0000003709d17d8f8686609f";
+	char r2_input[] = "000000021433fadceed1a83f846fbf811383c65ef47e61e08788266c019b6b7bcc356c572dc61f969ce683b781633d5f5b3121f23c209d1f6aa8578f32c1c5d8987e6f307c88b649670f861fe820f2288b4164cb3533bd8a70ef57ac229fb6885c20f39eb8acd5f4d79f5b22f9e33b099d08f841cb314a711c390c8d7bcf95b943d69e6b";
 	cuda_mpz_set_str_host(&h_r2, r2_input);
 
-	///////get e
-	char e_input[] = "101";
-	//char e_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
-
-	int e_bitsLength = (int)strlen(e_input);
-	int* eBits = (int *) malloc(sizeof(int) * e_bitsLength);
-
-	int* eBits_d;
-	cudaMalloc((void **) &eBits_d, sizeof(int) * e_bitsLength);
-
-	int e_iterator = e_bitsLength - 1;
-	while ( e_iterator > 0){
-        if( e_input[e_bitsLength - 1 - e_iterator] == '1'){
-            eBits[e_iterator] = 1;
-        }
-        else{
-            eBits[e_iterator] = 0;
-        }
-        e_iterator--;
-	}
-	eBits[e_iterator] = 1;
-	cudaMemcpy(eBits_d, eBits, sizeof(int) * e_bitsLength, cudaMemcpyHostToDevice);
-
 	///////get d
-	char d_input[] = "1011011001001001010011110110010101010111001010110101111000111100001"; //big endian 67 bits
-	//char d_input[] = "1000100010110110111110111000110000000001011000001000011010101101000101"; //big endian 70 bits
-	//char d_input[] = "101";
-
+	char d_input[] = "1011011001001001010011110110010101010111001010110101111000111100001";
+	char d_input[] = "1011001010001000011110101011010110101110101011010000011101011011100100101110010101101010001111011100010000011011110111011011011101101101100000001000011100011010110010001100110011111000001110111000110010001010001111000001000011110101100011101110011110100100000010000001100001001110101100110111110111010111001000010110100001110110010101111101010110001110010001011111111011101011011111001101010010101001000111111010111011010000011000101101110110000111111011011100011010101010010001101000011001000111110110001101011101101000101011000011010011101001010001011010011100010100101111111001011111111101110001000001001110111111000101110001001001010010100010000101001111111111101110000100000111100001101000010111010000000101011000110110011011110110111111111011001111001110100011101101101011001010100100010101001001010000000110011101110011100000000101100010011101100111101100000011001111010111100000111101111110101110001001000010000111101010110010110100011001111111100001100100000110000110111001101011010000000000000010010010101100000111";
 	int d_bitsLength = (int)strlen(d_input);
-
 	int* dBits = (int *) malloc(sizeof(int) * d_bitsLength);
-
 	int* dBits_d;
 	cudaMalloc((void **) &dBits_d, sizeof(int) * d_bitsLength);
 
@@ -362,51 +288,23 @@ int main (int argc, char *argv[]) {
 		}
 		d_iterator++;
 	}
-
 	cudaMemcpy(dBits_d, dBits, sizeof(int) * d_bitsLength, cudaMemcpyHostToDevice);
-
-	///////device memory
-	//unsigned varSize = sizeof(cuda_mpz_t) * thread_num;
-
-	long long int *clockTable_d;
-//	cuda_mpz_t *tmp;
-//	cuda_mpz_t *tmp2;
-//	cuda_mpz_t *d_t;
-//	cuda_mpz_t *_x1_cuda_mpz;
-//	cuda_mpz_t *_x2_cuda_mpz;
-	cudaMalloc((void **) &clockTable_d, 4 * sizeof(long long int));
-//	cudaMalloc((void **) &tmp, varSize);
-//	cudaMalloc((void **) &tmp2, varSize);
-//	cudaMalloc((void **) &d_t, varSize);
-//	cudaMalloc((void **) &_x2_cuda_mpz, varSize);
-//	cudaMalloc((void **) &_x1_cuda_mpz, varSize);
-
-	////////////////////////////////////////////////////////////////initialize
-	//init<<<1, thread_num>>>(_x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, d_t);
-	//cudaDeviceSynchronize();
 
 	///////get Messages
 	long long unsigned mesSize = sizeof(cuda_mpz_t) * data_num;
 	cuda_mpz_t *myMes1_h;
-	myMes1_h = (cuda_mpz_t*) malloc (mesSize * 4); //CPU list converge for bit 0, diverge for bit 1
-	//cuda_mpz_t *myMes2_h;
-	//myMes2_h = (cuda_mpz_t*) malloc (mesSize); //CPU list converge for bit 0 and converge for bit 1
-	//cuda_mpz_t *myMes3_h;
-	//myMes3_h = (cuda_mpz_t*) malloc (mesSize); //CPU list diverge for bit 0 and converge for bit 1
-
-//	for(long long unsigned i = 0; i < data_num * 4; i++){
-//		cuda_mpz_init(&myMes1_h[i]);
-//		//cuda_mpz_init(&myMes2_h[i]);
-//		//cuda_mpz_init(&myMes3_h[i]);
-//	}
-
+	myMes1_h = (cuda_mpz_t*) malloc (mesSize * 2); //CPU, bit1_div and bit0_div lists
 	cuda_mpz_t *myMes1_d;
-	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize * 4); //GPU
+	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize * 2); //GPU
+
+	///////time per sample
+	long long int *clockTable_h;
+	clockTable_h = (long long int*) malloc( 2 * sizeof(long long int));	//CPU
+	long long int *clockTable_d;
+	cudaMalloc((void **) &clockTable_d, 2 * sizeof(long long int)); //GPU
 
 	///////gen_pairs variables
 	int	bit1_div_num = 0;
-	int nondiv_num = 0;
-	int bothdiv_num = 0;
 	int	bit0_div_num = 0;
 
 	cuda_mpz_t r1, r2;
@@ -431,21 +329,17 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_init(&t_1);
 	cuda_mpz_init(&t_2);
 
-	long check_pre = strtol(argv[2], NULL, 10);
 	int known_bits[2048];
 	known_bits[0] = 1;//first bit is always 1
-	//known_bits[1] = 0;
-	//known_bits[2] = 1;
 	int known_bits_length = 1;
-	//int total_bits_length = 3;
 	int div_con = 0;
 	int wrong_key = 0;
 
 	///////gmp init
 	mpz_t mod;
 	mpz_t rand_num;
-	mpz_init (mod);
-	mpz_init (rand_num);
+	mpz_init(mod);
+	mpz_init(rand_num);
 
 	mpz_set_str (mod, n_input, 16);
 
@@ -456,7 +350,10 @@ int main (int argc, char *argv[]) {
 	gmp_randseed_ui (rand_state, time(NULL));
 	//gmp_randseed_ui (rand_state, 0);
 
-	//printf("debug1\n");
+	/////////timing results
+	long long int sum1 = 0;
+	long long int sum4 = 0;
+	long long int diff3 = 0;
 
 	printf("current bits: ");
 	for(int i = 0; i < known_bits_length; i++){
@@ -465,14 +362,10 @@ int main (int argc, char *argv[]) {
 	printf("\n");
 
 	while(known_bits_length < d_bitsLength - 1){
-
 		bit1_div_num = 0;
-		nondiv_num = 0;
-		bothdiv_num = 0;
 		bit0_div_num = 0;
 
 		while(1){
-
 			mpz_urandomm (rand_num, rand_state, mod);
 			cuda_mpz_set_gmp(&r1, rand_num);
 			mpz_urandomm (rand_num, rand_state, mod);
@@ -480,7 +373,7 @@ int main (int argc, char *argv[]) {
 
 			div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
 											&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-											&tmp_1, &tmp_2, &tmp2_1, &tmp2_2,  &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
+											&tmp_1, &tmp_2, &tmp2_1, &tmp2_2,  &h_r2, &h_n, &h_n_,  &t_1, &t_2);
 
 			if (div_con == 1 && bit1_div_num < data_num){
 				cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
@@ -488,39 +381,18 @@ int main (int argc, char *argv[]) {
 				cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
 				bit1_div_num++;
 			}
-			if (div_con == 2 && nondiv_num < data_num){
-				cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r1);
-				nondiv_num++;
-				cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r2);
-				nondiv_num++;
-			}
-			if (div_con == 3 && bothdiv_num < data_num){
-				cuda_mpz_set( &myMes1_h[bothdiv_num + data_num * 2], &r1);
-				bothdiv_num++;
-				cuda_mpz_set( &myMes1_h[bothdiv_num + data_num * 2], &r2);
-				bothdiv_num++;
-			}
 			if (div_con == 4 && bit0_div_num < data_num){
-				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r1);
+				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r1);
 				bit0_div_num++;
-				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r2);
+				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r2);
 				bit0_div_num++;
 			}
-			if (bit1_div_num == data_num && nondiv_num == data_num && bothdiv_num == data_num && bit0_div_num == data_num){
+			if (bit1_div_num == data_num && bit0_div_num == data_num){
 				break;
 			}
-			//break;////////////
 		}
 
-		///break;/////////////
-
-		long long int sum1 = 0;
-		long long int sum2 = 0;
-		long long int sum3 = 0;
-		long long int sum4 = 0;
-
-		////////////////////////////////////////////////////////////////converge for bit 0, diverge for bit 1
-		cudaMemcpy(myMes1_d, myMes1_h, mesSize * 4 , cudaMemcpyHostToDevice);
+		cudaMemcpy(myMes1_d, myMes1_h, mesSize * 2 , cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
 
 		struct timespec ts1;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
@@ -530,43 +402,25 @@ int main (int argc, char *argv[]) {
 
 		struct timespec ts2;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
-		long long unsigned time_interval = time_diff(ts1, ts2);
-		printf("%lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000,  ((double) time_interval) / 1000000000);/////////////////////////////////time
+		long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
+		printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000,  ((double) time_interval) / 1000000000);/////////////////////////////////time
 
-		cudaMemcpy(clockTable_h, clockTable_d, 4 * sizeof(long long int), cudaMemcpyDeviceToHost);
+		cudaMemcpy(clockTable_h, clockTable_d, 2 * sizeof(long long int), cudaMemcpyDeviceToHost);
 
 		sum1 = clockTable_h[0];
 		sum1 = sum1 / pairs;
-		sum2 = clockTable_h[1] - clockTable_h[0];
-		sum2 = sum2 / pairs;
-		sum3 = clockTable_h[2] - clockTable_h[1];
-		sum3 = sum3 / pairs;
-		sum4 = clockTable_h[3] - clockTable_h[2];
+		sum4 = clockTable_h[1] - clockTable_h[0];
 		sum4 = sum4 / pairs;
+		diff3 = sum1 - sum4;
 
-		long long int diff1 = abs(sum1 - sum2);
-		long long int diff2 = abs(sum2 - sum4);
-		long long int diff3 = sum1 - sum4;
-
-		printf("%lld %lld %lld %lld %lld %lld %lld %f %f\n", sum1, sum2, sum3, sum4, diff1, diff2, diff3, ((double) diff1) / diff2, ((double) diff2) / diff1);
-
-		int peak_clk = 1;//kHz
-		int dev_id = 0;
-		//checkCudaErrors(cudaDeviceGetAttribute(&peak_clk, cudaDevAttrClockRate, dev_id));
-		cudaDeviceGetAttribute(&peak_clk, cudaDevAttrClockRate, dev_id);
-		float clock_rate = (float) peak_clk;
-		printf("clock_rate_out_kernel:%f\n", clock_rate);
-
-		printf ("bit1_div: %fms %lldcycles\n", sum1 / (float)clock_rate, sum1);
-		printf ("non_div: %fms %lldcycles\n", sum2 / (float)clock_rate, sum2);
-		printf ("both_div: %fms %lldcycles\n", sum3 / (float)clock_rate, sum3);
-		printf ("bit0_div: %fms %lldcycles\n", sum4 / (float)clock_rate, sum4);
+		printf ("bit1_div: %fms %lldcycles ", sum1 / (float)clock_rate, sum1);
+		printf ("bit0_div: %fms %lldcycles ", sum4 / (float)clock_rate, sum4);
+		printf ("difference: %fms %lldcycles\n", diff3 / (float)clock_rate, diff3);
 
 		if(diff3 > 1000){//bit is 1
 			known_bits[known_bits_length] = 1;
 			printf("bit is 1.\n");
 		}else if(diff3 < -1000){//bit is 0
-
 			known_bits[known_bits_length] = 0;
 			printf("bit is 0.\n");
 		}else{//EOB
@@ -588,9 +442,6 @@ int main (int argc, char *argv[]) {
 			printf("wrong key!");
 			break;
 		}
-
-		//wrong_key = 1;
-		//break;///////////////
 	}
 
 	if(wrong_key == 0){
@@ -607,27 +458,18 @@ int main (int argc, char *argv[]) {
 	}
 
 	///////gmp clear
-	gmp_randclear (rand_state);
-	mpz_clear (rand_num);
-	mpz_clear (mod);
+	gmp_randclear(rand_state);
+	mpz_clear(rand_num);
+	mpz_clear(mod);
 
 	////////free device
 	cudaFree(clockTable_d);
-	cudaFree(eBits_d);
 	cudaFree(dBits_d);
 	cudaFree(myMes1_d);
-//	cudaFree(tmp);
-//	cudaFree(tmp2);
-//	cudaFree(d_t);
-//	cudaFree(_x1_cuda_mpz);
-//	cudaFree(_x2_cuda_mpz);
 
 	////////free host
 	free(clockTable_h);
 	free(myMes1_h);
-	//free(myMes2_h);
-	//free(myMes3_h);
-	free(eBits);
 	free(dBits);
 
     return 0;

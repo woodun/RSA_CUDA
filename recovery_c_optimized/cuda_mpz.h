@@ -16,10 +16,12 @@
 #define LOG2_DIGIT_BASE     32
 #define DIGIT_BASE          ((unsigned long long) 1 << (LOG2_DIGIT_BASE))
 #define DIGITS_CAPACITY     66 //changes: make enough space for large input
+//#define DIGITS_CAPACITY     8 //changes: make enough space for large input
 #define MOD_DIGIT_BASE      0xffffffff//changes
 #define MOD_LOG2_DIGIT_BASE     31 //changes
 #define LOG2_LOG2_DIGIT_BASE 5 //changes
-#define RL 1026
+//#define RL 1026
+#define RL 70
 
 #define MPZ_NEGATIVE      1
 #define MPZ_NONNEGATIVE  0
@@ -684,7 +686,7 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 //  ///////////////////////debug
 }
 
-__device__ __host__ inline void cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
+__device__ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, cuda_mpz_t *op2) {
 
 //	  ///////////////////////debug
 //	  printf("sub:\n");
@@ -777,6 +779,8 @@ __device__ __host__ inline void cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 
     dst->bits = (word_count - 1) * LOG2_DIGIT_BASE + msb + 1;
     //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
+
+    return carry;//////////carry = 1 if >= 0
 
 //    ///////////////////////debug
 //    printf("sub:\n");
