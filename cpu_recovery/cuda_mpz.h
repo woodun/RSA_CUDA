@@ -10,18 +10,17 @@
 
 #include "compile.h"
 #include "cuda_string.h"
-#include <string.h> //changes
 #include <gmp.h>
 
 #define LOG2_DIGIT_BASE     32
 #define DIGIT_BASE          ((unsigned long long) 1 << (LOG2_DIGIT_BASE))
-//#define DIGITS_CAPACITY     66 //changes: make enough space for large input
-#define DIGITS_CAPACITY     8 //changes: make enough space for large input
+#define DIGITS_CAPACITY     66 //changes: make enough space for large input
+//#define DIGITS_CAPACITY     8 //changes: make enough space for large input
 #define MOD_DIGIT_BASE      0xffffffff//changes
 #define MOD_LOG2_DIGIT_BASE     31 //changes
 #define LOG2_LOG2_DIGIT_BASE 5 //changes
-//#define RL 1026
-#define RL 70
+#define RL 1026
+//#define RL 70
 
 #define MPZ_NEGATIVE      1
 #define MPZ_NONNEGATIVE  0
@@ -43,20 +42,20 @@ __device__ __host__ inline void cuda_mpz_init(cuda_mpz_t *cuda_mpz) {
 __device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
   unsigned i;
 
-//  #pragma unroll
-//  for (i = 0; i < from->words; i++) {// changes
-//    to->digits[i] = from->digits[i];
-//  }
-//
-//  #pragma unroll
-//  for (; i < to->words; i++) {// changes
-//    to->digits[i] = 0;
-//  }
+  #pragma unroll
+  for (i = 0; i < from->words; i++) {// changes
+    to->digits[i] = from->digits[i];
+  }
 
-	#pragma unroll
-	for (i = 0; i < DIGITS_CAPACITY; i++) {// changes
-	to->digits[i] = from->digits[i];
-	}
+  #pragma unroll
+  for (; i < to->words; i++) {// changes
+    to->digits[i] = 0;
+  }
+
+//	#pragma unroll
+//	for (i = 0; i < DIGITS_CAPACITY; i++) {// changes
+//	to->digits[i] = from->digits[i];
+//	}
 
   to->words = from->words;
   to->bits = from->bits;
