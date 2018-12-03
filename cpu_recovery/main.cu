@@ -78,69 +78,69 @@ __device__ __host__ inline cuda_mpz_t* CUDA_REDC(cuda_mpz_t* N, cuda_mpz_t* N_, 
 
 void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength, long long int* clockTable) {
 
-	cuda_mpz_t* tmp; //capacity will become a problem for shared memory with large keys
-	cuda_mpz_t* tmp2;
-	cuda_mpz_t* t;
-	cuda_mpz_t* _x1;
-	cuda_mpz_t* _x2;
+	cuda_mpz_t tmp; //capacity will become a problem for shared memory with large keys
+	cuda_mpz_t tmp2;
+	cuda_mpz_t t;
+	cuda_mpz_t _x1;
+	cuda_mpz_t _x2;
 
-//	long long int t1, t2;
-//	struct timespec ts1;/////////////////////////////////time
+//	long long int &t1, &t2;
+//	struct &timespec &ts1;/////////////////////////////////time
 //	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
 
 	long long int sum1 = 0;
 
 	///////////////////initialize
-	cuda_mpz_init(tmp);
-	cuda_mpz_init(tmp2);
-	cuda_mpz_init(t);
-	cuda_mpz_init(_x1);
-	cuda_mpz_init(_x2);
+	cuda_mpz_init(&tmp);
+	cuda_mpz_init(&tmp2);
+	cuda_mpz_init(&t);
+	cuda_mpz_init(&_x1);
+	cuda_mpz_init(&_x2);
 
 	cuda_mpz_t* n = &vn;
 	cuda_mpz_t* n_ = &vn_;
 
-	//to accelerate the experiment, we put all messages in one kernel launch. In the real case, each message causes one kernel launch.
+	//to accelerate &the experiment, we put all messages in one kernel launch. In &the real case, each message causes one kernel launch.
 	for(unsigned iter1 = 0; iter1 < 2 * pairs; ++iter1){
 
-//		t1 = clock64();//beginning of necessary instructions within the kernel
+//		t1 = clock64();//beginning of necessary instructions within &the kernel
 
-		cuda_mpz_set(_x1, &mes1[iter1]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
+		cuda_mpz_set(&_x1, &mes1[iter1]);//next &_x1 access will cause L1 miss if &the L1 policy is write evict, same as using mutiple kernels.
 
-		//_x1 = CUDA_REDC(rmod,n,n_,mes*r2,l)
-		cuda_mpz_mult(tmp2, _x1, &r2);
-		cuda_mpz_set( _x1, CUDA_REDC(n, n_, tmp2, tmp, t) );
-		//x2 = _x1 * _x1
-		cuda_mpz_mult(tmp2, _x1, t);
-		//_x2 = CUDA_REDC(rmod,n,n_,_x2,l)
-		cuda_mpz_set( _x2, CUDA_REDC(n, n_, tmp2, tmp, t) );
+		//&_x1 = CUDA_REDC(rmod,n,n_,mes*r2,l)
+		cuda_mpz_mult( &tmp2, &_x1, &r2);
+		cuda_mpz_set( &_x1, CUDA_REDC(n, n_, &tmp2, &tmp, &t) );
+		//x2 = &_x1 * &_x1
+		cuda_mpz_mult( &tmp2, &_x1, &t);
+		//&_x2 = CUDA_REDC(rmod,n,n_,&_x2,l)
+		cuda_mpz_set( &_x2, CUDA_REDC(n, n_, &tmp2, &tmp, &t) );
 
 		for(int i = 1; i < eLength; ++i){
 			if(eBits[i] == 0){
-				//x2 = _x1 * _x2
-				cuda_mpz_mult(tmp2, _x1,  _x2);
-				//_x2 = CUDA_REDC(rmod,n,n_,_x2,l)
-				cuda_mpz_set(  _x2, CUDA_REDC(n, n_, tmp2, tmp, t) );
-				//_x1 = _x1 * _x1
-				cuda_mpz_set( tmp, _x1);
-				cuda_mpz_mult(tmp2, _x1, tmp);
-				//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
-				cuda_mpz_set( _x1, CUDA_REDC(n, n_, tmp2, tmp, t) );
+				//x2 = &_x1 * &_x2
+				cuda_mpz_mult( &tmp2, &_x1,  &_x2);
+				//&_x2 = CUDA_REDC(rmod,n,n_,&_x2,l)
+				cuda_mpz_set(  &_x2, CUDA_REDC(n, n_, &tmp2, &tmp, &t) );
+				//&_x1 = &_x1 * &_x1
+				cuda_mpz_set( &tmp, &_x1);
+				cuda_mpz_mult( &tmp2, &_x1, &tmp);
+				//&_x1 = CUDA_REDC(rmod,n,n_,&_x1,l)
+				cuda_mpz_set( &_x1, CUDA_REDC(n, n_, &tmp2, &tmp, &t) );
 			} else {
-				//_x1 = _x1 * _x2
-				cuda_mpz_mult(tmp2, _x1,  _x2);
-				//_x1 = CUDA_REDC(rmod,n,n_,_x1,l) #changes: more efficient
-				cuda_mpz_set( _x1, CUDA_REDC(n, n_, tmp2, tmp, t) );
-				//_x2 = _x2 * _x2
-				cuda_mpz_set( tmp,  _x2);
-				cuda_mpz_mult(tmp2,  _x2, tmp);
-				//_x2 = CUDA_REDC(rmod,n,n_,_x2,l) #changes: more efficient
-				cuda_mpz_set(  _x2, CUDA_REDC(n, n_, tmp2, tmp, t) );
+				//&_x1 = &_x1 * &_x2
+				cuda_mpz_mult( &tmp2, &_x1,  &_x2);
+				//&_x1 = CUDA_REDC(rmod,n,n_,&_x1,l) #changes: more efficient
+				cuda_mpz_set( &_x1, CUDA_REDC(n, n_, &tmp2, &tmp, &t) );
+				//&_x2 = &_x2 * &_x2
+				cuda_mpz_set( &tmp,  &_x2);
+				cuda_mpz_mult( &tmp2,  &_x2, &tmp);
+				//&_x2 = CUDA_REDC(rmod,n,n_,&_x2,l) #changes: more efficient
+				cuda_mpz_set(  &_x2, CUDA_REDC(n, n_, &tmp2, &tmp, &t) );
 			}
 		}
 
-		//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
-		cuda_mpz_set( _x1, CUDA_REDC(n, n_, _x1, tmp, t) );
+		//&_x1 = CUDA_REDC(rmod,n,n_,&_x1,l)
+		cuda_mpz_set( &_x1, CUDA_REDC(n, n_, &_x1, &tmp, &t) );
 
 //		t2 = clock64();//end of necessary kernel instructions
 //
