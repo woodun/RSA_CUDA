@@ -108,12 +108,12 @@ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t r2, c
 		cuda_mpz_set(_x1, &mes1[iter1]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 
 		//_x1 = CUDA_REDC(rmod,n,n_,mes*r2,l)
-		cuda_mpz_mult(tmp2, _x1, r2);
+		cuda_mpz_mult(tmp2, _x1, &r2);
 		cuda_mpz_set( _x1, CUDA_REDC(n, n_, tmp2, tmp, t) );
 		//x2 = _x1 * _x1
 		cuda_mpz_mult(tmp2, _x1, t);
 		//_x2 = CUDA_REDC(rmod,n,n_,_x2,l)
-		cuda_mpz_set( _x2[j], CUDA_REDC(n, n_, tmp2, tmp, t) );
+		cuda_mpz_set( _x2, CUDA_REDC(n, n_, tmp2, tmp, t) );
 
 		for(int i = 1; i < eLength; ++i){
 			if(eBits[i] == 0){
@@ -424,8 +424,6 @@ int main (int argc, char *argv[]) {
 	char d_input[] = "1011001010001000011110101011010110101110101011010000011101011011100100101110010101101010001111011100010000011011110111011011011101101101100000001000011100011010110010001100110011111000001110111000110010001010001111000001000011110101100011101110011110100100000010000001100001001110101100110111110111010111001000010110100001110110010101111101010110001110010001011111111011101011011111001101010010101001000111111010111011010000011000101101110110000111111011011100011010101010010001101000011001000111110110001101011101101000101011000011010011101001010001011010011100010100101111111001011111111101110001000001001110111111000101110001001001010010100010000101001111111111101110000100000111100001101000010111010000000101011000110110011011110110111111111011001111001110100011101101101011001010100100010101001001010000000110011101110011100000000101100010011101100111101100000011001111010111100000111101111110101110001001000010000111101010110010110100011001111111100001100100000110000110111001101011010000000000000010010010101100000111";
 	int d_bitsLength = (int)strlen(d_input);
 	int* dBits = (int *) malloc(sizeof(int) * d_bitsLength);
-	int* dBits_d;
-	cudaMalloc((void **) &dBits_d, sizeof(int) * d_bitsLength);
 
 	int d_iterator = 0;
 	while ( d_iterator < d_bitsLength){
@@ -437,7 +435,6 @@ int main (int argc, char *argv[]) {
 		}
 		d_iterator++;
 	}
-	cudaMemcpy(dBits_d, dBits, sizeof(int) * d_bitsLength, cudaMemcpyHostToDevice);
 
 	///////get Messages
 	long long unsigned mesSize = sizeof(cuda_mpz_t) * data_num;
@@ -504,7 +501,6 @@ int main (int argc, char *argv[]) {
 //	long long int sum4 = 0;
 //	long long int diff3 = 0;
 
-while(known_bits_length < d_bitsLength - 1){
 	bit1_div_num = 0;
 	bit0_div_num = 0;
 
@@ -538,7 +534,7 @@ while(known_bits_length < d_bitsLength - 1){
 	struct timespec ts1;/////////////////////////////////time
 	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
 
-	MontSQMLadder(myMes1_h, pairs, h_r2, h_n, h_n_, dBits_h, d_bitsLength, clockTable_h);/////////////////////////////////////////kernel
+	MontSQMLadder(myMes1_h, pairs, h_r2, h_n, h_n_, dBits, d_bitsLength, clockTable_h);/////////////////////////////////////////kernel
 
 	struct timespec ts2;/////////////////////////////////time
 	clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
