@@ -442,6 +442,9 @@ int main (int argc, char *argv[]) {
 			printf("wrong key!");
 			break;
 		}
+
+		wrong_key = 1;
+		break;
 	}
 
 	if(wrong_key == 0){

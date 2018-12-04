@@ -87,8 +87,7 @@ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t r2, c
 //	long long int &t1, &t2;
 //	struct &timespec &ts1;/////////////////////////////////time
 //	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
-
-	long long int sum1 = 0;
+//	long long int sum1 = 0;
 
 	///////////////////initialize
 	cuda_mpz_init(&tmp);
@@ -101,7 +100,7 @@ void MontSQMLadder(cuda_mpz_t * mes1, long long unsigned pairs, cuda_mpz_t r2, c
 	cuda_mpz_t* n_ = &vn_;
 
 	//to accelerate &the experiment, we put all messages in one kernel launch. In &the real case, each message causes one kernel launch.
-	for(unsigned iter1 = 0; iter1 < 2 * pairs; ++iter1){
+	for(unsigned iter1 = 0; iter1 < pairs; ++iter1){
 
 //		t1 = clock64();//beginning of necessary instructions within &the kernel
 
@@ -439,16 +438,13 @@ int main (int argc, char *argv[]) {
 	///////get Messages
 	long long unsigned mesSize = sizeof(cuda_mpz_t) * data_num;
 	cuda_mpz_t *myMes1_h;
-	myMes1_h = (cuda_mpz_t*) malloc (mesSize * 2); //CPU, bit1_div and bit0_div lists
+	myMes1_h = (cuda_mpz_t*) malloc (mesSize); //CPU, bit1_div and bit0_div lists
 
 	///////time per sample
 	long long int *clockTable_h;
-	clockTable_h = (long long int*) malloc( 2 * sizeof(long long int));	//CPU
+	clockTable_h = (long long int*) malloc(sizeof(long long int));	//CPU
 
 	///////gen_pairs variables
-	int	bit1_div_num = 0;
-	int	bit0_div_num = 0;
-
 	cuda_mpz_t r1, r2;
 	cuda_mpz_t _x1_1, _x1_2, _x2_1, _x2_2;
 	cuda_mpz_t _x1_1_temp, _x1_2_temp, _x2_1_temp, _x2_2_temp;
@@ -488,44 +484,21 @@ int main (int argc, char *argv[]) {
 	gmp_randstate_t rand_state;
 	//gmp_randinit_default (rand_state);
 	gmp_randinit_mt(rand_state);
-	//gmp_randseed_ui (rand_state, time(NULL));
-	gmp_randseed_ui (rand_state, 0);
+	gmp_randseed_ui (rand_state, time(NULL));
+	//gmp_randseed_ui (rand_state, 0);
 
+	int	mes_count = 0;
 
-	bit1_div_num = 0;
-	bit0_div_num = 0;
-
-	while(1){
+	while(mes_count < data_num){
 		mpz_urandomm (rand_num, rand_state, mod);
 		cuda_mpz_set_gmp(&r1, rand_num);
-		mpz_urandomm (rand_num, rand_state, mod);
-		cuda_mpz_set_gmp(&r2, rand_num);
 
-		div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2,  &h_r2, &h_n, &h_n_,  &t_1, &t_2);
-
-		if (div_con == 1 && bit1_div_num < data_num){
-			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
-			bit1_div_num++;
-			cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
-			bit1_div_num++;
-		}
-		if (div_con == 4 && bit0_div_num < data_num){
-			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r1);
-			bit0_div_num++;
-			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r2);
-			bit0_div_num++;
-		}
-		if (bit1_div_num == data_num && bit0_div_num == data_num){
-			break;
-		}
+		cuda_mpz_set( &myMes1_h[mes_count], &r1);
+		mes_count++;
 	}
 
 	struct timespec ts1;/////////////////////////////////time
 	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
-
-	printf("debug1");
 
 	MontSQMLadder(myMes1_h, pairs, h_r2, h_n, h_n_, dBits, d_bitsLength, clockTable_h);/////////////////////////////////////////kernel
 
