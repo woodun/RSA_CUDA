@@ -353,12 +353,10 @@ int main (int argc, char *argv[]) {
 	mpz_clear(mod);
 
 	////////free device
-	cudaFree(clockTable_d);
 	cudaFree(dBits_d);
 	cudaFree(myMes1_d);
 
 	////////free host
-	free(clockTable_h);
 	free(myMes1_h);
 	free(dBits);
 
