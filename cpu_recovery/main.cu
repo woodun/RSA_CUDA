@@ -445,32 +445,7 @@ int main (int argc, char *argv[]) {
 	clockTable_h = (long long int*) malloc(sizeof(long long int));	//CPU
 
 	///////gen_pairs variables
-	cuda_mpz_t r1, r2;
-	cuda_mpz_t _x1_1, _x1_2, _x2_1, _x2_2;
-	cuda_mpz_t _x1_1_temp, _x1_2_temp, _x2_1_temp, _x2_2_temp;
-	cuda_mpz_t tmp_1, tmp_2, tmp2_1, tmp2_2, t_1, t_2;
-
-	cuda_mpz_init(&r1);
-	cuda_mpz_init(&r2);
-	cuda_mpz_init(&_x1_1);
-	cuda_mpz_init(&_x1_2);
-	cuda_mpz_init(&_x2_1);
-	cuda_mpz_init(&_x2_2);
-	cuda_mpz_init(&_x1_1_temp);
-	cuda_mpz_init(&_x1_2_temp);
-	cuda_mpz_init(&_x2_1_temp);
-	cuda_mpz_init(&_x2_2_temp);
-	cuda_mpz_init(&tmp_1);
-	cuda_mpz_init(&tmp_2);
-	cuda_mpz_init(&tmp2_1);
-	cuda_mpz_init(&tmp2_2);
-	cuda_mpz_init(&t_1);
-	cuda_mpz_init(&t_2);
-
-	int known_bits[2048];
-	known_bits[0] = 1;//first bit is always 1
-	int known_bits_length = 1;
-	int div_con = 0;
+	cuda_mpz_t r1;
 
 	///////gmp init
 	mpz_t mod;

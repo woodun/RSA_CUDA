@@ -8,3 +8,5 @@ PROG=./main
 ARGS="200"
 cd $PBS_O_WORKDIR
 ./main 200 > output1.txt
+
+#qsub -I -l nodes=1:hima:v100:ppn=64 -l walltime=1:00:00
