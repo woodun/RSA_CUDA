@@ -482,7 +482,7 @@ int main (int argc, char *argv[]) {
 	long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
 	double time_seconds = ((double) time_interval) / 1000000000;
 	printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000, time_seconds);/////////////////////////////////time
-	printf("%f messages/second %f seconds/message\n", thread_num / time_seconds, time_seconds / thread_num);/////////////////////////////////time
+	printf("%f messages/second %f seconds/message\n", data_num / time_seconds, time_seconds / data_num);/////////////////////////////////time
 
 	///////gmp clear
 	gmp_randclear(rand_state);

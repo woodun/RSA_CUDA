@@ -333,10 +333,10 @@ int main (int argc, char *argv[]) {
 	unsigned threads = 32;
 	unsigned blocks = 1;
 
-	if(thread_num < 32){
-		threads = thread_num;
+	if(data_num < 32){
+		threads = data_num;
 	}else{
-		blocks = thread_num / 32;
+		blocks = data_num / 32;
 	}
 
 	MontSQMLadder<<<blocks, threads>>>(myMes1_d, h_r2, h_n, h_n_, dBits_d, d_bitsLength);/////////////////////////////////////////kernel
@@ -347,7 +347,7 @@ int main (int argc, char *argv[]) {
 	long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
 	double time_seconds = ((double) time_interval) / 1000000000;
 	printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000, time_seconds);/////////////////////////////////time
-	printf("%f messages/second %f seconds/message\n", thread_num / time_seconds, time_seconds / thread_num);/////////////////////////////////time
+	printf("%f messages/second %f seconds/message\n", data_num / time_seconds, time_seconds / data_num);/////////////////////////////////time
 
 	///////gmp clear
 	gmp_randclear(rand_state);
