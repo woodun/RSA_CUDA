@@ -339,6 +339,9 @@ int main (int argc, char *argv[]) {
 		blocks = data_num / 32;
 	}
 
+	printf("debug1\n");
+	fflush(stdout);
+
 	MontSQMLadder<<<blocks, threads>>>(myMes1_d, h_r2, h_n, h_n_, dBits_d, d_bitsLength);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 

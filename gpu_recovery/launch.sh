@@ -11,6 +11,8 @@
 ./main 256
 ./main 512
 ./main 1024
-
+./main 2048
+./main 4096
+./main 8192
 
 
