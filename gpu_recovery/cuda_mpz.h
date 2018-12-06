@@ -831,8 +831,6 @@ __device__ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op
     dst->bits = (word_count - 1) * LOG2_DIGIT_BASE + msb + 1;
     //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 
-    return carry;//////////carry = 1 if >= 0
-
     ///////////////////////debug
     printf("sub:\n");
     printf("dst: \n");
@@ -864,6 +862,8 @@ __device__ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op
     printf("##############################################################\n");
     printf("##############################################################\n");
     ///////////////////////debug
+
+    return carry;//////////carry = 1 if >= 0
 }
 
 __device__ __host__ inline digit_t cuda_mpz_get_last_digit(cuda_mpz_t *cuda_mpz) {//changes
