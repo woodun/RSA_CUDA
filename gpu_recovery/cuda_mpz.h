@@ -173,6 +173,7 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   printf("dst: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", dst->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", dst->words);
@@ -181,6 +182,7 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   printf("op1: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", op1->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", op1->words);
@@ -189,6 +191,7 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   printf("op2: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", op2->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", op2->words);
@@ -261,6 +264,7 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   printf("dst: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", dst->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", dst->words);
@@ -269,6 +273,7 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   printf("op1: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", op1->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", op1->words);
@@ -277,6 +282,7 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   printf("op2: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", op2->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", op2->words);
@@ -284,7 +290,6 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
   printf("##############################################################\n");
   printf("##############################################################\n");
   ///////////////////////debug
-  //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
 __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_mpz_t *src) {//changes
@@ -294,6 +299,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
     printf("dst: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", dst->digits[i]);
+  	  //fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", dst->words);
@@ -302,6 +308,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
     printf("src: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", src->digits[i]);
+  	  //fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", src->words);
@@ -365,6 +372,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
   printf("dst: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", dst->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", dst->words);
@@ -373,6 +381,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate(cuda_mpz_t *dst, cuda_
   printf("src: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", src->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", src->words);
@@ -389,6 +398,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
     printf("cuda_mpz: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", cuda_mpz->digits[i]);
+  	  //fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", cuda_mpz->words);
@@ -446,6 +456,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
   printf("cuda_mpz: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", cuda_mpz->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", cuda_mpz->words);
@@ -456,6 +467,28 @@ __device__ __host__ inline void cuda_mpz_bitwise_truncate_eq(cuda_mpz_t *cuda_mp
 }
 
 __device__ __host__ inline int cuda_mpz_compare(cuda_mpz_t *a, cuda_mpz_t *b) {
+
+//    ///////////////////////debug
+//    printf("compare:\n");
+//    printf("a: \n");
+//    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//  	  printf("%08x", a->digits[i]);
+//  	  //fflush(stdout);
+//    }
+//    printf("\n");
+//    printf("words: %u\n", a->words);
+//    printf("bits: %u\n", a->bits);
+//
+//    printf("b: \n");
+//    for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
+//  	  printf("%08x", b->digits[i]);
+//  	  //fflush(stdout);
+//    }
+//    printf("\n");
+//    printf("words: %u\n", b->words);
+//    printf("bits: %u\n", b->bits);
+//    printf("##############################################################\n");
+//    ///////////////////////debug
 
   if(a->bits > b->bits){
 	  return 1;
@@ -517,6 +550,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
     printf("dst: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", dst->digits[i]);
+  	  //fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", dst->words);
@@ -525,6 +559,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
     printf("src: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", src->digits[i]);
+  	  //fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", src->words);
@@ -566,6 +601,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
   printf("dst: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", dst->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", dst->words);
@@ -574,6 +610,7 @@ __device__ __host__ inline void cuda_mpz_bitwise_rshift(cuda_mpz_t *dst, cuda_mp
   printf("src: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", src->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", src->words);
@@ -590,6 +627,7 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 	  printf("dst: \n");
 	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 		  printf("%08x", dst->digits[i]);
+		  //fflush(stdout);
 	  }
 	  printf("\n");
 	  printf("words: %u\n", dst->words);
@@ -598,6 +636,7 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 	  printf("op1: \n");
 	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 		  printf("%08x", op1->digits[i]);
+		  //fflush(stdout);
 	  }
 	  printf("\n");
 	  printf("words: %u\n", op1->words);
@@ -606,6 +645,7 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
 	  printf("op2: \n");
 	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 		  printf("%08x", op2->digits[i]);
+		  //fflush(stdout);
 	  }
 	  printf("\n");
 	  printf("words: %u\n", op2->words);
@@ -666,6 +706,7 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
   printf("dst: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", dst->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", dst->words);
@@ -674,6 +715,7 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
   printf("op1: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", op1->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", op1->words);
@@ -682,6 +724,7 @@ __device__ __host__ inline void cuda_mpz_add(cuda_mpz_t *dst, cuda_mpz_t *op1, c
   printf("op2: \n");
   for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 	  printf("%08x", op2->digits[i]);
+	  //fflush(stdout);
   }
   printf("\n");
   printf("words: %u\n", op2->words);
@@ -698,6 +741,7 @@ __device__ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op
 	  printf("dst: \n");
 	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 		  printf("%08x", dst->digits[i]);
+		  //fflush(stdout);
 	  }
 	  printf("\n");
 	  printf("words: %u\n", dst->words);
@@ -706,6 +750,7 @@ __device__ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op
 	  printf("op1: \n");
 	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 		  printf("%08x", op1->digits[i]);
+		  //fflush(stdout);
 	  }
 	  printf("\n");
 	  printf("words: %u\n", op1->words);
@@ -714,6 +759,7 @@ __device__ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op
 	  printf("op2: \n");
 	  for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
 		  printf("%08x", op2->digits[i]);
+		  //fflush(stdout);
 	  }
 	  printf("\n");
 	  printf("words: %u\n", op2->words);
@@ -790,6 +836,7 @@ __device__ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op
     printf("dst: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", dst->digits[i]);
+  	  //fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", dst->words);
@@ -798,6 +845,7 @@ __device__ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op
     printf("op1: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", op1->digits[i]);
+  	  //fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", op1->words);
@@ -806,6 +854,7 @@ __device__ __host__ inline unsigned cuda_mpz_sub(cuda_mpz_t *dst, cuda_mpz_t *op
     printf("op2: \n");
     for (int i = DIGITS_CAPACITY - 1; i >= 0; i--) {
   	  printf("%08x", op2->digits[i]);
+  	  //fflush(stdout);
     }
     printf("\n");
     printf("words: %u\n", op2->words);
