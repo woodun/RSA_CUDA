@@ -40,7 +40,7 @@ __device__ __host__ inline void cuda_mpz_init(cuda_mpz_t *cuda_mpz) {
   cuda_mpz->bits = 0;
 }
 
-__device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
+__device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {///////////must initialize before using this
   unsigned i;
 
   #pragma unroll

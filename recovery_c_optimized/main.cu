@@ -376,14 +376,18 @@ int main (int argc, char *argv[]) {
 											&tmp_1, &tmp_2, &tmp2_1, &tmp2_2,  &h_r2, &h_n, &h_n_,  &t_1, &t_2);
 
 			if (div_con == 1 && bit1_div_num < data_num){
+				cuda_mpz_init( &myMes1_h[bit1_div_num]);
 				cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
 				bit1_div_num++;
+				cuda_mpz_init( &myMes1_h[bit1_div_num]);
 				cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
 				bit1_div_num++;
 			}
 			if (div_con == 4 && bit0_div_num < data_num){
+				cuda_mpz_init( &myMes1_h[bit0_div_num]);
 				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r1);
 				bit0_div_num++;
+				cuda_mpz_init( &myMes1_h[bit0_div_num]);
 				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r2);
 				bit0_div_num++;
 			}

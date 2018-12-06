@@ -468,6 +468,7 @@ int main (int argc, char *argv[]) {
 		mpz_urandomm (rand_num, rand_state, mod);
 		cuda_mpz_set_gmp(&r1, rand_num);
 
+		cuda_mpz_init( &myMes1_h[mes_count]);
 		cuda_mpz_set( &myMes1_h[mes_count], &r1);
 		mes_count++;
 	}

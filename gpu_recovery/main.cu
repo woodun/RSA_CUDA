@@ -255,9 +255,6 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_t h_n_;
 	cuda_mpz_t h_r2;
 
-	printf("debug5\n");
-	fflush(stdout);
-
 	///////get n
 	//char n_input[] = "00000038f6e8cfba55dd0e47";
 	char n_input[] = "00000003412791fa847ccd00ad83efcae8820aad5457cbd253bc866b3a85184f249ae3a825c6c49af5ebf13cd2ef39ed46a5a0468b153e8521cd5f250049c5491d4f49462edbad1bedb4b48b67f7b59cdb683e6412d40d0000f6e07ba46c0c34d84790e3c83e076c70d3e3eb72ac583700a7664f0efcf67ae4b32254d9d50566357d635b";
@@ -281,9 +278,6 @@ int main (int argc, char *argv[]) {
 	int* dBits_d;
 	cudaMalloc((void **) &dBits_d, sizeof(int) * d_bitsLength);
 
-	printf("debug4\n");
-	fflush(stdout);
-
 	int d_iterator = 0;
 	while ( d_iterator < d_bitsLength){
 		if( d_input[d_iterator] == '1'){//big endian
@@ -303,9 +297,6 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_t *myMes1_d;
 	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize); //GPU
 
-	printf("debug3\n");
-	fflush(stdout);
-
 	///////gen_pairs variables
 	cuda_mpz_t r1;
 
@@ -324,32 +315,18 @@ int main (int argc, char *argv[]) {
 	gmp_randseed_ui (rand_state, time(NULL));
 	//gmp_randseed_ui (rand_state, 0);
 
-	printf("debug2\n");
-	fflush(stdout);
-
 	int	mes_count = 0;
 
 	while(mes_count < data_num){
 		mpz_urandomm (rand_num, rand_state, mod);
 		cuda_mpz_set_gmp(&r1, rand_num);
 
-		printf("mes_count: %d\n", mes_count);
-		fflush(stdout);
-
+		cuda_mpz_init( &myMes1_h[mes_count]);
 		cuda_mpz_set( &myMes1_h[mes_count], &r1);
 		mes_count++;
-
-		printf("mes_count: %d\n", mes_count);
-		fflush(stdout);
 	}
 
-	printf("debugx\n");
-	fflush(stdout);
-
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
-
-	printf("debug0\n");
-	fflush(stdout);
 
 	unsigned threads = 32;
 	unsigned blocks = 1;
@@ -359,9 +336,6 @@ int main (int argc, char *argv[]) {
 	}else{
 		blocks = data_num / 32;
 	}
-
-	printf("debug1\n");
-	fflush(stdout);
 
 	struct timespec ts1;/////////////////////////////////time
 	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
