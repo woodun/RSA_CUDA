@@ -337,7 +337,13 @@ int main (int argc, char *argv[]) {
 		mes_count++;
 	}
 
+	printf("debugx\n");
+	fflush(stdout);
+
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
+
+	printf("debug0\n");
+	fflush(stdout);
 
 	unsigned threads = 32;
 	unsigned blocks = 1;
