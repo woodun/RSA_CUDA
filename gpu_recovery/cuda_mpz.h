@@ -63,7 +63,7 @@ __device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
-//__host__ inline void cuda_mpz_set_gmp(cuda_mpz_t *to, mpz_t from) {//changes
+//__host__ inline void cuda_mpz_set_gmp_4bytes(cuda_mpz_t *to, mpz_t from) {//changes
 //  int i;
 //  int word_count = 0;
 //
@@ -105,8 +105,8 @@ __host__ inline void cuda_mpz_set_gmp(cuda_mpz_t *to, mpz_t from) {//changes
 
   int src_size = from->_mp_size * 2;
 
-  printf("sizeof(from->_mp_d[0]): %d\n",sizeof(from->_mp_d[0]));
-  fflush(stdout);
+//  printf("sizeof(from->_mp_d[0]): %d\n",sizeof(from->_mp_d[0]));
+//  fflush(stdout);
 
   #pragma unroll
   for (i = src_size - 1; i >= 0; i--) {
