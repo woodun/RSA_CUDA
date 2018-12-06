@@ -339,9 +339,6 @@ int main (int argc, char *argv[]) {
 
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize, cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
 
-	struct timespec ts1;/////////////////////////////////time
-	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
-
 	unsigned threads = 32;
 	unsigned blocks = 1;
 
@@ -353,6 +350,9 @@ int main (int argc, char *argv[]) {
 
 	printf("debug1\n");
 	fflush(stdout);
+
+	struct timespec ts1;/////////////////////////////////time
+	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
 
 	MontSQMLadder<<<blocks, threads>>>(myMes1_d, h_r2, h_n, h_n_, dBits_d, d_bitsLength);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
