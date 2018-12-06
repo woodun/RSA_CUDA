@@ -63,11 +63,50 @@ __device__ __host__ inline void cuda_mpz_set(cuda_mpz_t *to, cuda_mpz_t *from) {
   //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
 }
 
+//__host__ inline void cuda_mpz_set_gmp(cuda_mpz_t *to, mpz_t from) {//changes
+//  int i;
+//  int word_count = 0;
+//
+//  int src_size = from->_mp_size * 2;
+//
+//  #pragma unroll
+//  for (i = src_size - 1; i >= 0; i--) {
+//	if((i & 1) == 0 ){
+//		to->digits[i] = (digit_t) (from->_mp_d[i/2] & 0xffffffff );
+//	}else{
+//		to->digits[i] = (digit_t) (from->_mp_d[i/2] >> 32);
+//	}
+//	if(to->digits[i] != 0 && word_count == 0){
+//		word_count = i + 1;
+//	}
+//  }
+//
+//  #pragma unroll
+//  for (i = src_size; i < DIGITS_CAPACITY; i++) {
+//    to->digits[i] = 0;
+//  }
+//
+//  to->words = word_count;
+//  //finding the msb
+//  digit_t v = to->digits[word_count - 1];
+//  int msb = 0;
+//
+//  while (v >>= 1) {
+//	  msb++;
+//  }
+//
+//  to->bits = (word_count - 1) * LOG2_DIGIT_BASE + msb + 1;
+//  //to->words = (to->bits + LOG2_DIGIT_BASE - 1 ) / LOG2_DIGIT_BASE;
+//}
+
 __host__ inline void cuda_mpz_set_gmp(cuda_mpz_t *to, mpz_t from) {//changes
   int i;
   int word_count = 0;
 
   int src_size = from->_mp_size * 2;
+
+  printf("sizeof(from->_mp_d[0]): %d\n",sizeof(from->_mp_d[0]));
+  fflush(stdout);
 
   #pragma unroll
   for (i = src_size - 1; i >= 0; i--) {

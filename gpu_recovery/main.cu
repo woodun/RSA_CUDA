@@ -335,6 +335,9 @@ int main (int argc, char *argv[]) {
 
 		cuda_mpz_set( &myMes1_h[mes_count], &r1);
 		mes_count++;
+
+		printf("mes_count: %d\n", mes_count);
+		fflush(stdout);
 	}
 
 	printf("debugx\n");
