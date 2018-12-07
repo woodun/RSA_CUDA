@@ -243,7 +243,7 @@ int main (int argc, char *argv[]) {
 	int dev_id = 0;
 	cudaDeviceGetAttribute(&peak_clk, cudaDevAttrClockRate, dev_id);
 	float clock_rate = (float) peak_clk;
-	printf("clock_rate_out_kernel:%f\n", clock_rate);
+	//printf("clock_rate_out_kernel:%f\n", clock_rate);
 
 	long x = strtol(argv[1], NULL, 10);
 	long long unsigned pairs = 1;
@@ -347,6 +347,7 @@ int main (int argc, char *argv[]) {
 	clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
 	long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
 	double time_seconds = ((double) time_interval) / 1000000000;
+	printf("number of messages: %llu\n", data_num);
 	printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000, time_seconds);/////////////////////////////////time
 	printf("%f messages/second %f seconds/message\n", data_num / time_seconds, time_seconds / data_num);/////////////////////////////////time
 
