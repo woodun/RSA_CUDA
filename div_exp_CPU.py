@@ -278,7 +278,7 @@ print("\n")
 
 print(end - start) 
 
-
+#div exp gpu, througput gpu global
 
 
 

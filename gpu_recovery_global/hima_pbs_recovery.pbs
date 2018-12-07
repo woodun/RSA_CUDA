@@ -1,0 +1,10 @@
+#!/bin/bash
+#PBS -l nodes=1:hima:v100:ppn=1
+#PBS -l walltime=72:00:00
+#PBS -N RSA
+#PBS -m a
+#PBS -M hwang07@email.wm.edu
+PROG=./main
+ARGS="200"
+cd $PBS_O_WORKDIR
+sh launch.sh > output1.txt
