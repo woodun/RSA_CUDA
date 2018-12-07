@@ -74,28 +74,14 @@ __device__ __host__ inline cuda_mpz_t* CUDA_REDC(cuda_mpz_t* N, cuda_mpz_t* N_, 
 //	}
 //}
 
-__global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength) {
+__global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t* _x1, cuda_mpz_t* _x2, cuda_mpz_t* tmp, cuda_mpz_t* tmp2, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength, cuda_mpz_t* t) {
 
-	__shared__ cuda_mpz_t tmp[32]; //capacity will become a problem for shared memory with large keys
-	__shared__ cuda_mpz_t tmp2[32];
-	__shared__ cuda_mpz_t t[32];
-	__shared__ cuda_mpz_t _x1[32];
-	__shared__ cuda_mpz_t _x2[32];
-
-	int j = threadIdx.x;
-	int h = blockIdx.x * blockDim.x + threadIdx.x;
-
-	///////////////////initialize
-	cuda_mpz_init(&tmp[j]);
-	cuda_mpz_init(&tmp2[j]);
-	cuda_mpz_init(&t[j]);
-	cuda_mpz_init(&_x1[j]);
-	cuda_mpz_init(&_x2[j]);
+	int j = blockIdx.x * blockDim.x + threadIdx.x;
 
 	cuda_mpz_t* n = &vn;
 	cuda_mpz_t* n_ = &vn_;
 
-	cuda_mpz_set(&_x1[j], &mes1[h]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
+	cuda_mpz_set(&_x1[j], &mes1[j]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 
 	//_x1 = CUDA_REDC(rmod,n,n_,mes*r2,l)
 	cuda_mpz_mult(&tmp2[j], &_x1[j], &r2);
@@ -140,8 +126,14 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, c
 }
 
 
+__global__ void init(cuda_mpz_t* _x1, cuda_mpz_t* _x2, cuda_mpz_t* tmp, cuda_mpz_t* tmp2, cuda_mpz_t* t){
+	int j = blockIdx.x * blockDim.x + threadIdx.x;
 
-
-
+	cuda_mpz_init(&tmp[j]);////initial value not used
+	cuda_mpz_init(&tmp2[j]);////initial value not used
+	cuda_mpz_init(&_x1[j]);////initial value required
+	cuda_mpz_init(&_x2[j]);////initial value required
+	cuda_mpz_init(&t[j]);////initial value not used
+}
 
 

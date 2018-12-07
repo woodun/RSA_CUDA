@@ -268,7 +268,7 @@ print("\n")
 start = time.time()
 
 print(key[(1023 - bit)])
-for i in range(5):
+for i in range(10):
 	CheckDivExp(d, n, n_, r2, rmod, l, bit, 1000)
 	print("\n") 
 
