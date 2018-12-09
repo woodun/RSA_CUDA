@@ -100,7 +100,7 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, c
 	cuda_mpz_t* n = &vn;
 	cuda_mpz_t* n_ = &vn_;
 
-	s_index[k] = n_;//make a dependency to make sure previous store is finished.
+	s_index[k] = (unsigned) n_;//make a dependency to make sure previous store is finished.
 	t1 = clock64();//beginning of necessary instructions within the kernel
 
 	int h = blockIdx.x * blockDim.x + threadIdx.x;
