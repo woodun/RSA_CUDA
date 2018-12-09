@@ -74,7 +74,7 @@ __device__ __host__ inline cuda_mpz_t* CUDA_REDC(cuda_mpz_t* N, cuda_mpz_t* N_, 
 //	}
 //}
 
-__global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength) {
+__global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, cuda_mpz_t vn_, int* eBits, int eLength, long long int* clockTable) {
 
 	__shared__ cuda_mpz_t tmp[32]; //capacity will become a problem for shared memory with large keys
 	__shared__ cuda_mpz_t tmp2[32];
@@ -82,18 +82,28 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, c
 	__shared__ cuda_mpz_t _x1[32];
 	__shared__ cuda_mpz_t _x2[32];
 
+	__shared__ digit_t s_index[32];
+
+	long long int t1, t2;
+	long long int sum1 = 0;
+
 	int j = threadIdx.x;
-	int h = blockIdx.x * blockDim.x + threadIdx.x;
+	int k = threadIdx.x;
 
 	///////////////////initialize
-	cuda_mpz_init(&tmp[j]);
-	cuda_mpz_init(&tmp2[j]);
-	cuda_mpz_init(&t[j]);
-	cuda_mpz_init(&_x1[j]);
-	cuda_mpz_init(&_x2[j]);
+	cuda_mpz_init(&tmp[k]);
+	cuda_mpz_init(&tmp2[k]);
+	cuda_mpz_init(&t[k]);
+	cuda_mpz_init(&_x1[k]);
+	cuda_mpz_init(&_x2[k]);
 
 	cuda_mpz_t* n = &vn;
 	cuda_mpz_t* n_ = &vn_;
+
+	s_index[k] = n_;//make a dependency to make sure previous store is finished.
+	t1 = clock64();//beginning of necessary instructions within the kernel
+
+	int h = blockIdx.x * blockDim.x + threadIdx.x;
 
 	cuda_mpz_set(&_x1[j], &mes1[h]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 
@@ -137,6 +147,14 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, c
 
 	//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
 	cuda_mpz_set( &_x1[j], CUDA_REDC(n, n_, &_x1[j], &tmp[j], &t[j]) );
+
+	s_index[k] = cuda_mpz_get_last_digit(&_x1[k]);//make a dependency to make sure previous store is finished.
+	t2 = clock64();//end of necessary kernel instructions
+//		printf("combo_num: %lld, iter1: %u, iter2: %u\n", combo_num, iter1, iter2);
+
+	if( k == 0){
+		clockTable[h/2] =  t2 - t1;
+	}
 }
 
 

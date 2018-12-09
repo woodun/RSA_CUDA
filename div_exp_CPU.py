@@ -278,7 +278,7 @@ print("\n")
 
 print(end - start) 
 
-#div exp gpu, see if multi-block give us different timimg
+#their website of Hima GPUs should be updated, see if multi-block give us different timimg
 
 
 

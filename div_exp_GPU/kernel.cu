@@ -88,7 +88,7 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, c
 	int j = threadIdx.x;
 	int h = blockIdx.x * blockDim.x + threadIdx.x;
 
-//	if(j == 0){//is there other ways to limit number of warps per SM
+//	if(j == 0){//is there other ways to limit number of warps per SM?
 //		uint ret;
 //		asm("mov.u32 %0, %smid;" : "=r"(ret) );///make sure it's per SM
 //		printf("thread id: %d SM ID: %d\n", h, ret);//////////volta has 80 cores
