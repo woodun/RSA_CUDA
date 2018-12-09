@@ -124,52 +124,52 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, c
 //			cuda_mpz_print_str_device(&_x2[j]);
 //			printf("\n");
 //		}
-	for(int i = 1; i < eLength; ++i){///1 - 1023
-		if(eBits[i] == 0){
-			//x2 = _x1 * _x2
-			cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
-			//_x2 = CUDA_REDC(rmod,n,n_,_x2,l)
-			con1[j][i] = CUDA_REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
-			cuda_mpz_set( &_x2[j], &t[j]);
-			//_x1 = _x1 * _x1
-			cuda_mpz_set( &tmp[j], &_x1[j]);
-			cuda_mpz_mult(&tmp2[j], &_x1[j], &tmp[j]);
-			//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
-			con2[j][i] = CUDA_REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
-			cuda_mpz_set( &_x1[j], &t[j]);
-		} else {
-			//_x1 = _x1 * _x2
-			cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
-			//_x1 = CUDA_REDC(rmod,n,n_,_x1,l) #changes: more efficient
-			con1[j][i] = CUDA_REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
-			cuda_mpz_set( &_x1[j], &t[j]);
-			//_x2 = _x2 * _x2
-			cuda_mpz_set( &tmp[j], &_x2[j]);
-			cuda_mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
-			//_x2 = CUDA_REDC(rmod,n,n_,_x2,l) #changes: more efficient
-			con2[j][i] = CUDA_REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
-			cuda_mpz_set( &_x2[j], &t[j]);
-		}
-
-	//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
-	con1[j][1025] = CUDA_REDC( n, n_, &_x1[j], &tmp[j], &t[j]);
-	cuda_mpz_set( &_x1[j], &t[j]);
-
-	if( j == 0){
-		int div_count = 0;
-		for(int m = 1; m < 1025; m++){
-			if(con1[0][m] != con1[1][m]){
-				div_count++;
-			}
-			if(con2[0][m] != con2[1][m]){
-				div_count++;
-			}
-		}
-		if(con1[0][1025] != con1[1][1025]){
-			div_count++;
-		}
-		divTable[h/2] = div_count;
-	}
+//	for(int i = 1; i < eLength; ++i){///1 - 1023
+//		if(eBits[i] == 0){
+//			//x2 = _x1 * _x2
+//			cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
+//			//_x2 = CUDA_REDC(rmod,n,n_,_x2,l)
+//			con1[j][i] = CUDA_REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
+//			cuda_mpz_set( &_x2[j], &t[j]);
+//			//_x1 = _x1 * _x1
+//			cuda_mpz_set( &tmp[j], &_x1[j]);
+//			cuda_mpz_mult(&tmp2[j], &_x1[j], &tmp[j]);
+//			//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
+//			con2[j][i] = CUDA_REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
+//			cuda_mpz_set( &_x1[j], &t[j]);
+//		} else {
+//			//_x1 = _x1 * _x2
+//			cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
+//			//_x1 = CUDA_REDC(rmod,n,n_,_x1,l) #changes: more efficient
+//			con1[j][i] = CUDA_REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
+//			cuda_mpz_set( &_x1[j], &t[j]);
+//			//_x2 = _x2 * _x2
+//			cuda_mpz_set( &tmp[j], &_x2[j]);
+//			cuda_mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
+//			//_x2 = CUDA_REDC(rmod,n,n_,_x2,l) #changes: more efficient
+//			con2[j][i] = CUDA_REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
+//			cuda_mpz_set( &_x2[j], &t[j]);
+//		}
+//
+//	//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
+//	con1[j][1025] = CUDA_REDC( n, n_, &_x1[j], &tmp[j], &t[j]);
+//	cuda_mpz_set( &_x1[j], &t[j]);
+//
+//	if( j == 0){
+//		int div_count = 0;
+//		for(int m = 1; m < 1025; m++){
+//			if(con1[0][m] != con1[1][m]){
+//				div_count++;
+//			}
+//			if(con2[0][m] != con2[1][m]){
+//				div_count++;
+//			}
+//		}
+//		if(con1[0][1025] != con1[1][1025]){
+//			div_count++;
+//		}
+//		divTable[h/2] = div_count;
+//	}
 }
 
 
