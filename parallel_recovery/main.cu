@@ -451,7 +451,7 @@ int main (int argc, char *argv[]) {
 
 		if(known_bits[known_bits_length - 1] != dBits[known_bits_length - 1]){
 			wrong_key = 1;
-			printf("wrong key!");
+			printf("wrong key!\n");
 			break;
 		}
 	}
