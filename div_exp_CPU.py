@@ -280,7 +280,7 @@ print(end - start)
 
 #their website of Hima GPUs should be updated, see if multi-block give us different timimg
 
-#is it necessary to use interleaved list in serial recovery?
+#is it necessary to use interleaved list in serial recovery? try voting after 4096 samples (does not work for 2048 samples).
 
 #qsub -I -l nodes=1:hima:v100:ppn=1 -l walltime=1:00:00
 

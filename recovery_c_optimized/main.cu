@@ -372,6 +372,8 @@ int main (int argc, char *argv[]) {
 	}
 	printf("\n");
 
+//	int vote1 = 0;
+//	int vote0 = 0;
 	while(known_bits_length < d_bitsLength - 1){
 		bit1_div_num = 0;
 		bit0_div_num = 0;
@@ -436,6 +438,30 @@ int main (int argc, char *argv[]) {
 			printf("bit is 0.\n");
 		}else{//EOB
 			//printf("end of bits.\n");
+
+//			if(diff > 0){//bit is 1
+//				vote1++;
+//				printf("vote 1.\n");
+//			}else{//bit is 0
+//				vote0++;
+//				printf("vote 0.\n");
+//			}
+//
+//			if( vote1 >= 3 ){/////////////////////////////////if not
+//				known_bits[known_bits_length] = 1;
+//				printf("bit is voted 1.\n");
+//				vote1 = 0;
+//				vote0 = 0;
+//			}else if( vote0 >= 3 ){
+//				known_bits[known_bits_length] = 0;
+//				printf("bit is voted 0.\n");
+//				vote1 = 0;
+//				vote0 = 0;
+//			}else{
+//				printf("bit not accepted.\n");
+//				continue;
+//			}
+
 			printf("bit not accepted.\n");
 			continue;
 		}
