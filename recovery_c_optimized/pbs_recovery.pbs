@@ -7,4 +7,4 @@
 PROG=./main
 ARGS="100"
 cd $PBS_O_WORKDIR
-./main 1000 > output2.txt
+./main 4096 1 > output3.txt

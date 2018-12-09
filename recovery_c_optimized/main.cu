@@ -238,12 +238,19 @@ int main (int argc, char *argv[]) {
 		printf("sample size required.\n");
 		exit(EXIT_FAILURE);
 	}
+	if (argc < 3){
+		printf("device id required.\n");
+		exit(EXIT_FAILURE);
+	}
 
 	int peak_clk = 1;//kHz
 	int dev_id = 0;
 	cudaDeviceGetAttribute(&peak_clk, cudaDevAttrClockRate, dev_id);
 	float clock_rate = (float) peak_clk;
 	printf("clock_rate_out_kernel:%f\n", clock_rate);
+
+	long devid = strtol(argv[2], NULL, 10);
+	cudaSetDevice(devid);
 
 	long x = strtol(argv[1], NULL, 10);
 	long long unsigned pairs = x;
@@ -421,10 +428,10 @@ int main (int argc, char *argv[]) {
 		printf ("bit0_div: %fms %lldcycles ", sum4 / (float)clock_rate, sum4);
 		printf ("difference: %fms %lldcycles\n", diff3 / (float)clock_rate, diff3);
 
-		if(diff3 > 1000){//bit is 1
+		if(diff3 > 5000){//bit is 1
 			known_bits[known_bits_length] = 1;
 			printf("bit is 1.\n");
-		}else if(diff3 < -1000){//bit is 0
+		}else if(diff3 < -5000){//bit is 0
 			known_bits[known_bits_length] = 0;
 			printf("bit is 0.\n");
 		}else{//EOB
@@ -443,7 +450,7 @@ int main (int argc, char *argv[]) {
 
 		if(known_bits[known_bits_length - 1] != dBits[known_bits_length - 1]){
 			wrong_key = 1;
-			printf("wrong key!");
+			printf("wrong key!\n");
 			break;
 		}
 	}
