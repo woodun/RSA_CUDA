@@ -85,7 +85,6 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, c
 	__shared__ digit_t s_index[32];
 
 	long long int t1, t2;
-	long long int sum1 = 0;
 
 	int j = threadIdx.x;
 	int k = threadIdx.x;
