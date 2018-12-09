@@ -6,7 +6,7 @@
 #include "cuda_mpz.h"
 #include <gmp.h>
 
-int CheckREDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){;
+int CheckREDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){
 
 	//m = ((T & R) * N_) & R
 	cuda_mpz_bitwise_truncate(t, T);
@@ -334,7 +334,6 @@ int main (int argc, char *argv[]) {
 	known_bits[1] = 0;
 	int known_bits_length = 1;
 	int div_con = 0;
-	int wrong_key = 0;
 
 	///////gmp init
 	mpz_t mod;
@@ -415,7 +414,7 @@ int main (int argc, char *argv[]) {
 	sum_div4 = sum_div4 / pairs;
 
 	double diff = sum_div1 - sum_div4;
-	printf("%f %f %f\n", sum_div1, sum_div4, );
+	printf("%f %f %f\n", sum_div1, sum_div4, diff);
 
 	///////gmp clear
 	gmp_randclear(rand_state);
