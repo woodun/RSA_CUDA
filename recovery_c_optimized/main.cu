@@ -447,7 +447,7 @@ int main (int argc, char *argv[]) {
 //				printf("vote 0.\n");
 //			}
 //
-//			if( vote1 >= 3 ){/////////////////////////////////if not
+//			if( vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
 //				known_bits[known_bits_length] = 1;
 //				printf("bit is voted 1.\n");
 //				vote1 = 0;
