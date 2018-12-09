@@ -278,7 +278,7 @@ print("\n")
 
 print(end - start) 
 
-#div exp gpu, througput gpu global
+#div exp gpu, see if multi-block give us different timimg
 
 
 

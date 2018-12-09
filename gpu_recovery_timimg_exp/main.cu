@@ -297,20 +297,6 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_t *myMes1_d;
 	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize); //GPU
 
-	///////device memory
-	unsigned varSize = sizeof(cuda_mpz_t) * data_num;
-
-	cuda_mpz_t *tmp;
-	cuda_mpz_t *tmp2;
-	cuda_mpz_t *d_t;
-	cuda_mpz_t *_x1_cuda_mpz;
-	cuda_mpz_t *_x2_cuda_mpz;
-	cudaMalloc((void **) &tmp, varSize);
-	cudaMalloc((void **) &tmp2, varSize);
-	cudaMalloc((void **) &d_t, varSize);
-	cudaMalloc((void **) &_x2_cuda_mpz, varSize);
-	cudaMalloc((void **) &_x1_cuda_mpz, varSize);
-
 	///////gen_pairs variables
 	cuda_mpz_t r1;
 
@@ -351,22 +337,16 @@ int main (int argc, char *argv[]) {
 		blocks = data_num / 32;
 	}
 
-	////////////////////////////////////////////////////////////////initialize
-	init<<<blocks, threads>>>(_x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, d_t);
-	cudaDeviceSynchronize();
-
 	struct timespec ts1;/////////////////////////////////time
 	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
 
-	MontSQMLadder<<<blocks, threads>>>(myMes1_d, _x1_cuda_mpz, _x2_cuda_mpz, tmp, tmp2, h_r2, h_n, h_n_, dBits_d, d_bitsLength, d_t);/////////////////////////////////////////kernel
+	MontSQMLadder<<<blocks, threads>>>(myMes1_d, h_r2, h_n, h_n_, dBits_d, d_bitsLength);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 
 	struct timespec ts2;/////////////////////////////////time
 	clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
-
 	long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
-	double time_seconds = ((double) time_interval) / 1000000000;/////////////////////////////////time
-
+	double time_seconds = ((double) time_interval) / 1000000000;
 	printf("number of messages: %llu\n", data_num);
 	printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000, time_seconds);/////////////////////////////////time
 	printf("%f messages/second %f seconds/message\n", data_num / time_seconds, time_seconds / data_num);/////////////////////////////////time
@@ -379,11 +359,6 @@ int main (int argc, char *argv[]) {
 	////////free device
 	cudaFree(dBits_d);
 	cudaFree(myMes1_d);
-	cudaFree(tmp);
-	cudaFree(tmp2);
-	cudaFree(d_t);
-	cudaFree(_x1_cuda_mpz);
-	cudaFree(_x2_cuda_mpz);
 
 	////////free host
 	free(myMes1_h);
