@@ -394,6 +394,10 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_t *myMes1_d;
 	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize * 4); //GPU
 
+	for (long long unsigned p = 0; p < 4 * data_num; ++p){
+		cuda_mpz_init( &myMes1_h[p]);
+	}
+
 	///////gen_pairs variables
 	int	bit1_div_num = 0;
 	int nondiv_num = 0;

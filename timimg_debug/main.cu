@@ -403,6 +403,10 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_t *myMes1_d;
 	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize * 4); //GPU
 
+	for (long long unsigned p = 0; p < 4 * data_num; ++p){
+		cuda_mpz_init( &myMes1_h[p]);
+	}
+
 	///////gen_pairs variables
 	int	bit1_div_num = 0;
 	int nondiv_num = 0;
@@ -483,34 +487,26 @@ int main (int argc, char *argv[]) {
 											&tmp_1, &tmp_2, &tmp2_1, &tmp2_2,  &h_r2, &h_n, &h_n_,  &t_1, &t_2, check_pre);
 
 			if (div_con == 1 && bit1_div_num < data_num){
-				cuda_mpz_init( &myMes1_h[bit1_div_num]);
 				cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
 				bit1_div_num++;
-				cuda_mpz_init( &myMes1_h[bit1_div_num]);
 				cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
 				bit1_div_num++;
 			}
 			if (div_con == 2 && nondiv_num < data_num){
-				cuda_mpz_init( &myMes1_h[nondiv_num + data_num]);
 				cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r1);
 				nondiv_num++;
-				cuda_mpz_init( &myMes1_h[nondiv_num + data_num]);
 				cuda_mpz_set( &myMes1_h[nondiv_num + data_num], &r2);
 				nondiv_num++;
 			}
 			if (div_con == 3 && bothdiv_num < data_num){
-				cuda_mpz_init( &myMes1_h[bothdiv_num + data_num * 2]);
 				cuda_mpz_set( &myMes1_h[bothdiv_num + data_num * 2], &r1);
 				bothdiv_num++;
-				cuda_mpz_init( &myMes1_h[bothdiv_num + data_num * 2]);
 				cuda_mpz_set( &myMes1_h[bothdiv_num + data_num * 2], &r2);
 				bothdiv_num++;
 			}
 			if (div_con == 4 && bit0_div_num < data_num){
-				cuda_mpz_init( &myMes1_h[bit0_div_num + data_num * 3]);
 				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r1);
 				bit0_div_num++;
-				cuda_mpz_init( &myMes1_h[bit0_div_num + data_num * 3]);
 				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num * 3], &r2);
 				bit0_div_num++;
 			}

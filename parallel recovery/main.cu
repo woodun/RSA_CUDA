@@ -239,11 +239,11 @@ int main (int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-//	int peak_clk = 1;//kHz
-//	int dev_id = 0;
-//	cudaDeviceGetAttribute(&peak_clk, cudaDevAttrClockRate, dev_id);
-//	float clock_rate = (float) peak_clk;
-//	printf("clock_rate_out_kernel:%f\n", clock_rate);
+	int peak_clk = 1;//kHz
+	int dev_id = 0;
+	cudaDeviceGetAttribute(&peak_clk, cudaDevAttrClockRate, dev_id);
+	float clock_rate = (float) peak_clk;
+	printf("clock_rate_out_kernel:%f\n", clock_rate);
 
 	long x = strtol(argv[1], NULL, 10);
 	long long unsigned pairs = x;
@@ -297,6 +297,10 @@ int main (int argc, char *argv[]) {
 	cuda_mpz_t *myMes1_d;
 	cudaMalloc((cuda_mpz_t **) &myMes1_d, mesSize * 2); //GPU
 
+	for (long long unsigned p = 0; p < 2 * data_num; ++p){
+		cuda_mpz_init( &myMes1_h[p]);
+	}
+
 	///////time per sample
 	long long int *clockTable_h;
 	clockTable_h = (long long int*) malloc( 2 * pairs * sizeof(long long int));	//CPU
@@ -331,10 +335,11 @@ int main (int argc, char *argv[]) {
 
 	int known_bits[2048];
 	known_bits[0] = 1;//first bit is always 1
-	known_bits[1] = 0;
-	known_bits[2] = 1;
+//	known_bits[1] = 0;
+//	known_bits[2] = 1;
 	int known_bits_length = 1;
 	int div_con = 0;
+	int wrong_key = 0;
 
 	///////gmp init
 	mpz_t mod;
@@ -351,71 +356,118 @@ int main (int argc, char *argv[]) {
 	gmp_randseed_ui (rand_state, time(NULL));
 	//gmp_randseed_ui (rand_state, 0);
 
-	bit1_div_num = 0;
-	bit0_div_num = 0;
+	printf("current bits: ");
+	for(int i = 0; i < known_bits_length; i++){
+		printf("%d", known_bits[i]);
+	}
+	printf("\n");
 
-	while(1){
-		mpz_urandomm (rand_num, rand_state, mod);
-		cuda_mpz_set_gmp(&r1, rand_num);
-		mpz_urandomm (rand_num, rand_state, mod);
-		cuda_mpz_set_gmp(&r2, rand_num);
+	while(known_bits_length < d_bitsLength - 1){
+		bit1_div_num = 0;
+		bit0_div_num = 0;
 
-		div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
-										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
-										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2,  &h_r2, &h_n, &h_n_,  &t_1, &t_2);
+		while(1){
+			mpz_urandomm (rand_num, rand_state, mod);
+			cuda_mpz_set_gmp(&r1, rand_num);
+			mpz_urandomm (rand_num, rand_state, mod);
+			cuda_mpz_set_gmp(&r2, rand_num);
 
-		if (div_con == 1 && bit1_div_num < data_num){
-			cuda_mpz_init( &myMes1_h[bit1_div_num]);
-			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
-			bit1_div_num++;
-			cuda_mpz_init( &myMes1_h[bit1_div_num]);
-			cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
-			bit1_div_num++;
+			div_con = CheckDivExp(&r1, &r2, known_bits, known_bits_length, &_x1_1, &_x1_2, &_x2_1, &_x2_2,
+											&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
+											&tmp_1, &tmp_2, &tmp2_1, &tmp2_2,  &h_r2, &h_n, &h_n_,  &t_1, &t_2);
+
+			if (div_con == 1 && bit1_div_num < data_num){
+				cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
+				bit1_div_num++;
+				cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
+				bit1_div_num++;
+			}
+			if (div_con == 4 && bit0_div_num < data_num){
+				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r1);
+				bit0_div_num++;
+				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r2);
+				bit0_div_num++;
+			}
+			if (bit1_div_num == data_num && bit0_div_num == data_num){
+				break;
+			}
 		}
-		if (div_con == 4 && bit0_div_num < data_num){
-			cuda_mpz_init( &myMes1_h[bit0_div_num + data_num]);
-			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r1);
-			bit0_div_num++;
-			cuda_mpz_init( &myMes1_h[bit0_div_num + data_num]);
-			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r2);
-			bit0_div_num++;
+
+		cudaMemcpy(myMes1_d, myMes1_h, mesSize * 2 , cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
+
+		struct timespec ts1;/////////////////////////////////time
+		clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
+
+		MontSQMLadder<<<2 * pairs, 2>>>(myMes1_d, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d);/////////////////////////////////////////kernel
+		cudaDeviceSynchronize();
+
+		struct timespec ts2;/////////////////////////////////time
+		clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
+		long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
+		printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000,  ((double) time_interval) / 1000000000);/////////////////////////////////time
+
+		cudaMemcpy(clockTable_h, clockTable_d, 2 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
+
+		double sum_time1 = 0;
+		for (long long unsigned q = 0; q < pairs; q++){
+			//fprintf(fp1, "%d ", clockTable_h[q]);///////div count///////////////////print file
+			sum_time1 += clockTable_h[q];
 		}
-		if (bit1_div_num == data_num && bit0_div_num == data_num){
+		sum_time1 = sum_time1 / pairs;
+
+		double sum_time4 = 0;
+		for (long long unsigned q = pairs; q < 2 * pairs; q++){
+			//fprintf(fp1, "%d ", clockTable_h[q]);///////div count///////////////////print file
+			sum_time4 += clockTable_h[q];
+		}
+		sum_time4 = sum_time4 / pairs;
+
+		double diff = sum_time1 - sum_time4;
+	//	printf("%f %f %f\n", sum_time1, sum_time4, diff);
+	//	printf("%f\n", diff);
+		printf ("bit1_div: %fms %lldcycles ", sum_time1 / clock_rate, sum_time1);
+		printf ("bit0_div: %fms %lldcycles ", sum_time4 / clock_rate, sum_time4);
+		printf ("difference: %fms %lldcycles\n", diff / clock_rate, diff);
+
+		if(diff > 20000){//bit is 1
+			known_bits[known_bits_length] = 1;
+			printf("bit is 1.\n");
+		}else if(diff3 < -20000){//bit is 0
+			known_bits[known_bits_length] = 0;
+			printf("bit is 0.\n");
+		}else{//EOB
+			//printf("end of bits.\n");
+			printf("bit not accepted.\n");
+			continue;
+		}
+
+		known_bits_length++;
+
+		printf("current bits: ");
+		for(int i = 0; i < known_bits_length; i++){
+			printf("%d", known_bits[i]);
+		}
+		printf("\n");
+
+		if(known_bits[known_bits_length - 1] != dBits[known_bits_length - 1]){
+			wrong_key = 1;
+			printf("wrong key!");
 			break;
 		}
 	}
 
-	cudaMemcpy(myMes1_d, myMes1_h, mesSize * 2 , cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
+	if(wrong_key == 0){
+		known_bits[known_bits_length] = 1;//last bit is always 1
+		printf("bit is 1.\n");
 
-	struct timespec ts1;/////////////////////////////////time
-	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
+		known_bits_length++;
 
-	MontSQMLadder<<<2 * pairs, 2>>>(myMes1_d, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d);/////////////////////////////////////////kernel
-	cudaDeviceSynchronize();
-
-	struct timespec ts2;/////////////////////////////////time
-	clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
-	long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
-	printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000,  ((double) time_interval) / 1000000000);/////////////////////////////////time
-
-	cudaMemcpy(clockTable_h, clockTable_d, 2 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
-
-	double sum_time1 = 0;
-	for (long long unsigned q = 0; q < pairs; q++){
-		//fprintf(fp1, "%d ", clockTable_h[q]);///////div count///////////////////print file
-		sum_time1 += clockTable_h[q];
+		printf("current bits: ");
+		for(int i = 0; i < known_bits_length; i++){
+			printf("%d", known_bits[i]);
+		}
+		printf("\n");
 	}
-	sum_time1 = sum_time1 / pairs;
-
-	double sum_time4 = 0;
-	for (long long unsigned q = pairs; q < 2 * pairs; q++){
-		//fprintf(fp1, "%d ", clockTable_h[q]);///////div count///////////////////print file
-		sum_time4 += clockTable_h[q];
-	}
-	sum_time4 = sum_time4 / pairs;
-
-	double diff = sum_time1 - sum_time4;
-	printf("%f %f %f\n", sum_time1, sum_time4, diff);
 
 	///////gmp clear
 	gmp_randclear(rand_state);
