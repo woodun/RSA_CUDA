@@ -154,22 +154,22 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, c
 //	//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
 //	con1[j][1025] = CUDA_REDC( n, n_, &_x1[j], &tmp[j], &t[j]);
 //	cuda_mpz_set( &_x1[j], &t[j]);
-//
-//	if( j == 0){
-//		int div_count = 0;
-//		for(int m = 1; m < 1025; m++){
-//			if(con1[0][m] != con1[1][m]){
-//				div_count++;
-//			}
-//			if(con2[0][m] != con2[1][m]){
-//				div_count++;
-//			}
-//		}
-//		if(con1[0][1025] != con1[1][1025]){
-//			div_count++;
-//		}
-//		divTable[h/2] = div_count;
-//	}
+
+	if( j == 0){
+		int div_count = 0;
+		for(int m = 1; m < 1025; m++){
+			if(con1[0][m] != con1[1][m]){
+				div_count++;
+			}
+			if(con2[0][m] != con2[1][m]){
+				div_count++;
+			}
+		}
+		if(con1[0][1025] != con1[1][1025]){
+			div_count++;
+		}
+		divTable[h/2] = div_count;
+	}
 }
 
 
