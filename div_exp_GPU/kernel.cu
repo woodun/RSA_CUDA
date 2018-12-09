@@ -151,9 +151,9 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, c
 //			cuda_mpz_set( &_x2[j], &t[j]);
 //		}
 //
-//	//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
-//	con1[j][1025] = CUDA_REDC( n, n_, &_x1[j], &tmp[j], &t[j]);
-//	cuda_mpz_set( &_x1[j], &t[j]);
+	//_x1 = CUDA_REDC(rmod,n,n_,_x1,l)
+	con1[j][1025] = CUDA_REDC( n, n_, &_x1[j], &tmp[j], &t[j]);
+	cuda_mpz_set( &_x1[j], &t[j]);
 
 	if( j == 0){
 		int div_count = 0;
