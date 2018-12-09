@@ -107,53 +107,53 @@ __global__ void MontSQMLadder(cuda_mpz_t * mes1, cuda_mpz_t r2, cuda_mpz_t vn, c
 	cuda_mpz_set(&_x1[j], &mes1[h]);//next _x1 access will cause L1 miss if the L1 policy is write evict, same as using mutiple kernels.
 
 	//_x1 = REDC(rmod,n,n_,mes*r2,l)
-	mpz_mult(&tmp2[j], &_x1[j], &r2);
+	cuda_mpz_mult(&tmp2[j], &_x1[j], &r2);
 	con1[j][1024] = REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
-	mpz_set( &_x1[j], &t[j]);
+	cuda_mpz_set( &_x1[j], &t[j]);
 
 	//x2 = _x1 * _x1
-	mpz_mult(&tmp2[j], &_x1[j], &t[j]);
+	cuda_mpz_mult(&tmp2[j], &_x1[j], &t[j]);
 	//_x2 = REDC(rmod,n,n_,_x2,l)
 	con2[j][1024] = REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
-	mpz_set( &_x2[j], &t[j]);
+	cuda_mpz_set( &_x2[j], &t[j]);
 
 //		if(j == 0){
 //			printf("mes1: ");
-//			mpz_print_str_device(&_x1[j]);
+//			cuda_mpz_print_str_device(&_x1[j]);
 //			printf(" ");
-//			mpz_print_str_device(&_x2[j]);
+//			cuda_mpz_print_str_device(&_x2[j]);
 //			printf("\n");
 //		}
 	for(int i = 1; i < eLength; ++i){///1 - 1023
 		if(eBits[i] == 0){
 			//x2 = _x1 * _x2
-			mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
+			cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
 			//_x2 = REDC(rmod,n,n_,_x2,l)
 			con1[j][i] = REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
-			mpz_set( &_x2[j], &t[j]);
+			cuda_mpz_set( &_x2[j], &t[j]);
 			//_x1 = _x1 * _x1
-			mpz_set( &tmp[j], &_x1[j]);
-			mpz_mult(&tmp2[j], &_x1[j], &tmp[j]);
+			cuda_mpz_set( &tmp[j], &_x1[j]);
+			cuda_mpz_mult(&tmp2[j], &_x1[j], &tmp[j]);
 			//_x1 = REDC(rmod,n,n_,_x1,l)
 			con2[j][i] = REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
-			mpz_set( &_x1[j], &t[j]);
+			cuda_mpz_set( &_x1[j], &t[j]);
 		} else {
 			//_x1 = _x1 * _x2
-			mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
+			cuda_mpz_mult(&tmp2[j], &_x1[j], &_x2[j]);
 			//_x1 = REDC(rmod,n,n_,_x1,l) #changes: more efficient
 			con1[j][i] = REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
-			mpz_set( &_x1[j], &t[j]);
+			cuda_mpz_set( &_x1[j], &t[j]);
 			//_x2 = _x2 * _x2
-			mpz_set( &tmp[j], &_x2[j]);
-			mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
+			cuda_mpz_set( &tmp[j], &_x2[j]);
+			cuda_mpz_mult(&tmp2[j], &_x2[j], &tmp[j]);
 			//_x2 = REDC(rmod,n,n_,_x2,l) #changes: more efficient
 			con2[j][i] = REDC( n, n_, &tmp2[j], &tmp[j], &t[j]);
-			mpz_set( &_x2[j], &t[j]);
+			cuda_mpz_set( &_x2[j], &t[j]);
 		}
 
 	//_x1 = REDC(rmod,n,n_,_x1,l)
 	con1[j][1025] = REDC( n, n_, &_x1[j], &tmp[j], &t[j]);
-	mpz_set( &_x1[j], &t[j]);
+	cuda_mpz_set( &_x1[j], &t[j]);
 
 	if( j == 0){
 		int div_count = 0;
