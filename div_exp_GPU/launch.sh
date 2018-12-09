@@ -25,5 +25,5 @@
 
 for i in `seq 1 10`;
 do
-	./main $1
+	./main $1 $2
 done

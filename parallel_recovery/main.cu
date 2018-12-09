@@ -238,6 +238,10 @@ int main (int argc, char *argv[]) {
 		printf("sample size required.\n");
 		exit(EXIT_FAILURE);
 	}
+	if (argc < 3){
+		printf("device id required.\n");
+		exit(EXIT_FAILURE);
+	}
 
 	int peak_clk = 1;//kHz
 	int dev_id = 0;
@@ -246,7 +250,8 @@ int main (int argc, char *argv[]) {
 	float clock_rate = (float) peak_clk;
 	printf("clock_rate_out_kernel:%f\n", clock_rate);
 
-
+	long devid = strtol(argv[2], NULL, 10);
+	cudaSetDevice(devid);
 
 	long x = strtol(argv[1], NULL, 10);
 	long long unsigned pairs = x;
