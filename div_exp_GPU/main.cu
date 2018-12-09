@@ -6,7 +6,7 @@
 #include "cuda_mpz.h"
 #include <gmp.h>
 
-int CheckREDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){
+int CheckREDC(cuda_mpz_t* N, cuda_mpz_t* N_, cuda_mpz_t* T, cuda_mpz_t* tmp, cuda_mpz_t* t){;
 
 	//m = ((T & R) * N_) & R
 	cuda_mpz_bitwise_truncate(t, T);
