@@ -384,10 +384,10 @@ int main (int argc, char *argv[]) {
 				bit1_div_num++;
 			}
 			if (div_con == 4 && bit0_div_num < data_num){
-				cuda_mpz_init( &myMes1_h[bit0_div_num]);
+				cuda_mpz_init( &myMes1_h[bit0_div_num + data_num]);
 				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r1);
 				bit0_div_num++;
-				cuda_mpz_init( &myMes1_h[bit0_div_num]);
+				cuda_mpz_init( &myMes1_h[bit0_div_num + data_num]);
 				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r2);
 				bit0_div_num++;
 			}
