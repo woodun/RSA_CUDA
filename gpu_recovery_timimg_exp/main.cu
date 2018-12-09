@@ -368,19 +368,21 @@ int main (int argc, char *argv[]) {
 										&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
 										&tmp_1, &tmp_2, &tmp2_1, &tmp2_2,  &h_r2, &h_n, &h_n_,  &t_1, &t_2);
 
-		if (div_con == 1 && bit1_div_num < data_num){
+		if (div_con == 1 && bit1_div_num < 2 * data_num){//0,1,4,5,...
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
 			bit1_div_num++;
 			cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
 			bit1_div_num++;
+			bit1_div_num+=2;
 		}
-		if (div_con == 4 && bit0_div_num < data_num){
+		if (div_con == 4 && bit0_div_num < 2 * data_num){//2,3,6,7,...
+			bit0_div_num+=2;
 			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r1);
 			bit0_div_num++;
 			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r2);
 			bit0_div_num++;
 		}
-		if (bit1_div_num == data_num && bit0_div_num == data_num){
+		if (bit1_div_num == 2 * data_num && bit0_div_num == 2 * data_num){
 			break;
 		}
 	}
@@ -401,14 +403,14 @@ int main (int argc, char *argv[]) {
 	cudaMemcpy(clockTable_h, clockTable_d, 2 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 
 	double sum_time1 = 0;
-	for (long long unsigned q = 0; q < pairs; q++){
+	for (long long unsigned q = 0; q < 2 * pairs; q+=2){
 		//fprintf(fp1, "%d ", clockTable_h[q]);///////div count///////////////////print file
 		sum_time1 += clockTable_h[q];
 	}
 	sum_time1 = sum_time1 / pairs;
 
 	double sum_time4 = 0;
-	for (long long unsigned q = pairs; q < 2 * pairs; q++){
+	for (long long unsigned q = 1; q < 2 * pairs; q+=2){
 		//fprintf(fp1, "%d ", clockTable_h[q]);///////div count///////////////////print file
 		sum_time4 += clockTable_h[q];
 	}
