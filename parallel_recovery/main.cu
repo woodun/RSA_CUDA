@@ -439,10 +439,10 @@ int main (int argc, char *argv[]) {
 		printf ("bit0_div: %fms %fcycles ", sum_time4 / clock_rate, sum_time4);
 		printf ("difference: %fms %fcycles\n", diff / clock_rate, diff);
 
-		if(diff > 5000){//bit is 1
+		if(diff > 10000){//bit is 1
 			known_bits[known_bits_length] = 1;
 			printf("bit is 1.\n");
-		}else if(diff < -5000){//bit is 0
+		}else if(diff < -10000){//bit is 0
 			known_bits[known_bits_length] = 0;
 			printf("bit is 0.\n");
 		}else{//EOB
