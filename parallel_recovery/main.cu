@@ -425,9 +425,9 @@ int main (int argc, char *argv[]) {
 		double diff = sum_time1 - sum_time4;
 	//	printf("%f %f %f\n", sum_time1, sum_time4, diff);
 	//	printf("%f\n", diff);
-		printf ("bit1_div: %fms %lldcycles ", sum_time1 / clock_rate, sum_time1);
-		printf ("bit0_div: %fms %lldcycles ", sum_time4 / clock_rate, sum_time4);
-		printf ("difference: %fms %lldcycles\n", diff / clock_rate, diff);
+		printf ("bit1_div: %fms %fcycles ", sum_time1 / clock_rate, sum_time1);
+		printf ("bit0_div: %fms %fcycles ", sum_time4 / clock_rate, sum_time4);
+		printf ("difference: %fms %fcycles\n", diff / clock_rate, diff);
 
 		if(diff > 20000){//bit is 1
 			known_bits[known_bits_length] = 1;
