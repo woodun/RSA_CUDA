@@ -377,9 +377,9 @@ int main (int argc, char *argv[]) {
 		}
 		if (div_con == 4 && bit0_div_num < 2 * data_num){//2,3,6,7,...
 			bit0_div_num+=2;
-			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r1);
+			cuda_mpz_set( &myMes1_h[bit0_div_num], &r1);
 			bit0_div_num++;
-			cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r2);
+			cuda_mpz_set( &myMes1_h[bit0_div_num], &r2);
 			bit0_div_num++;
 		}
 		if (bit1_div_num == 2 * data_num && bit0_div_num == 2 * data_num){
