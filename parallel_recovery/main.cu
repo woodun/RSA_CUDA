@@ -432,7 +432,7 @@ int main (int argc, char *argv[]) {
 		if(diff > 20000){//bit is 1
 			known_bits[known_bits_length] = 1;
 			printf("bit is 1.\n");
-		}else if(diff3 < -20000){//bit is 0
+		}else if(diff < -20000){//bit is 0
 			known_bits[known_bits_length] = 0;
 			printf("bit is 0.\n");
 		}else{//EOB
