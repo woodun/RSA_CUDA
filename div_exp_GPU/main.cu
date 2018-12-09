@@ -332,6 +332,7 @@ int main (int argc, char *argv[]) {
 	int known_bits[2048];
 	known_bits[0] = 1;//first bit is always 1
 	known_bits[1] = 0;
+	known_bits[2] = 1;
 	int known_bits_length = 1;
 	int div_con = 0;
 
