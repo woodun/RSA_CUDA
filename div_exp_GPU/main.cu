@@ -245,6 +245,13 @@ int main (int argc, char *argv[]) {
 //	float clock_rate = (float) peak_clk;
 //	printf("clock_rate_out_kernel:%f\n", clock_rate);
 
+	long devid = strtol(argv[2], NULL, 10);
+	if(devid != 0 && devid != 1){
+		printf("illegal device id.\n");
+		exit(EXIT_FAILURE);
+	}
+	cudaSetDevice(devid);
+
 	long x = strtol(argv[1], NULL, 10);
 	long long unsigned pairs = x;
 	unsigned thread_num = 2;
