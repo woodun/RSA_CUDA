@@ -238,7 +238,6 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
 //  printf("##############################################################\n");
 //  ///////////////////////debug
 
-
   #pragma unroll
   for (int i = 0; i < dst->words; i++) {
   //for (int i = word_count; i < DIGITS_CAPACITY; i ++) {
@@ -296,7 +295,6 @@ __device__ __host__ inline void cuda_mpz_mult(cuda_mpz_t *dst, cuda_mpz_t *op1, 
 
   dst->words = word_count;
   dst->bits = total_bit_count;
-
 
 //  ///////////////////////debug
 //  printf("mult:\n");
