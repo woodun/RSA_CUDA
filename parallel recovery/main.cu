@@ -387,16 +387,16 @@ int main (int argc, char *argv[]) {
 
 	cudaMemcpy(myMes1_d, myMes1_h, mesSize * 2 , cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
 
-//	struct timespec ts1;/////////////////////////////////time
-//	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
+	struct timespec ts1;/////////////////////////////////time
+	clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
 
 	MontSQMLadder<<<2 * pairs, 2>>>(myMes1_d, h_r2, h_n, h_n_, dBits_d, d_bitsLength, clockTable_d);/////////////////////////////////////////kernel
 	cudaDeviceSynchronize();
 
-//	struct timespec ts2;/////////////////////////////////time
-//	clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
-//	long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
-//	printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000,  ((double) time_interval) / 1000000000);/////////////////////////////////time
+	struct timespec ts2;/////////////////////////////////time
+	clock_gettime(CLOCK_REALTIME, &ts2);/////////////////////////////////time
+	long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
+	printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000,  ((double) time_interval) / 1000000000);/////////////////////////////////time
 
 	cudaMemcpy(clockTable_h, clockTable_d, 2 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 
@@ -415,8 +415,7 @@ int main (int argc, char *argv[]) {
 	sum_time4 = sum_time4 / pairs;
 
 	double diff = sum_time1 - sum_time4;
-//	printf("%f %f %f\n", sum_time1, sum_time4, diff);
-	printf("%f\n", diff);
+	printf("%f %f %f\n", sum_time1, sum_time4, diff);
 
 	///////gmp clear
 	gmp_randclear(rand_state);
