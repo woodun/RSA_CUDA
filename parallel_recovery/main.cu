@@ -241,9 +241,12 @@ int main (int argc, char *argv[]) {
 
 	int peak_clk = 1;//kHz
 	int dev_id = 0;
+	cudaSetDevice(dev_id);
 	cudaDeviceGetAttribute(&peak_clk, cudaDevAttrClockRate, dev_id);
 	float clock_rate = (float) peak_clk;
 	printf("clock_rate_out_kernel:%f\n", clock_rate);
+
+
 
 	long x = strtol(argv[1], NULL, 10);
 	long long unsigned pairs = x;

@@ -245,6 +245,8 @@ int main (int argc, char *argv[]) {
 //	float clock_rate = (float) peak_clk;
 //	printf("clock_rate_out_kernel:%f\n", clock_rate);
 
+	cudaSetDevice(1);
+
 	long x = strtol(argv[1], NULL, 10);
 	long long unsigned pairs = x;
 	unsigned thread_num = 2;
