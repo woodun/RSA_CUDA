@@ -450,13 +450,9 @@ int main (int argc, char *argv[]) {
 //			if( vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
 //				known_bits[known_bits_length] = 1;
 //				printf("bit is voted 1.\n");
-//				vote1 = 0;
-//				vote0 = 0;
 //			}else if( vote0 >= 3 ){
 //				known_bits[known_bits_length] = 0;
 //				printf("bit is voted 0.\n");
-//				vote1 = 0;
-//				vote0 = 0;
 //			}else{
 //				printf("bit not accepted.\n");
 //				continue;
@@ -465,6 +461,9 @@ int main (int argc, char *argv[]) {
 			printf("bit not accepted.\n");
 			continue;
 		}
+
+//		vote1 = 0;
+//		vote0 = 0;
 
 		known_bits_length++;
 
