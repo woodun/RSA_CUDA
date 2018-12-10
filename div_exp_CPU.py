@@ -282,7 +282,7 @@ print(end - start)
 
 #is it necessary to use interleaved list in serial recovery? try voting for 4096 samples or larger (does not work for 2048 samples).
 
-#qsub -I -l nodes=1:hima:v100:ppn=1 -l walltime=1:00:00
+#qsub -I -l nodes=1:hima:p100:ppn=1 -l walltime=1:00:00
 
 
 
