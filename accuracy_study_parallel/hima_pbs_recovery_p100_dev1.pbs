@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l nodes=1:hima:p100:ppn=33
+#PBS -l nodes=1:hima:p100:ppn=1
 #PBS -l walltime=72:00:00
 #PBS -N RSA
 #PBS -m a
@@ -7,4 +7,4 @@
 PROG=./main
 ARGS="200"
 cd $PBS_O_WORKDIR
-./main 4096 1 > output3.txt
+./main 4096 1 > output1.txt
