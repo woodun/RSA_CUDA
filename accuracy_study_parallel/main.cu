@@ -347,7 +347,6 @@ int main (int argc, char *argv[]) {
 //	known_bits[2] = 1;
 	int known_bits_length = 1;
 	int div_con = 0;
-	int wrong_key = 0;
 
 	///////gmp init
 	mpz_t mod;
@@ -370,11 +369,16 @@ int main (int argc, char *argv[]) {
 	}
 	printf("\n");
 
+	int accept_count = 0;
+	int correct_count = 0;
+	int wrong_count = 0;
+	int total_count = 0;
 	int vote1 = 0;
 	int vote0 = 0;
-	while(known_bits_length < d_bitsLength - 1){
+	while(accept_count < 100){
 		bit1_div_num = 0;
 		bit0_div_num = 0;
+		total_count++;
 
 		while(1){
 			mpz_urandomm (rand_num, rand_state, mod);
@@ -407,7 +411,7 @@ int main (int argc, char *argv[]) {
 
 		cudaMemcpy(myMes1_d, myMes1_h, mesSize * 2 , cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
 
-		cudaFuncSetAttribute(MontSQMLadder, cudaFuncAttributePreferredSharedMemoryCarveout, 50);
+		cudaFuncSetAttribute(MontSQMLadder, cudaFuncAttributePreferredSharedMemoryCarveout, 50);//////////////////one block per SM
 
 		struct timespec ts1;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
@@ -443,15 +447,59 @@ int main (int argc, char *argv[]) {
 		printf ("bit0_div: %fms %fcycles ", sum_time4 / clock_rate, sum_time4);
 		printf ("difference: %fms %fcycles\n", diff / clock_rate, diff);
 
-		if(diff > 30000){//bit is 1
-			known_bits[known_bits_length] = 1;
-			printf("bit is 1.\n");
-		}else if(diff < -30000){//bit is 0
-			known_bits[known_bits_length] = 0;
-			printf("bit is 0.\n");
-		}else{//EOB
-			//printf("end of bits.\n");
+		//////////////////////////////////////////////filter + vote
+		if(0){
+			if(diff > 30000){//bit is 1
+				known_bits[known_bits_length] = 1;
+				printf("bit is 1.\n");
+			}else if(diff < -30000){//bit is 0
+				known_bits[known_bits_length] = 0;
+				printf("bit is 0.\n");
+			}else{//EOB
+				//printf("end of bits.\n");
 
+				if(diff > 0){//bit is 1
+					vote1++;
+					printf("vote 1.\n");
+				}else{//bit is 0
+					vote0++;
+					printf("vote 0.\n");
+				}
+
+				if( vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
+					known_bits[known_bits_length] = 1;
+					printf("bit is voted 1.\n");
+				}else if( vote0 >= 3 ){
+					known_bits[known_bits_length] = 0;
+					printf("bit is voted 0.\n");
+				}else{
+					printf("bit not accepted.\n");
+					continue;
+				}
+			}
+			vote1 = 0;
+			vote0 = 0;
+		}
+		//////////////////////////////////////////////filter + vote
+
+		//////////////////////////////////////////////filter only
+		if(0){
+			if(diff > 30000){//bit is 1
+				known_bits[known_bits_length] = 1;
+				printf("bit is 1.\n");
+			}else if(diff < -30000){//bit is 0
+				known_bits[known_bits_length] = 0;
+				printf("bit is 0.\n");
+			}else{//EOB
+				//printf("end of bits.\n");
+					printf("bit not accepted.\n");
+					continue;
+			}
+		}
+		//////////////////////////////////////////////filter only
+
+		//////////////////////////////////////////////vote only
+		if(0){
 			if(diff > 0){//bit is 1
 				vote1++;
 				printf("vote 1.\n");
@@ -470,37 +518,34 @@ int main (int argc, char *argv[]) {
 				printf("bit not accepted.\n");
 				continue;
 			}
+			vote1 = 0;
+			vote0 = 0;
 		}
+		//////////////////////////////////////////////vote only
 
-		vote1 = 0;
-		vote0 = 0;
-
-		known_bits_length++;
-
-		printf("current bits: ");
-		for(int i = 0; i < known_bits_length; i++){
-			printf("%d", known_bits[i]);
+		//////////////////////////////////////////////no means
+		if(1){
+			if(diff > 0){//bit is 1
+				known_bits[known_bits_length] = 1;
+				printf("bit is 1.\n");
+			}else{//bit is 0
+				known_bits[known_bits_length] = 0;
+				printf("bit is 0.\n");
+			}
 		}
-		printf("\n");
+		//////////////////////////////////////////////no means
 
-		if(known_bits[known_bits_length - 1] != dBits[known_bits_length - 1]){
-			wrong_key = 1;
+		accept_count++;
+
+		if(known_bits[known_bits_length] != dBits[known_bits_length]){
 			printf("wrong key!\n");
-			break;
+			wrong_count++;
+		}else{
+			printf("correct key.\n");
+			correct_count++;
 		}
-	}
 
-	if(wrong_key == 0){
-		known_bits[known_bits_length] = 1;//last bit is always 1
-		printf("bit is 1.\n");
-
-		known_bits_length++;
-
-		printf("current bits: ");
-		for(int i = 0; i < known_bits_length; i++){
-			printf("%d", known_bits[i]);
-		}
-		printf("\n");
+		printf("total count: %d, accepted count: %d, correct count: %d, wrong count: %d, recovery rate: %f\n", total_count, accept_count, correct_count, wrong_count, correct_count / (float) accept_count);
 	}
 
 	///////gmp clear
