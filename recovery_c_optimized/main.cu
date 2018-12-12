@@ -364,7 +364,7 @@ int main (int argc, char *argv[]) {
 	/////////timing results
 	long long int sum1 = 0;
 	long long int sum4 = 0;
-	long long int diff3 = 0;
+	long long int diff = 0;
 
 	printf("current bits: ");
 	for(int i = 0; i < known_bits_length; i++){
