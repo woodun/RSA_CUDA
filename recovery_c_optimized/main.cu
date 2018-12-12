@@ -439,10 +439,10 @@ int main (int argc, char *argv[]) {
 		}else{//EOB
 			//printf("end of bits.\n");
 
-			if(diff > 2000){//bit is 1
+			if(diff > 3000){//bit is 1
 				vote1++;
 				printf("vote 1.\n");
-			}else if(diff < -2000){//bit is 0
+			}else if(diff < -3000){//bit is 0
 				vote0++;
 				printf("vote 0.\n");
 			}else{
