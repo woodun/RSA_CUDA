@@ -372,8 +372,8 @@ int main (int argc, char *argv[]) {
 	}
 	printf("\n");
 
-//	int vote1 = 0;
-//	int vote0 = 0;
+	int vote1 = 0;
+	int vote0 = 0;
 	while(known_bits_length < d_bitsLength - 1){
 		bit1_div_num = 0;
 		bit0_div_num = 0;
@@ -430,40 +430,39 @@ int main (int argc, char *argv[]) {
 		printf ("bit0_div: %fms %lldcycles ", sum4 / (float)clock_rate, sum4);
 		printf ("difference: %fms %lldcycles\n", diff3 / (float)clock_rate, diff3);
 
-		if(diff3 > 10000){//bit is 1
+		if(diff > 30000){//bit is 1
 			known_bits[known_bits_length] = 1;
 			printf("bit is 1.\n");
-		}else if(diff3 < -10000){//bit is 0
+		}else if(diff < -30000){//bit is 0
 			known_bits[known_bits_length] = 0;
 			printf("bit is 0.\n");
 		}else{//EOB
 			//printf("end of bits.\n");
 
-//			if(diff > 0){//bit is 1
-//				vote1++;
-//				printf("vote 1.\n");
-//			}else{//bit is 0
-//				vote0++;
-//				printf("vote 0.\n");
-//			}
-//
-//			if( vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
-//				known_bits[known_bits_length] = 1;
-//				printf("bit is voted 1.\n");
-//			}else if( vote0 >= 3 ){
-//				known_bits[known_bits_length] = 0;
-//				printf("bit is voted 0.\n");
-//			}else{
-//				printf("bit not accepted.\n");
-//				continue;
-//			}
+			if(diff > 2000){//bit is 1
+				vote1++;
+				printf("vote 1.\n");
+			}else if(diff < -2000){//bit is 0
+				vote0++;
+				printf("vote 0.\n");
+			}else{
+				printf("result is discarded.\n");
+				continue;
+			}
 
-			printf("bit not accepted.\n");
-			continue;
+			if( vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
+				known_bits[known_bits_length] = 1;
+				printf("bit is voted 1.\n");
+			}else if( vote0 >= 3 ){
+				known_bits[known_bits_length] = 0;
+				printf("bit is voted 0.\n");
+			}else{
+				printf("bit not acceptable.\n");
+				continue;
+			}
 		}
-
-//		vote1 = 0;
-//		vote0 = 0;
+		vote1 = 0;
+		vote0 = 0;
 
 		known_bits_length++;
 

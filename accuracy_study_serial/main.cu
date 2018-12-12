@@ -372,11 +372,16 @@ int main (int argc, char *argv[]) {
 	}
 	printf("\n");
 
-//	int vote1 = 0;
-//	int vote0 = 0;
-	while(known_bits_length < d_bitsLength - 1){
+	int accept_count = 0;
+	int correct_count = 0;
+	int wrong_count = 0;
+	int total_count = 0;
+	int vote1 = 0;
+	int vote0 = 0;
+	while(accept_count < 100){
 		bit1_div_num = 0;
 		bit0_div_num = 0;
+		total_count++;
 
 		while(1){
 			mpz_urandomm (rand_num, rand_state, mod);
@@ -388,24 +393,28 @@ int main (int argc, char *argv[]) {
 											&_x1_1_temp, &_x1_2_temp, &_x2_1_temp, &_x2_2_temp,
 											&tmp_1, &tmp_2, &tmp2_1, &tmp2_2,  &h_r2, &h_n, &h_n_,  &t_1, &t_2);
 
-			if (div_con == 1 && bit1_div_num < data_num){
+			if (div_con == 1 && bit1_div_num < 2 * data_num){//0,1,4,5,...
 				cuda_mpz_set( &myMes1_h[bit1_div_num], &r1);
 				bit1_div_num++;
 				cuda_mpz_set( &myMes1_h[bit1_div_num], &r2);
 				bit1_div_num++;
+				bit1_div_num+=2;
 			}
-			if (div_con == 4 && bit0_div_num < data_num){
-				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r1);
+			if (div_con == 4 && bit0_div_num < 2 * data_num){//2,3,6,7,...
+				bit0_div_num+=2;
+				cuda_mpz_set( &myMes1_h[bit0_div_num], &r1);
 				bit0_div_num++;
-				cuda_mpz_set( &myMes1_h[bit0_div_num + data_num], &r2);
+				cuda_mpz_set( &myMes1_h[bit0_div_num], &r2);
 				bit0_div_num++;
 			}
-			if (bit1_div_num == data_num && bit0_div_num == data_num){
+			if (bit1_div_num == 2 * data_num && bit0_div_num == 2 * data_num){
 				break;
 			}
 		}
 
 		cudaMemcpy(myMes1_d, myMes1_h, mesSize * 2 , cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
+
+		cudaFuncSetAttribute(MontSQMLadder, cudaFuncAttributePreferredSharedMemoryCarveout, 50);//////////////////one block per SM
 
 		struct timespec ts1;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
@@ -418,79 +427,128 @@ int main (int argc, char *argv[]) {
 		long long unsigned time_interval = time_diff(ts1, ts2);/////////////////////////////////time
 		printf("overall kernel time: %lluns %fms %fs\n", time_interval,  ((double) time_interval) / 1000000,  ((double) time_interval) / 1000000000);/////////////////////////////////time
 
-		cudaMemcpy(clockTable_h, clockTable_d, 2 * sizeof(long long int), cudaMemcpyDeviceToHost);
+		cudaMemcpy(clockTable_h, clockTable_d, 2 * pairs * sizeof(long long int), cudaMemcpyDeviceToHost);
 
-		sum1 = clockTable_h[0];
-		sum1 = sum1 / pairs;
-		sum4 = clockTable_h[1] - clockTable_h[0];
-		sum4 = sum4 / pairs;
-		diff3 = sum1 - sum4;
-
-		printf ("bit1_div: %fms %lldcycles ", sum1 / (float)clock_rate, sum1);
-		printf ("bit0_div: %fms %lldcycles ", sum4 / (float)clock_rate, sum4);
-		printf ("difference: %fms %lldcycles\n", diff3 / (float)clock_rate, diff3);
-
-		if(diff3 > 10000){//bit is 1
-			known_bits[known_bits_length] = 1;
-			printf("bit is 1.\n");
-		}else if(diff3 < -10000){//bit is 0
-			known_bits[known_bits_length] = 0;
-			printf("bit is 0.\n");
-		}else{//EOB
-			//printf("end of bits.\n");
-
-//			if(diff > 0){//bit is 1
-//				vote1++;
-//				printf("vote 1.\n");
-//			}else{//bit is 0
-//				vote0++;
-//				printf("vote 0.\n");
-//			}
-//
-//			if( vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
-//				known_bits[known_bits_length] = 1;
-//				printf("bit is voted 1.\n");
-//			}else if( vote0 >= 3 ){
-//				known_bits[known_bits_length] = 0;
-//				printf("bit is voted 0.\n");
-//			}else{
-//				printf("bit not accepted.\n");
-//				continue;
-//			}
-
-			printf("bit not accepted.\n");
-			continue;
+		double sum_time1 = 0;
+		for (long long unsigned q = 0; q < 2 * pairs; q+=2){
+			//fprintf(fp1, "%d ", clockTable_h[q]);///////div count///////////////////print file
+			sum_time1 += clockTable_h[q];
 		}
+		sum_time1 = sum_time1 / pairs;
 
-//		vote1 = 0;
-//		vote0 = 0;
-
-		known_bits_length++;
-
-		printf("current bits: ");
-		for(int i = 0; i < known_bits_length; i++){
-			printf("%d", known_bits[i]);
+		double sum_time4 = 0;
+		for (long long unsigned q = 1; q < 2 * pairs; q+=2){
+			//fprintf(fp1, "%d ", clockTable_h[q]);///////div count///////////////////print file
+			sum_time4 += clockTable_h[q];
 		}
-		printf("\n");
+		sum_time4 = sum_time4 / pairs;
 
-		if(known_bits[known_bits_length - 1] != dBits[known_bits_length - 1]){
-			wrong_key = 1;
+		double diff = sum_time1 - sum_time4;
+	//	printf("%f %f %f\n", sum_time1, sum_time4, diff);
+	//	printf("%f\n", diff);
+		printf ("bit1_div: %fms %fcycles ", sum_time1 / clock_rate, sum_time1);
+		printf ("bit0_div: %fms %fcycles ", sum_time4 / clock_rate, sum_time4);
+		printf ("difference: %fms %fcycles\n", diff / clock_rate, diff);
+
+		//////////////////////////////////////////////filter + vote
+		if(0){
+			if(diff > 30000){//bit is 1
+				known_bits[known_bits_length] = 1;
+				printf("bit is 1.\n");
+			}else if(diff < -30000){//bit is 0
+				known_bits[known_bits_length] = 0;
+				printf("bit is 0.\n");
+			}else{//EOB
+				//printf("end of bits.\n");
+
+				if(diff > 0){//bit is 1
+					vote1++;
+					printf("vote 1.\n");
+				}else{//bit is 0
+					vote0++;
+					printf("vote 0.\n");
+				}
+
+				if( vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
+					known_bits[known_bits_length] = 1;
+					printf("bit is voted 1.\n");
+				}else if( vote0 >= 3 ){
+					known_bits[known_bits_length] = 0;
+					printf("bit is voted 0.\n");
+				}else{
+					printf("bit not accepted.\n");
+					continue;
+				}
+			}
+			vote1 = 0;
+			vote0 = 0;
+		}
+		//////////////////////////////////////////////filter + vote
+
+		//////////////////////////////////////////////filter only
+		if(0){
+			if(diff > 30000){//bit is 1
+				known_bits[known_bits_length] = 1;
+				printf("bit is 1.\n");
+			}else if(diff < -30000){//bit is 0
+				known_bits[known_bits_length] = 0;
+				printf("bit is 0.\n");
+			}else{//EOB
+				//printf("end of bits.\n");
+					printf("bit not accepted.\n");
+					continue;
+			}
+		}
+		//////////////////////////////////////////////filter only
+
+		//////////////////////////////////////////////vote only
+		if(0){
+			if(diff > 0){//bit is 1
+				vote1++;
+				printf("vote 1.\n");
+			}else{//bit is 0
+				vote0++;
+				printf("vote 0.\n");
+			}
+
+			if( vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
+				known_bits[known_bits_length] = 1;
+				printf("bit is voted 1.\n");
+			}else if( vote0 >= 3 ){
+				known_bits[known_bits_length] = 0;
+				printf("bit is voted 0.\n");
+			}else{
+				printf("bit not accepted.\n");
+				continue;
+			}
+			vote1 = 0;
+			vote0 = 0;
+		}
+		//////////////////////////////////////////////vote only
+
+		//////////////////////////////////////////////no means
+		if(1){
+			if(diff > 0){//bit is 1
+				known_bits[known_bits_length] = 1;
+				printf("bit is 1.\n");
+			}else{//bit is 0
+				known_bits[known_bits_length] = 0;
+				printf("bit is 0.\n");
+			}
+		}
+		//////////////////////////////////////////////no means
+
+		accept_count++;
+
+		if(known_bits[known_bits_length] != dBits[known_bits_length]){
 			printf("wrong key!\n");
-			break;
+			wrong_count++;
+		}else{
+			printf("correct key.\n");
+			correct_count++;
 		}
-	}
 
-	if(wrong_key == 0){
-		known_bits[known_bits_length] = 1;//last bit is always 1
-		printf("bit is 1.\n");
-
-		known_bits_length++;
-
-		printf("current bits: ");
-		for(int i = 0; i < known_bits_length; i++){
-			printf("%d", known_bits[i]);
-		}
-		printf("\n");
+		printf("total count: %d, accepted count: %d, correct count: %d, wrong count: %d, recovery rate: %f\n", total_count, accept_count, correct_count, wrong_count, correct_count / (float) accept_count);
 	}
 
 	///////gmp clear

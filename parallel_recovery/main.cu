@@ -452,12 +452,15 @@ int main (int argc, char *argv[]) {
 		}else{//EOB
 			//printf("end of bits.\n");
 
-			if(diff > 0){//bit is 1
+			if(diff > 2000){//bit is 1
 				vote1++;
 				printf("vote 1.\n");
-			}else{//bit is 0
+			}else if(diff < -2000){//bit is 0
 				vote0++;
 				printf("vote 0.\n");
+			}else{
+				printf("result is discarded.\n");
+				continue;
 			}
 
 			if( vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
@@ -467,11 +470,10 @@ int main (int argc, char *argv[]) {
 				known_bits[known_bits_length] = 0;
 				printf("bit is voted 0.\n");
 			}else{
-				printf("bit not accepted.\n");
+				printf("bit not acceptable.\n");
 				continue;
 			}
 		}
-
 		vote1 = 0;
 		vote0 = 0;
 
