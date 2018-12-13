@@ -373,12 +373,53 @@ int main (int argc, char *argv[]) {
 	int correct_count = 0;
 	int wrong_count = 0;
 	int total_count = 0;
-	int vote1 = 0;
-	int vote0 = 0;
+	int current_bit = 0;
+
+	int filter_and_vote_passed = 0;
+	int filter_only_passed = 0;
+	int no_means_passed = 0;
+	int vote_only_passed = 0;
+
+	int filter_and_vote_passed_count = 0;
+	int filter_only_passed_count = 0;
+	int no_means_passed_count = 0;
+	int vote_only_passed_count = 0;
+
+	int filter_and_vote_correct_count = 0;
+	int filter_only_correct_count = 0;
+	int no_means_correct_count = 0;
+	int vote_only_correct_count = 0;
+
+	int filter_and_vote_wrong_count = 0;
+	int filter_only_wrong_count = 0;
+	int no_means_wrong_count = 0;
+	int vote_only_wrong_count = 0;
+
+	int filter_and_vote_discarded_count = 0;
+	int filter_only_discarded_count = 0;
+	int no_means_discarded_count = 0;
+	int vote_only_discarded_count = 0;
+
+	int filter_and_vote_vote1 = 0;
+	int vote_only_vote1 = 0;
+
+	int filter_and_vote_vote0 = 0;
+	int vote_only_vote0 = 0;
+
+	int filter_and_vote_current_bit = 0;
+	int filter_only_current_bit = 0;
+	int no_means_current_bit = 0;
+	int vote_only_current_bit = 0;
+
 	while(accept_count < 100){
 		bit1_div_num = 0;
 		bit0_div_num = 0;
 		total_count++;
+
+		filter_and_vote_passed = 1;
+		filter_only_passed = 1;
+		no_means_passed = 1;
+		vote_only_passed = 1;
 
 		while(1){
 			mpz_urandomm (rand_num, rand_state, mod);
@@ -448,106 +489,147 @@ int main (int argc, char *argv[]) {
 		printf ("difference: %fms %fcycles\n", diff / clock_rate, diff);
 
 		//////////////////////////////////////////////filter + vote
-		if(0){
+		if(1){
 			if(diff > 30000){//bit is 1
-				known_bits[known_bits_length] = 1;
+				filter_and_vote_current_bit = 1;
 				printf("bit is 1.\n");
 			}else if(diff < -30000){//bit is 0
-				known_bits[known_bits_length] = 0;
+				filter_and_vote_current_bit = 0;
 				printf("bit is 0.\n");
 			}else{//EOB
 				//printf("end of bits.\n");
 
 				if(diff > 3000){//bit is 1
-					vote1++;
+					filter_and_vote_vote1++;
 					printf("vote 1.\n");
 				}else if(diff < -3000){//bit is 0
-					vote0++;
+					filter_and_vote_vote0++;
 					printf("vote 0.\n");
 				}else{
 					printf("result is discarded.\n");
-					continue;
+					//continue;
+					filter_and_vote_passed = 0;
 				}
 
-				if( vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
-					known_bits[known_bits_length] = 1;
+				if( filter_and_vote_vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
+					filter_and_vote_current_bit = 1;
 					printf("bit is voted 1.\n");
-				}else if( vote0 >= 3 ){
-					known_bits[known_bits_length] = 0;
+				}else if( filter_and_vote_vote0 >= 3 ){
+					filter_and_vote_current_bit = 0;
 					printf("bit is voted 0.\n");
 				}else{
 					printf("bit not acceptable.\n");
-					continue;
+					//continue;
+					filter_and_vote_passed = 0;
 				}
 			}
-			vote1 = 0;
-			vote0 = 0;
+			filter_and_vote_vote1 = 0;
+			filter_and_vote_vote0 = 0;
 		}
 		//////////////////////////////////////////////filter + vote
 
 		//////////////////////////////////////////////filter only
-		if(0){
+		if(1){
 			if(diff > 30000){//bit is 1
-				known_bits[known_bits_length] = 1;
+				filter_only_current_bit = 1;
 				printf("bit is 1.\n");
 			}else if(diff < -30000){//bit is 0
-				known_bits[known_bits_length] = 0;
+				filter_only_current_bit = 0;
 				printf("bit is 0.\n");
 			}else{//EOB
 				//printf("end of bits.\n");
 					printf("bit not acceptable.\n");
-					continue;
+					//continue;
+					filter_only_passed = 0;
 			}
 		}
 		//////////////////////////////////////////////filter only
 
 		//////////////////////////////////////////////vote only
-		if(0){
+		if(1){
 			if(diff > 3000){//bit is 1
-				vote1++;
+				vote_only_vote1++;
 				printf("vote 1.\n");
 			}else if(diff < -3000){//bit is 0
-				vote0++;
+				vote_only_vote0++;
 				printf("vote 0.\n");
 			}else{
 				printf("result is discarded.\n");
-				continue;
+				//continue;
+				vote_only_passed = 0;
 			}
 
-			if( vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
-				known_bits[known_bits_length] = 1;
+			if( vote_only_vote1 >= 3 ){/////////////////////////////////if not accepted for too many times, then decide by voting
+				vote_only_current_bit = 1;
 				printf("bit is voted 1.\n");
-			}else if( vote0 >= 3 ){
-				known_bits[known_bits_length] = 0;
+			}else if( vote_only_vote0 >= 3 ){
+				vote_only_current_bit = 0;
 				printf("bit is voted 0.\n");
 			}else{
 				printf("bit not acceptable.\n");
-				continue;
+				//continue;
+				vote_only_passed = 0;
 			}
-			vote1 = 0;
-			vote0 = 0;
+			vote_only_vote1 = 0;
+			vote_only_vote0 = 0;
 		}
 		//////////////////////////////////////////////vote only
 
 		//////////////////////////////////////////////no means
 		if(1){
-			if(diff > 0){//bit is 1
-				known_bits[known_bits_length] = 1;
+			if(diff > 3000){//bit is 1
+				no_means_current_bit = 1;
 				printf("bit is 1.\n");
-			}else{//bit is 0
-				known_bits[known_bits_length] = 0;
+			}else if(diff < -3000){//bit is 0
+				no_means_current_bit = 0;
 				printf("bit is 0.\n");
+			}else{
+				printf("result is discarded.\n");
+				//continue;
+				no_means_passed = 0;
 			}
 		}
 		//////////////////////////////////////////////no means
 
-		accept_count++;
+		//////////////////////////////////////////////always passed
+		if(1){
+			if(diff > 0){//bit is 1
+				current_bit = 1;
+				printf("always passed bit is 1.\n");
+			}else{//bit is 0
+				current_bit = 0;
+				printf("always passed bit is 0.\n");
+			}
+		}
+		//////////////////////////////////////////////always passed
 
-		if(known_bits[known_bits_length] != dBits[known_bits_length]){
-			printf("wrong key!\n");
+
+		if(filter_and_vote_passed){
+			filter_and_vote_passed_count++;
+			if(current_bit != dBits[known_bits_length]){
+				printf("filter_and_vote_passed wrong key!\n");
+				filter_and_vote_passed_wrong_count++;
+			}else{
+				printf("filter_and_vote_passed correct key.\n");
+				filter_and_vote_passed_correct_count++;
+			}
+		}
+		if(filter_only_passed){
+
+		}
+		if(vote_only_passed){
+
+		}
+		if(no_means_passed){
+
+		}
+
+		accept_count++;
+		if(current_bit != dBits[known_bits_length]){
+			printf("always passed wrong key!\n");
 			wrong_count++;
 		}else{
-			printf("correct key.\n");
+			printf("always passed correct key.\n");
 			correct_count++;
 		}
 
