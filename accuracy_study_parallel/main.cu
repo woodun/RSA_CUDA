@@ -691,11 +691,11 @@ int main (int argc, char *argv[]) {
 			correct_count++;
 		}
 		printf("always passed: total count: %d, accepted count: %d, correct count: %d, wrong count: %d, discarded count: %d, recovery rate: %f, accept rate: %f, discard rate: %f\n",
-				total_count, accept_count, correct_count, wrong_count, discarded_count,
+				total_count, accept_count, correct_count, wrong_count, 0,
 				correct_count / (float) accept_count, accept_count / (float) total_count, 0 / (float) total_count);
 		if(accept_count == required_count){
 			printf("required_count: always passed: total count: %d, accepted count: %d, correct count: %d, wrong count: %d, discarded count: %d, recovery rate: %f, accept rate: %f, discard rate: %f\n",
-					total_count, accept_count, correct_count, wrong_count, discarded_count,
+					total_count, accept_count, correct_count, wrong_count, 0,
 					correct_count / (float) accept_count, accept_count / (float) total_count, 0 / (float) total_count);
 		}
 		fflush(stdout);
