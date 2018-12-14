@@ -1,5 +1,5 @@
 NVCC = nvcc
-NCXXFLAGS = -keep -Xptxas -dlcm=ca --optimize 1
+NCXXFLAGS = -keep -Xptxas -dlcm=ca --optimize 1 -lgmp
 #NVCCFLAGS = -g -G -m64 -arch compute_20
 
 execs = main
