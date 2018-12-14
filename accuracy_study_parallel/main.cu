@@ -609,7 +609,7 @@ int main (int argc, char *argv[]) {
 			filter_and_vote_vote1 = 0;
 			filter_and_vote_vote0 = 0;
 			filter_and_vote_passed_count++;
-			if(current_bit != dBits[known_bits_length]){
+			if(filter_and_vote_current_bit != dBits[known_bits_length]){
 				printf("filter_and_vote wrong key!\n");
 				filter_and_vote_wrong_count++;
 			}else{
