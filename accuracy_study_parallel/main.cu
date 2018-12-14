@@ -524,7 +524,7 @@ int main (int argc, char *argv[]) {
 					filter_and_vote_current_bit = 0;
 					printf("filter_and_vote bit is voted 0.\n");
 				}else{
-					printf("filter_and_vote bit not acceptable.\n");
+					//printf("filter_and_vote bit not acceptable.\n");
 					//continue;
 					filter_and_vote_passed = 0;
 				}
@@ -572,7 +572,7 @@ int main (int argc, char *argv[]) {
 				vote_only_current_bit = 0;
 				printf("vote_only bit is voted 0.\n");
 			}else{
-				printf("vote_only bit not acceptable.\n");
+				//printf("vote_only bit not acceptable.\n");
 				//continue;
 				vote_only_passed = 0;
 			}
@@ -607,7 +607,6 @@ int main (int argc, char *argv[]) {
 			}
 		}
 		//////////////////////////////////////////////always passed
-
 
 		if(filter_and_vote_passed){
 			filter_and_vote_vote1 = 0;
