@@ -704,6 +704,9 @@ int main (int argc, char *argv[]) {
 		fflush(stdout);
 	}
 
+	printf("pair count: %llu\n", pairs);
+	fflush(stdout);
+
 	///////gmp clear
 	gmp_randclear(rand_state);
 	mpz_clear(rand_num);
