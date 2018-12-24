@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l nodes=1:in01:ppn=1
+#PBS -l nodes=1:in02:ppn=1
 #PBS -l walltime=72:00:00
 #PBS -N RSA
 #PBS -m a
@@ -7,4 +7,4 @@
 PROG=./main
 ARGS="100"
 cd $PBS_O_WORKDIR
-./main 4096 1 > output3.txt
+./main 4096 1 > quadro_4096.txt

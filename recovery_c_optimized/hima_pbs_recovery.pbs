@@ -7,6 +7,6 @@
 PROG=./main
 ARGS="200"
 cd $PBS_O_WORKDIR
-./main 4096 1 > output3.txt
+./main 4096 1 > pascal_4096.txt
 
-#qsub -I -l nodes=1:hima:v100:ppn=1 -l walltime=1:00:00
+#qsub -I -l nodes=1:hima:p100:ppn=1 -l walltime=1:00:00
