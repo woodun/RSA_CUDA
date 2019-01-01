@@ -123,7 +123,7 @@ print( "bits(d):%s" % ( bits(d) ) )
 print( "len(bits(d)):%s" % ( len(bits(d)) ) )
 print( "RL:%d\n" % ( l ) )
 
-
+#qsub -I -l nodes=1:hima:p100:ppn=1 -l walltime=1:00:00
 
 
 
