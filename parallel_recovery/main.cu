@@ -411,7 +411,7 @@ int main (int argc, char *argv[]) {
 
 		cudaMemcpy(myMes1_d, myMes1_h, mesSize * 2 , cudaMemcpyHostToDevice);///////////////bit1_div and bit0_div lists
 
-		cudaFuncSetAttribute(MontSQMLadder, cudaFuncAttributePreferredSharedMemoryCarveout, 100);
+		//cudaFuncSetAttribute(MontSQMLadder, cudaFuncAttributePreferredSharedMemoryCarveout, 100);
 
 		struct timespec ts1;/////////////////////////////////time
 		clock_gettime(CLOCK_REALTIME, &ts1);/////////////////////////////////time
