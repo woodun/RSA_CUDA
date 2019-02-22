@@ -7,4 +7,4 @@
 PROG=./main
 ARGS="200"
 cd $PBS_O_WORKDIR
-./main 16384 30 1 > 2048_volta_16384_30_12.txt
+./main 16384 30 1 > 2048_volta_16384_30_14.txt
