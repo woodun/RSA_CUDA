@@ -503,19 +503,19 @@ int main (int argc, char *argv[]) {
 
 		//////////////////////////////////////////////filter + vote
 		if(1){
-			if(diff > 50000){//bit is 1 ///previously 30000
+			if(diff > 30000){//bit is 1
 				filter_and_vote_current_bit = 1;
 				printf("filter_and_vote bit is 1.\n");
-			}else if(diff < -50000){//bit is 0
+			}else if(diff < -30000){//bit is 0
 				filter_and_vote_current_bit = 0;
 				printf("filter_and_vote bit is 0.\n");
 			}else{//EOB
 				//printf("end of bits.\n");
 
-				if(diff > 10000){//bit is 1
+				if(diff > 3000){//bit is 1
 					filter_and_vote_vote1++;
 					printf("filter_and_vote vote 1.\n");
-				}else if(diff < -10000){//bit is 0
+				}else if(diff < -3000){//bit is 0
 					filter_and_vote_vote0++;
 					printf("filter_and_vote vote 0.\n");
 				}else{
@@ -542,10 +542,10 @@ int main (int argc, char *argv[]) {
 
 		//////////////////////////////////////////////filter only
 		if(1){
-			if(diff > 50000){//bit is 1
+			if(diff > 30000){//bit is 1
 				filter_only_current_bit = 1;
 				printf("filter_only bit is 1.\n");
-			}else if(diff < -50000){//bit is 0
+			}else if(diff < -30000){//bit is 0
 				filter_only_current_bit = 0;
 				printf("filter_only bit is 0.\n");
 			}else{//EOB
@@ -560,10 +560,10 @@ int main (int argc, char *argv[]) {
 
 		//////////////////////////////////////////////vote only
 		if(1){
-			if(diff > 10000){//bit is 1 ///previously 3000
+			if(diff > 3000){//bit is 1
 				vote_only_vote1++;
 				printf("vote_only vote 1.\n");
-			}else if(diff < -10000){//bit is 0
+			}else if(diff < -3000){//bit is 0
 				vote_only_vote0++;
 				printf("vote_only vote 0.\n");
 			}else{
@@ -589,10 +589,10 @@ int main (int argc, char *argv[]) {
 
 		//////////////////////////////////////////////no means
 		if(1){
-			if(diff > 10000){//bit is 1 ///previously 3000
+			if(diff > 3000){//bit is 1
 				no_means_current_bit = 1;
 				printf("no_means bit is 1.\n");
-			}else if(diff < -10000){//bit is 0
+			}else if(diff < -3000){//bit is 0
 				no_means_current_bit = 0;
 				printf("no_means bit is 0.\n");
 			}else{
